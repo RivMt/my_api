@@ -8,6 +8,7 @@ const String keyLastUsed = "last_used";
 const String keyOwner = "owner_id";
 const String keyEditors = "editors_id";
 const String keyDescriptions = "descriptions";
+const String keyDeleted = "deleted";
 
 class Model {
 
@@ -20,11 +21,18 @@ class Model {
   /// Get value of [map] using [key]
   ///
   /// **DO NOT** call this directly. Use several properties variables to access.
-  /// When [key] is not included in [map], throws [InvalidModeException].
-  getValue(String key) {
+  /// When [key] is not included in [map], return [defaultValue]. If [defaultValue]
+  /// does not set, throws [InvalidModeException].
+  getValue(String key, [dynamic defaultValue]) {
+    // Check key is exist
     if (map.containsKey(key)) {
       return map[key];
     }
+    // Return default value when it is set
+    if (defaultValue != null) {
+      return defaultValue;
+    }
+    // Throw
     throw InvalidModelException(key);
   }
 
@@ -53,5 +61,10 @@ class Model {
   String get descriptions => getValue(keyDescriptions);
 
   set descriptions(String desc) => map[keyDescriptions] = desc;
+
+  /// Is this object deleted or not
+  bool get deleted => getValue(keyDeleted);
+
+  set deleted(bool value) => map[keyDeleted] = value;
 
 }
