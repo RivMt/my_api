@@ -9,6 +9,15 @@ import 'package:my_api/log.dart';
 /// TAG for log
 const String _tag = "Core";
 
+/// HTTP Method
+enum ApiMethod {
+  get,
+  post,
+  put,
+  patch,
+  delete,
+}
+
 /// Raise exception by [code]
 void checkCode(int code, String url) {
   switch(code) {
@@ -71,15 +80,47 @@ class ApiClient {
   }
 
   /// Send POST request
-  Future<Map<String, dynamic>> post(String link, Map<String, dynamic>? body) async {
+  Future<Map<String, dynamic>> send(ApiMethod method, String link, Map<String, dynamic>? body) async {
     // Url
     final String url = "${this.url}/$link";
     // Send request
-    http.Response response = await http.post(
-      Uri.parse(url),
-      headers: ApiClient.headers,
-      body: json.encode(body),
-    );
+    late http.Response response;
+    switch(method) {
+      case ApiMethod.get:
+        response = await http.get(
+          Uri.parse(url),
+          headers: ApiClient.headers,
+        );
+        break;
+      case ApiMethod.post:
+        response = await http.post(
+          Uri.parse(url),
+          headers: ApiClient.headers,
+          body: json.encode(body),
+        );
+        break;
+      case ApiMethod.put:
+        response = await http.put(
+          Uri.parse(url),
+          headers: ApiClient.headers,
+          body: json.encode(body),
+        );
+        break;
+      case ApiMethod.patch:
+        response = await http.patch(
+          Uri.parse(url),
+          headers: ApiClient.headers,
+          body: json.encode(body),
+        );
+        break;
+      case ApiMethod.delete:
+        response = await http.delete(
+          Uri.parse(url),
+          headers: ApiClient.headers,
+          body: json.encode(body),
+        );
+        break;
+    }
     // Check response
     checkCode(response.statusCode, url);
     // If exception does not thrown
