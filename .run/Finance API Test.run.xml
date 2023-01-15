@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Finance API Test" type="FlutterTestConfigType" factoryName="Flutter Test">
+    <option name="testFile" value="C:\Users\sanka\Documents\Projects\my_api\test\api\finance_test.dart" />
+    <option name="useRegexp" value="false" />
+    <option name="additionalArgs" value="" />
+    <method v="2" />
+  </configuration>
+</component>
