@@ -11,7 +11,7 @@ void main() async {
       client.set(url: "http://127.0.0.1:20005", id: "none");
 
       // Get accounts
-      final List<dynamic> result = await client.get<Account>({
+      final List<dynamic> result = await client.readAccounts({
         "pid": pid,
       });
       final Account a = Account(result[0]);
