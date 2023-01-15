@@ -40,3 +40,17 @@ class RequestErrorException implements Exception {
 
   RequestErrorException(this.url);
 }
+
+/// Exception for api action failed
+class ActionFailedException implements Exception {
+  final Map data;
+
+  ActionFailedException(this.data);
+}
+
+/// Exception for unintended multiple data action
+class MultipleDataException implements Exception {
+  final Map data;
+
+  MultipleDataException(this.data);
+}
