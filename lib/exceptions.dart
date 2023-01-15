@@ -7,10 +7,10 @@ class InvalidModelException implements Exception {
 }
 
 /// Exception for requested URI has been changed (Code 301)
-class RequestedUriChangedException implements Exception {
+class UriChangedException implements Exception {
   final String url;
 
-  RequestedUriChangedException(this.url);
+  UriChangedException(this.url);
 }
 
 /// Exception for invalid request (Code 400)
@@ -21,24 +21,24 @@ class RequestInvalidException implements Exception {
 }
 
 /// Exception for Non-auth user request (Code 401)
-class RequestNonAuthenticatedException implements Exception {
+class NotAuthenticatedException implements Exception {
   final String url;
 
-  RequestNonAuthenticatedException(this.url);
+  NotAuthenticatedException(this.url);
 }
 
 /// Exception for request has been denied for permission reason (Code 405)
-class RequestPermissionDeniedException implements Exception {
+class PermissionDeniedException implements Exception {
   final String url;
 
-  RequestPermissionDeniedException(this.url);
+  PermissionDeniedException(this.url);
 }
 
 /// Exception for any other error (Code 500)
-class RequestErrorException implements Exception {
+class HttpErrorException implements Exception {
   final String url;
 
-  RequestErrorException(this.url);
+  HttpErrorException(this.url);
 }
 
 /// Exception for api action failed

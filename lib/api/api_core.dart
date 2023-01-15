@@ -24,15 +24,15 @@ void checkCode(int code, String url) {
     case 200:
       break;
     case 301:
-      throw RequestedUriChangedException(url);
+      throw UriChangedException(url);
     case 400:
       throw RequestInvalidException(url);
     case 401:
-      throw RequestNonAuthenticatedException(url);
+      throw NotAuthenticatedException(url);
     case 405:
-      throw RequestPermissionDeniedException(url);
+      throw PermissionDeniedException(url);
     case 500:
-      throw RequestErrorException(url);
+      throw HttpErrorException(url);
     default:
       throw UnimplementedError();
   }
