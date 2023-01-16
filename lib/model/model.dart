@@ -67,4 +67,20 @@ class Model {
 
   set deleted(bool value) => map[keyDeleted] = value;
 
+  /// Check two models' [pid] is equal or not
+  @override
+  bool operator ==(Object other) {
+    if (other is Model) {
+      return pid == other.pid;
+    }
+    return super==(other);
+  }
+
+  /// [pid] is similar kind of hash code
+  @override
+  int get hashCode {
+    return pid;
+  }
+
+
 }
