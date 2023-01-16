@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:my_api/api/api_core.dart';
 import 'package:my_api/api/finance_client.dart';
 import 'package:my_api/model/account.dart';
 
@@ -11,9 +12,10 @@ void main() async {
       client.set(url: "http://127.0.0.1:20005", id: "none");
 
       // Get accounts
-      final List<dynamic> result = await client.readAccounts({
+      final ApiResponse response = await client.readAccounts({
         "pid": pid,
       });
+      final List result = response.data;
       final Account a = Account(result[0]);
 
       // Expect
