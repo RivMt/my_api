@@ -200,3 +200,22 @@ class ApiSession {
   }
 
 }
+
+enum ApiResultCode {
+  success,
+  failed,
+  unknown,
+}
+
+class ApiResponse<T> {
+
+  final ApiResultCode result;
+
+  final T data;
+
+  ApiResponse({
+    required this.result,
+    required this.data,
+  });
+
+}
