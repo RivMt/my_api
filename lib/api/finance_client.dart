@@ -101,33 +101,96 @@ class FinanceClient {
     return result;
   }
 
-  /// Create account
-  Future<bool> createAccount(Account account) async {
+  /// Create [account]
+  Future<ApiResponse<Account?>> createAccount(Account account) async {
     late List result;
     try {
       result = await create(Link.accounts, account.map);
     } on ActionFailedException catch(_) {
-      return false;
+      return ApiResponse<Account?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
     } on MultipleDataException catch(_) {
-      return false;
+      return ApiResponse<Account?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
     }
     final Account res = Account(result[0]);
-    return (res == account);
+    return ApiResponse<Account?>(
+      result: account == res ? ApiResultCode.success : ApiResultCode.failed,
+      data: res,
+    );
   }
 
-  /// Read accounts
-  Future<List<Account>> readAccounts(Map<String, dynamic> condition) async {
+  /// Read accounts filtered by [condition]
+  Future<ApiResponse<List<Account>>> readAccounts(Map<String, dynamic> condition) async {
     late List response;
     try {
       response = await read(Link.accounts, condition);
     } on ActionFailedException catch(_) {
-      return [];
+      return ApiResponse(
+        result: ApiResultCode.failed,
+        data: [],
+      );
     }
     final List<Account> result = [];
     for(var item in response) {
       result.add(Account(item));
     }
-    return result;
+    return ApiResponse(
+      result: ApiResultCode.success,
+      data: result,
+    );
+  }
+
+  /// Update [account]
+  Future<ApiResponse<Account?>> updateAccount(Account account) async {
+    late List result;
+    try {
+      result = await update(Link.accounts, account.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Account?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Account?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Account res = Account(result[0]);
+    return ApiResponse<Account?>(
+      result: account == res ? ApiResultCode.success : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Delete [account]
+  Future<ApiResponse<Account?>> deleteAccount(Account account) async {
+    late List result;
+    try {
+      result = await delete(Link.accounts, account.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Account?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Account?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Account res = Account(result[0]);
+    return ApiResponse<Account?>(
+      result: (account == res && res.deleted == true)
+          ? ApiResultCode.success
+          : ApiResultCode.failed,
+      data: res,
+    );
   }
 
 }
