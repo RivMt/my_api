@@ -1,6 +1,6 @@
 library my_api;
 
-import 'package:my_api/exceptions.dart';
+import 'package:my_api/src/exceptions.dart';
 
 const String keyId = "id";
 const String keyPid = "pid";

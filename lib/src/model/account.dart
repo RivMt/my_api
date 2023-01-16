@@ -2,7 +2,7 @@ library my_api;
 
 import 'dart:ui';
 
-import 'package:my_api/model/model.dart';
+import 'package:my_api/src/model/model.dart';
 
 const String keyViewers = "viewers";
 const String keyIcon = "icon";

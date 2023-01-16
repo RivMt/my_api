@@ -3,8 +3,8 @@ library my_api;
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:my_api/exceptions.dart';
-import 'package:my_api/log.dart';
+import 'package:my_api/src/exceptions.dart';
+import 'package:my_api/src/log.dart';
 
 /// TAG for log
 const String _tag = "Core";

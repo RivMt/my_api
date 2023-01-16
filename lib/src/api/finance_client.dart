@@ -1,10 +1,10 @@
 library my_api;
 
-import 'package:my_api/api/api_core.dart';
-import 'package:my_api/exceptions.dart';
-import 'package:my_api/log.dart';
-import 'package:my_api/model/account.dart';
-import 'package:my_api/model/model.dart';
+import 'package:my_api/src/api/api_core.dart';
+import 'package:my_api/src/exceptions.dart';
+import 'package:my_api/src/log.dart';
+import 'package:my_api/src/model/account.dart';
+import 'package:my_api/src/model/model.dart';
 
 /// Link
 enum Link {
