@@ -53,7 +53,10 @@ class FinanceClient {
     return response['data'];
   }
 
-  /// Create
+  /// Create [data] from [link]
+  ///
+  /// It throws [ActionFailedException] on result is empty list.
+  /// It throws [MultipleDataException] on length of result is more than `1`.
   Future<List> create<T extends Model>(Link link, Map<String, dynamic> data) async {
     final List result = await send<T>(ApiMethod.put, link, data);
     if (result.isEmpty) {
@@ -67,7 +70,9 @@ class FinanceClient {
     return result;
   }
 
-  /// Read
+  /// Read [data] from [link]
+  ///
+  /// It throws [ActionFailedException] on result is empty list.
   Future<List> read<T extends Model>(Link link, Map<String, dynamic> data) async {
     final List result = await send<T>(ApiMethod.post, link, data);
     if (result.isEmpty) {
@@ -77,7 +82,9 @@ class FinanceClient {
     return result;
   }
 
-  /// Update
+  /// Update [data] from [link]
+  ///
+  /// throws [ActionFailedException] on result is empty list
   Future<List> update<T extends Model>(Link link, Map<String, dynamic> data) async {
     final List result = await send<T>(ApiMethod.patch, link, data);
     if (result.isEmpty) {
@@ -87,7 +94,10 @@ class FinanceClient {
     return result;
   }
 
-  /// Delete
+  /// Delete [data] from [link]
+  ///
+  /// It throws [ActionFailedException] on result is empty list.
+  /// It throws [MultipleDataException] on length of result is more than `1`.
   Future<List> delete<T extends Model>(Link link, Map<String, dynamic> data) async {
     final List result = await send<T>(ApiMethod.delete, link, data);
     if (result.isEmpty) {
