@@ -6,6 +6,7 @@ import 'package:my_api/src/log.dart';
 import 'package:my_api/src/model/account.dart';
 import 'package:my_api/src/model/payment.dart';
 import 'package:my_api/src/model/model.dart';
+import 'package:my_api/src/model/transaction.dart';
 
 /// Link
 enum Link {
@@ -290,6 +291,98 @@ class FinanceClient {
     final Payment res = Payment(result[0]);
     return ApiResponse<Payment?>(
       result: (payment == res && res.deleted == true)
+          ? ApiResultCode.success
+          : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Create [transaction]
+  Future<ApiResponse<Transaction?>> createTransaction(Transaction transaction) async {
+    late List result;
+    try {
+      result = await create(Link.transactions, transaction.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Transaction?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Transaction?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Transaction res = Transaction(result[0]);
+    return ApiResponse<Transaction?>(
+      result: transaction == res ? ApiResultCode.success : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Read transactions filtered by [condition]
+  Future<ApiResponse<List<Transaction>>> readTransactions(Map<String, dynamic> condition) async {
+    late List response;
+    try {
+      response = await read(Link.transactions, condition);
+    } on ActionFailedException catch(_) {
+      return ApiResponse(
+        result: ApiResultCode.failed,
+        data: [],
+      );
+    }
+    final List<Transaction> result = [];
+    for(var item in response) {
+      result.add(Transaction(item));
+    }
+    return ApiResponse(
+      result: ApiResultCode.success,
+      data: result,
+    );
+  }
+
+  /// Update [transaction]
+  Future<ApiResponse<Transaction?>> updateTransaction(Transaction transaction) async {
+    late List result;
+    try {
+      result = await update(Link.transactions, transaction.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Transaction?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Transaction?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Transaction res = Transaction(result[0]);
+    return ApiResponse<Transaction?>(
+      result: transaction == res ? ApiResultCode.success : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Delete [transaction]
+  Future<ApiResponse<Transaction?>> deleteTransaction(Transaction transaction) async {
+    late List result;
+    try {
+      result = await delete(Link.transactions, transaction.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Transaction?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Transaction?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Transaction res = Transaction(result[0]);
+    return ApiResponse<Transaction?>(
+      result: (transaction == res && res.deleted == true)
           ? ApiResultCode.success
           : ApiResultCode.failed,
       data: res,
