@@ -4,6 +4,7 @@ import 'package:my_api/src/api/api_core.dart';
 import 'package:my_api/src/exceptions.dart';
 import 'package:my_api/src/log.dart';
 import 'package:my_api/src/model/account.dart';
+import 'package:my_api/src/model/payment.dart';
 import 'package:my_api/src/model/model.dart';
 
 /// Link
@@ -197,6 +198,98 @@ class FinanceClient {
     final Account res = Account(result[0]);
     return ApiResponse<Account?>(
       result: (account == res && res.deleted == true)
+          ? ApiResultCode.success
+          : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Create [payment]
+  Future<ApiResponse<Payment?>> createPayment(Payment payment) async {
+    late List result;
+    try {
+      result = await create(Link.payments, payment.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Payment?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Payment?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Payment res = Payment(result[0]);
+    return ApiResponse<Payment?>(
+      result: payment == res ? ApiResultCode.success : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Read payments filtered by [condition]
+  Future<ApiResponse<List<Payment>>> readPayments(Map<String, dynamic> condition) async {
+    late List response;
+    try {
+      response = await read(Link.payments, condition);
+    } on ActionFailedException catch(_) {
+      return ApiResponse(
+        result: ApiResultCode.failed,
+        data: [],
+      );
+    }
+    final List<Payment> result = [];
+    for(var item in response) {
+      result.add(Payment(item));
+    }
+    return ApiResponse(
+      result: ApiResultCode.success,
+      data: result,
+    );
+  }
+
+  /// Update [payment]
+  Future<ApiResponse<Payment?>> updatePayment(Payment payment) async {
+    late List result;
+    try {
+      result = await update(Link.payments, payment.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Payment?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Payment?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Payment res = Payment(result[0]);
+    return ApiResponse<Payment?>(
+      result: payment == res ? ApiResultCode.success : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Delete [payment]
+  Future<ApiResponse<Payment?>> deletePayment(Payment payment) async {
+    late List result;
+    try {
+      result = await delete(Link.payments, payment.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Payment?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Payment?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Payment res = Payment(result[0]);
+    return ApiResponse<Payment?>(
+      result: (payment == res && res.deleted == true)
           ? ApiResultCode.success
           : ApiResultCode.failed,
       data: res,
