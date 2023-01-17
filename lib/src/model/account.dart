@@ -4,18 +4,18 @@ import 'dart:ui';
 
 import 'package:my_api/src/model/model.dart';
 
-const String keyViewers = "viewers";
-const String keyIcon = "icon";
-const String keyPriority = "priority";
-const String keyLimitation = "limitation";
-const String keyCurrency = "currency";
-const String keyBalance = "balance";
-const String keyIsCash = "is_cash";
-const String keySerialNumber = "serial_number";
-const String keyForeground = "foreground";
-const String keyBackground = "background";
-
 class Account extends Model {
+
+  static const String keyViewers = "viewers";
+  static const String keyIcon = "icon";
+  static const String keyPriority = "priority";
+  static const String keyLimitation = "limitation";
+  static const String keyCurrency = "currency";
+  static const String keyBalance = "balance";
+  static const String keyIsCash = "is_cash";
+  static const String keySerialNumber = "serial_number";
+  static const String keyForeground = "foreground";
+  static const String keyBackground = "background";
 
   Account(super.map);
 

@@ -4,19 +4,19 @@ import 'dart:ui';
 
 import 'package:my_api/src/model/model.dart';
 
-const String keyViewers = "viewers";
-const String keyIcon = "icon";
-const String keyPriority = "priority";
-const String keyLimitation = "limitation";
-const String keyIsCredit = "is_credit";
-const String keySerialNumber = "serial_number";
-const String keyForeground = "foreground";
-const String keyBackground = "background";
-const String keyPayBegin = "keyPayBegin";
-const String keyPayEnd = "keyPayEnd";
-const String keyPayDate = "keyPayDate";
-
 class Payment extends Model {
+
+  static const String keyViewers = "viewers";
+  static const String keyIcon = "icon";
+  static const String keyPriority = "priority";
+  static const String keyLimitation = "limitation";
+  static const String keyIsCredit = "is_credit";
+  static const String keySerialNumber = "serial_number";
+  static const String keyForeground = "foreground";
+  static const String keyBackground = "background";
+  static const String keyPayBegin = "keyPayBegin";
+  static const String keyPayEnd = "keyPayEnd";
+  static const String keyPayDate = "keyPayDate";
 
   /// Minimum day of payment day
   static const int payDayMin = 1;
