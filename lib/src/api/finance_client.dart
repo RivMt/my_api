@@ -4,6 +4,7 @@ import 'package:my_api/src/api/api_core.dart';
 import 'package:my_api/src/exceptions.dart';
 import 'package:my_api/src/log.dart';
 import 'package:my_api/src/model/account.dart';
+import 'package:my_api/src/model/category.dart';
 import 'package:my_api/src/model/payment.dart';
 import 'package:my_api/src/model/model.dart';
 import 'package:my_api/src/model/transaction.dart';
@@ -13,7 +14,7 @@ enum Link {
   accounts,
   transactions,
   payments,
-  category,
+  categories,
 }
 
 class FinanceClient {
@@ -383,6 +384,98 @@ class FinanceClient {
     final Transaction res = Transaction(result[0]);
     return ApiResponse<Transaction?>(
       result: (transaction == res && res.deleted == true)
+          ? ApiResultCode.success
+          : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Create [category]
+  Future<ApiResponse<Category?>> createCategory(Category category) async {
+    late List result;
+    try {
+      result = await create(Link.categories, category.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Category?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Category?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Category res = Category(result[0]);
+    return ApiResponse<Category?>(
+      result: category == res ? ApiResultCode.success : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Read categorys filtered by [condition]
+  Future<ApiResponse<List<Category>>> readCategories(Map<String, dynamic> condition) async {
+    late List response;
+    try {
+      response = await read(Link.categories, condition);
+    } on ActionFailedException catch(_) {
+      return ApiResponse(
+        result: ApiResultCode.failed,
+        data: [],
+      );
+    }
+    final List<Category> result = [];
+    for(var item in response) {
+      result.add(Category(item));
+    }
+    return ApiResponse(
+      result: ApiResultCode.success,
+      data: result,
+    );
+  }
+
+  /// Update [category]
+  Future<ApiResponse<Category?>> updateCategory(Category category) async {
+    late List result;
+    try {
+      result = await update(Link.categories, category.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Category?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Category?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Category res = Category(result[0]);
+    return ApiResponse<Category?>(
+      result: category == res ? ApiResultCode.success : ApiResultCode.failed,
+      data: res,
+    );
+  }
+
+  /// Delete [category]
+  Future<ApiResponse<Category?>> deleteCategory(Category category) async {
+    late List result;
+    try {
+      result = await delete(Link.categories, category.map);
+    } on ActionFailedException catch(_) {
+      return ApiResponse<Category?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    } on MultipleDataException catch(_) {
+      return ApiResponse<Category?>(
+        result: ApiResultCode.failed,
+        data: null,
+      );
+    }
+    final Category res = Category(result[0]);
+    return ApiResponse<Category?>(
+      result: (category == res && res.deleted == true)
           ? ApiResultCode.success
           : ApiResultCode.failed,
       data: res,
