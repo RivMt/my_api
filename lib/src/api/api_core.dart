@@ -18,6 +18,13 @@ enum ApiMethod {
   delete,
 }
 
+enum CalculationType {
+  sum,
+  avg,
+  max,
+  min,
+}
+
 /// Raise exception by [code]
 void checkCode(int code, String url) {
   switch(code) {
