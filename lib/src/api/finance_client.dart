@@ -46,12 +46,21 @@ class FinanceClient {
   }
 
   /// Send request
-  Future<List> send<T extends Model>(ApiMethod method, Link link, Map<String, dynamic> data) async {
-    final response = await _client.send(method, "$home/${link.name}", {
+  Future<dynamic> send<T extends Model>(
+    ApiMethod method,
+    Link link,
+    Map<String, dynamic> data, {
+    Map<String, dynamic>? options,
+  }) async {
+    final Map<String, dynamic> body = {
       "user_id": _client.id,
       "user_secret": _client.session.secret,
       "data": data,
-    });
+    };
+    if (options != null) {
+      body['options'] = options;
+    }
+    final response = await _client.send(method, "$home/${link.name}", body);
     
     return response['data'];
   }
@@ -112,6 +121,31 @@ class FinanceClient {
       throw MultipleDataException(data);
     }
     return result;
+  }
+
+  /// Request calculation result from [link] which fits to [data]
+  ///
+  /// [calc] defines type of calculation. And [attributes] defines column name
+  /// which is calculated
+  Future<BigInt> calculate(Link link,
+    Map<String, dynamic> data,
+    CalculationType calc,
+    String attributes,
+  ) async {
+    final result = await send(ApiMethod.post, link, data, options: {
+      "calc": calc.name.toUpperCase(),
+      "attr": attributes,
+    });
+    // Check result is String
+    if (result is! String) {
+      throw ActionFailedException(data);
+    }
+    // Check result string is number
+    final RegExp regex = RegExp(r"[0-9.]");
+    if (!regex.hasMatch(result)) {
+      throw ActionFailedException(data);
+    }
+    return BigInt.parse(result);
   }
 
   /// Create [account]
