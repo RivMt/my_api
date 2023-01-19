@@ -18,6 +18,13 @@ enum ApiMethod {
   delete,
 }
 
+/// Types of DB sort order
+enum OrderType {
+  asc,
+  desc,
+}
+
+/// Types of DB calculation query
 enum CalculationType {
   sum,
   avg,
@@ -132,6 +139,39 @@ class ApiClient {
     checkCode(response.statusCode, url);
     // If exception does not thrown
     return json.decode(response.body);
+  }
+
+  /// Build options
+  Map<String, dynamic> buildOptions({
+    // Calculation
+    CalculationType? calcType,
+    String? calcAttribute,
+    // Order
+    OrderType? orderType,
+    String? orderAttribute,
+    // Limit
+    int? limit,
+  }) {
+    final Map<String, dynamic> map = {};
+    // Calc
+    if (calcType != null && calcAttribute != null) {
+      map["calc"] = {
+        "type": calcType.name.toUpperCase(),
+        "attr": calcAttribute,
+      };
+    }
+    // Order
+    if (orderType != null && orderAttribute != null) {
+      map["order"] = {
+        "type": orderType.name.toUpperCase(),
+        "attr": orderAttribute,
+      };
+    }
+    // Limits
+    if (limit != null) {
+      map["limit"] = limit;
+    }
+    return map;
   }
 
 }

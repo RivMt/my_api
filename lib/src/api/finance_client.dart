@@ -125,17 +125,17 @@ class FinanceClient {
 
   /// Request calculation result from [link] which fits to [data]
   ///
-  /// [calc] defines type of calculation. And [attributes] defines column name
+  /// [calc] defines type of calculation. And [attribute] defines column name
   /// which is calculated
   Future<BigInt> calculate(Link link,
     Map<String, dynamic> data,
     CalculationType calc,
-    String attributes,
+    String attribute,
   ) async {
-    final result = await send(ApiMethod.post, link, data, options: {
-      "calc": calc.name.toUpperCase(),
-      "attr": attributes,
-    });
+    final result = await send(ApiMethod.post, link, data, options: _client.buildOptions(
+      calcType: calc,
+      calcAttribute: attribute,
+    ),);
     // Check result is String
     if (result is! String) {
       throw ActionFailedException(data);
