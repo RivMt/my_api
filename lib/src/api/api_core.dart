@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:my_api/src/exceptions.dart';
 import 'package:my_api/src/log.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// TAG for log
 const String _tag = "Core";
@@ -89,7 +90,6 @@ class ApiClient {
         url: url,
         id: id,
       );
-      session.request(""); //TODO: Input hash
     }
   }
 
@@ -178,6 +178,9 @@ class ApiClient {
 
 class ApiSession {
 
+  /// Key of user secrets for [SharedPreferences]
+  static const String keyPreferencesSecret = "api-secret";
+
   /// Base url of server
   String url = "";
 
@@ -204,13 +207,23 @@ class ApiSession {
   /// has still left time
   bool get valid => (secret != "" && DateTime.now().compareTo(validation) < 0);
 
-  /// Set [url] and [id] to request [secret]
+  /// Set [url] and [id]
+  ///
+  /// It throws [NullThrownError] if there are no saved [secret] data
   void set({
     required String url,
     required String id,
-  }) {
+  }) async {
     this.url = url;
     this.id = id;
+    // Get secret
+    final prefs = await SharedPreferences.getInstance();
+    final String? result = await prefs.get(keyPreferencesSecret);
+    if (result == null) {
+      throw NullThrownError();
+    } else {
+      secret = result;
+    }
   }
 
   /// Request [secret] using [password]
@@ -239,6 +252,9 @@ class ApiSession {
     final Map<String, dynamic> map = json.decode(response.body);
     if (map.containsKey("user_secret")) {
       secret = map["user_secret"];
+      // Save
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(keyPreferencesSecret, secret);
       return true;
     }
 
