@@ -89,7 +89,7 @@ class ApiClient {
         url: url,
         id: id,
       );
-      session.refresh(""); //TODO: Input hash
+      session.request(""); //TODO: Input hash
     }
   }
 
@@ -213,14 +213,14 @@ class ApiSession {
     this.id = id;
   }
 
-  /// Request [secret] using [hash]
-  void refresh(String hash) async {
+  /// Request [secret] using [password]
+  Future<bool> request(String password) async {
     final String url = "${this.url}/auth";
     // Request
     final response = await http.post(Uri.parse(url),
       body: {
         "user_id": id,
-        "hash": hash,
+        "secret": password,
       }
     );
 
@@ -229,17 +229,17 @@ class ApiSession {
       checkCode(response.statusCode, url);
     } on Exception catch (_) {
       Log.e(_tag, "Exception");
-      return;
+      return false;
     } on Error catch (_) {
       Log.e(_tag, "Error");
-      return;
+      return false;
     }
 
     // Check body is valid
     final Map<String, dynamic> map = json.decode(response.body);
     if (map.containsKey("user_secret")) {
       secret = map["user_secret"];
-      return;
+      return true;
     }
 
     // Error
