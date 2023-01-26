@@ -13,6 +13,7 @@ dependencies:
   http:
   shared_preferences:
   intl:
+  decimal:
 
 dev_dependencies:
   test:

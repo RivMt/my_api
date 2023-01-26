@@ -2,6 +2,7 @@ library my_api;
 
 import 'dart:ui';
 
+import 'package:decimal/decimal.dart';
 import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/model.dart';
 
@@ -38,9 +39,9 @@ class Account extends Model {
   set priority(int value) => map[keyPriority] = value;
 
   /// Limitation of this account
-  BigInt get limitation => BigInt.parse(getValue(keyLimitation));
+  Decimal get limitation => Decimal.parse(getValue(keyLimitation));
 
-  set limitation(BigInt value) => map[keyLimitation] = value.toString();
+  set limitation(Decimal value) => map[keyLimitation] = value.toString();
 
   /// ID of currency
   Currency get currency => getValue(keyCurrency, Currency.unknown);
@@ -48,9 +49,9 @@ class Account extends Model {
   set currency(Currency currency) => map[keyCurrency] = currency.value;
 
   /// Balance of this account
-  BigInt get balance => BigInt.parse(getValue(keyBalance));
+  Decimal get balance => Decimal.parse(getValue(keyBalance));
 
-  set balance(BigInt value) => map[keyBalance] = value.toString();
+  set balance(Decimal value) => map[keyBalance] = value.toString();
 
   /// Is this account handled as cash or not
   bool get isCash => getValue(keyIsCash);

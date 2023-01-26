@@ -1,5 +1,6 @@
 library my_api;
 
+import 'package:decimal/decimal.dart';
 import 'package:my_api/src/model/model.dart';
 
 enum TransactionType {
@@ -68,9 +69,9 @@ class Transaction extends Model {
   set paymentId(int pid) => map[keyPaymentID] = pid;
 
   /// Amount of this transaction
-  BigInt get amount => BigInt.parse(getValue(keyAmount));
+  Decimal get amount => Decimal.parse(getValue(keyAmount));
 
-  set amount(BigInt value) => map[keyAmount] = value.toString();
+  set amount(Decimal value) => map[keyAmount] = value.toString();
 
   /// [DateTime] of this transaction calculated
   DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate));

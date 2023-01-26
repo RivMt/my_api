@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:intl/intl.dart';
 
 enum Currency {
@@ -44,7 +45,7 @@ enum Currency {
   }
 
   /// Format [amount] to current currency's
-  String format(BigInt amount) {
+  String format(Decimal amount) {
     final currency = NumberFormat.currency(
       symbol: symbol,
       decimalDigits: digits,

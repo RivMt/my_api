@@ -2,6 +2,7 @@ library my_api;
 
 import 'dart:ui';
 
+import 'package:decimal/decimal.dart';
 import 'package:my_api/src/model/model.dart';
 
 class Payment extends Model {
@@ -46,9 +47,9 @@ class Payment extends Model {
   set priority(int value) => map[keyPriority] = value;
 
   /// Limitation of this account
-  BigInt get limitation => BigInt.parse(getValue(keyLimitation));
+  Decimal get limitation => Decimal.parse(getValue(keyLimitation));
 
-  set limitation(BigInt value) => map[keyLimitation] = value.toString();
+  set limitation(Decimal value) => map[keyLimitation] = value.toString();
 
   /// Is this account handled as cash or not
   bool get isCredit => getValue(keyIsCredit);
