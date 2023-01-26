@@ -55,6 +55,9 @@ void checkCode(int code, String url) {
 
 class ApiClient {
 
+  /// Key of user secrets for [SharedPreferences]
+  static const String keyPreferencesSecret = "api-secret";
+
   /// Base header of all requests
   static const Map<String, String> headers = {
     "Content-Type": "application/json",
@@ -66,8 +69,15 @@ class ApiClient {
   /// User ID
   String id = "";
 
-  /// Session for currently connected user
-  final ApiSession session = ApiSession(url: "", id: '');
+  /// User secret key
+  String secret = "";
+
+  /// Duration of [secret] is available
+  DateTime validation = DateTime.now();
+
+  /// This session is valid when [secret] is not empty string and [validation]
+  /// has still left time
+  bool get valid => (secret != "" && DateTime.now().compareTo(validation) < 0);
 
   /// Private instance for Singleton pattern
   static final ApiClient _coreApi = ApiClient._();
@@ -82,14 +92,16 @@ class ApiClient {
   void set({
     required String url,
     required String id,
-  }) {
+  }) async {
     this.url = url;
     this.id = id;
-    if (!session.valid) {
-      session.set(
-        url: url,
-        id: id,
-      );
+    // Get secret
+    final prefs = await SharedPreferences.getInstance();
+    final String? result = await prefs.get(keyPreferencesSecret);
+    if (result == null) {
+      throw NullThrownError();
+    } else {
+      secret = result;
     }
   }
 
@@ -141,6 +153,42 @@ class ApiClient {
     return json.decode(response.body);
   }
 
+  /// Request [secret] using [password]
+  Future<bool> authenticate(String password) async {
+    final String url = "${this.url}/auth/v1/user";
+    // Request
+    final response = await http.post(Uri.parse(url),
+        body: {
+          "user_id": id,
+          "user_password": password,
+        }
+    );
+
+    // Check status code is error
+    try {
+      checkCode(response.statusCode, url);
+    } on Exception catch (_) {
+      Log.e(_tag, "Exception");
+      return false;
+    } on Error catch (_) {
+      Log.e(_tag, "Error");
+      return false;
+    }
+
+    // Check body is valid
+    final Map<String, dynamic> map = json.decode(response.body);
+    if (map.containsKey("user_secret")) {
+      secret = map["user_secret"];
+      // Save
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(keyPreferencesSecret, secret);
+      return true;
+    }
+
+    // Error
+    throw InvalidModelException("user_secret");
+  }
+
   /// Build options
   Map<String, dynamic> buildOptions({
     // Calculation
@@ -172,94 +220,6 @@ class ApiClient {
       map["limit"] = limit;
     }
     return map;
-  }
-
-}
-
-class ApiSession {
-
-  /// Key of user secrets for [SharedPreferences]
-  static const String keyPreferencesSecret = "api-secret";
-
-  /// Base url of server
-  String url = "";
-
-  /// User ID
-  String id = "";
-
-  /// User secret key
-  String secret = "";
-
-  /// Duration of [secret] is available
-  DateTime validation = DateTime.now();
-
-  ApiSession({
-    required String url,
-    required String id,
-  }) {
-    set(
-      url: url,
-      id: id,
-    );
-  }
-
-  /// This session is valid when [secret] is not empty string and [validation]
-  /// has still left time
-  bool get valid => (secret != "" && DateTime.now().compareTo(validation) < 0);
-
-  /// Set [url] and [id]
-  ///
-  /// It throws [NullThrownError] if there are no saved [secret] data
-  void set({
-    required String url,
-    required String id,
-  }) async {
-    this.url = url;
-    this.id = id;
-    // Get secret
-    final prefs = await SharedPreferences.getInstance();
-    final String? result = await prefs.get(keyPreferencesSecret);
-    if (result == null) {
-      throw NullThrownError();
-    } else {
-      secret = result;
-    }
-  }
-
-  /// Request [secret] using [password]
-  Future<bool> request(String password) async {
-    final String url = "${this.url}/auth";
-    // Request
-    final response = await http.post(Uri.parse(url),
-      body: {
-        "user_id": id,
-        "secret": password,
-      }
-    );
-
-    // Check status code is error
-    try {
-      checkCode(response.statusCode, url);
-    } on Exception catch (_) {
-      Log.e(_tag, "Exception");
-      return false;
-    } on Error catch (_) {
-      Log.e(_tag, "Error");
-      return false;
-    }
-
-    // Check body is valid
-    final Map<String, dynamic> map = json.decode(response.body);
-    if (map.containsKey("user_secret")) {
-      secret = map["user_secret"];
-      // Save
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(keyPreferencesSecret, secret);
-      return true;
-    }
-
-    // Error
-    throw InvalidModelException("user_secret");
   }
 
 }

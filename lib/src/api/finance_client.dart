@@ -54,7 +54,7 @@ class FinanceClient {
   }) async {
     final Map<String, dynamic> body = {
       "user_id": _client.id,
-      "user_secret": _client.session.secret,
+      "user_secret": _client.secret,
       "data": data,
     };
     if (options != null) {
