@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   http:
   shared_preferences:
+  intl:
 
 dev_dependencies:
   test:

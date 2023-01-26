@@ -2,6 +2,7 @@ library my_api;
 
 import 'dart:ui';
 
+import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/model.dart';
 
 class Account extends Model {
@@ -42,9 +43,9 @@ class Account extends Model {
   set limitation(BigInt value) => map[keyLimitation] = value.toString();
 
   /// ID of currency
-  int get currency => getValue(keyCurrency);
+  Currency get currency => getValue(keyCurrency, Currency.unknown);
 
-  set currency(int value) => map[keyCurrency] = value;
+  set currency(Currency currency) => map[keyCurrency] = currency.value;
 
   /// Balance of this account
   BigInt get balance => BigInt.parse(getValue(keyBalance));
