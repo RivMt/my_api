@@ -2,9 +2,32 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
 
+  static ThemeData get light {
+    return _theme(
+      primary: Colors.blue,
+      errorPrimary: Colors.red,
+      errorSecondary: Colors.red[300] ?? Colors.red,
+      // Foreground
+      frontForeground: Colors.black87,
+      middleForeground: Colors.black54,
+      rearForeground: Colors.black38,
+      // Background
+      background: Colors.white,
+      frontBackground: Colors.white60,
+      middleBackground: Colors.white54,
+      rearBackground: Colors.white38,
+      // Text
+      text: Colors.black87,
+      subtext: Colors.black26,
+      // AppBar
+    );
+  }
+
   static ThemeData get dark {
     return _theme(
       primary: Colors.blue,
+      errorPrimary: Colors.red,
+      errorSecondary: Colors.red[300] ?? Colors.red,
       // Foreground
       frontForeground: Colors.white,
       middleForeground: Colors.white54,
@@ -21,7 +44,10 @@ class AppTheme {
   }
 
   static ThemeData _theme({
+    // Base
     required Color primary,
+    required Color errorPrimary,
+    required Color errorSecondary,
     // Foreground
     required Color frontForeground,
     required Color middleForeground,
@@ -66,6 +92,51 @@ class AppTheme {
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
           height: 20,
+        ),
+      ),
+      // TextField
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: middleForeground,
+            width: 2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: middleForeground,
+            width: 2,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: errorPrimary,
+            width: 2,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: primary,
+            width: 2,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: errorSecondary,
+            width: 2,
+          ),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: rearForeground,
+            width: 2,
+          ),
         ),
       ),
     );
