@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_api/src/model/category.dart';
 import 'package:my_api/src/model/currency.dart';
 
 import 'package:my_api/src/model/transaction.dart';
@@ -8,6 +9,7 @@ class TransactionCard extends StatelessWidget {
     super.key,
     required this.data,
     this.currency = Currency.unknown,
+    required this.category,
     this.onTap,
   });
 
@@ -16,6 +18,9 @@ class TransactionCard extends StatelessWidget {
 
   /// Currency value
   final Currency currency;
+
+  /// Category
+  final Category category;
 
   /// Tap action
   final Function()? onTap;
@@ -28,7 +33,10 @@ class TransactionCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TransactionIcon(data: data),
+          TransactionIcon(
+            data: data,
+            category: category,
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,15 +61,18 @@ class TransactionIcon extends StatelessWidget {
   const TransactionIcon({
     super.key,
     required this.data,
+    required this.category,
   });
 
   /// Transaction
   final Transaction data;
 
+  /// Category
+  final Category category;
+
   /// Icon
   IconData get icon {
-    // TODO: Support icon selection
-    return Icons.circle_outlined;
+    return category.icon.icon;
   }
 
   /// Icon color
