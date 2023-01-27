@@ -14,6 +14,7 @@ dependencies:
   shared_preferences:
   intl:
   decimal:
+  hooks_riverpod:
 
 dev_dependencies:
   test:
