@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_api/src/component/data_card.dart';
 import 'package:my_api/src/model/category.dart';
 import 'package:my_api/src/model/currency.dart';
-
 import 'package:my_api/src/model/transaction.dart';
 
 class TransactionCard extends StatelessWidget {
@@ -27,31 +27,19 @@ class TransactionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return DataCard(
       onTap: onTap,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          TransactionIcon(
-            data: data,
-            category: category,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                currency.format(data.amount),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Text(
-                data.descriptions,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          ),
-        ],
+      leading: TransactionIcon(
+        data: data,
+        category: category,
+      ),
+      main: Text(
+        currency.format(data.amount),
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      sub: Text(
+        data.descriptions,
+        style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
   }
