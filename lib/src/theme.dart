@@ -6,7 +6,7 @@ class AppTheme {
     return _theme(
       primary: Colors.blue,
       errorPrimary: Colors.red,
-      errorSecondary: Colors.red[300] ?? Colors.red,
+      errorSecondary: Colors.red[300] ?? Colors.redAccent,
       // Foreground
       frontForeground: Colors.black87,
       middleForeground: Colors.black54,
@@ -27,7 +27,7 @@ class AppTheme {
     return _theme(
       primary: Colors.blue,
       errorPrimary: Colors.red,
-      errorSecondary: Colors.red[300] ?? Colors.red,
+      errorSecondary: Colors.red[300] ?? Colors.redAccent,
       // Foreground
       frontForeground: Colors.white,
       middleForeground: Colors.white54,
