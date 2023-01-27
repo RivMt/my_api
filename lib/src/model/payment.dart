@@ -1,8 +1,6 @@
 library my_api;
-
-import 'dart:ui';
-
 import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
 import 'package:my_api/src/model/model.dart';
 
 class Payment extends Model {
@@ -35,9 +33,9 @@ class Payment extends Model {
   set viewers(List<String> list) => map[keyViewers] = list;
 
   /// Index of icon
-  int get icon => getValue(keyIcon);
+  PaymentIcon get icon => PaymentIcon.fromId(getValue(keyIcon, PaymentIcon.card.id));
 
-  set icon(int value) => map[keyIcon] = value;
+  set icon(PaymentIcon icon) => map[keyIcon] = icon.id;
 
   /// Priority
   ///
@@ -96,6 +94,37 @@ class Payment extends Model {
     final list = [payDayMin, value, payDayMax];
     list.sort();
     map[keyPayDate] = list[1];
+  }
+
+}
+
+enum PaymentIcon {
+  card(0, Icons.credit_card),
+  cash(1, Icons.money),
+  point(2, Icons.card_giftcard_rounded),
+  transportation(3, Icons.train_outlined),
+  membership(4, Icons.card_membership),
+  transfer(5, Icons.swap_horiz_outlined),
+  market(6, Icons.local_mall_outlined),
+  prepaid(7, Icons.local_atm),
+  mileage(8, Icons.flight_outlined),
+  toll(9, Icons.toll_outlined);
+
+
+  const PaymentIcon(this.id, this.icon);
+
+  /// Unique value
+  final int id;
+
+  /// [IconData]
+  final IconData icon;
+
+  factory PaymentIcon.fromId(int id) {
+    // Check id
+    if (id < 0 || id >= PaymentIcon.values.length) {
+      return PaymentIcon.card;
+    }
+    return PaymentIcon.values[id];
   }
 
 }

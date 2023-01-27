@@ -1,8 +1,7 @@
 library my_api;
 
-import 'dart:ui';
-
 import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
 import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/model.dart';
 
@@ -27,9 +26,9 @@ class Account extends Model {
   set viewers(List<String> list) => map[keyViewers] = list;
 
   /// Index of icon
-  int get icon => getValue(keyIcon);
+  AccountIcon get icon => AccountIcon.fromId(getValue(keyIcon, AccountIcon.account.id));
 
-  set icon(int value) => map[keyIcon] = value;
+  set icon(AccountIcon icon) => map[keyIcon] = icon.id;
 
   /// Priority
   ///
@@ -72,5 +71,38 @@ class Account extends Model {
   Color get background => Color(getValue(keyBackground));
 
   set background(Color color) => map[keyBackground] = color.value;
+
+}
+
+enum AccountIcon {
+  saving(0, Icons.savings_outlined),
+  account(1, Icons.folder_outlined),
+  cash(2, Icons.money),
+  point(3, Icons.toll_outlined),
+  limitedLoan(4, Icons.drive_file_move_outline),
+  transportationCard(5, Icons.toys_outlined),
+  shared(6, Icons.folder_shared_outlined),
+  virtual(7, Icons.snippet_folder_outlined),
+  investment(8, Icons.drive_folder_upload),
+  prepaid(9, Icons.local_atm),
+  mileage(10, Icons.airplane_ticket_outlined);
+
+
+  const AccountIcon(this.id, this.icon);
+
+  /// Unique value
+  final int id;
+
+  /// [IconData]
+  final IconData icon;
+
+  /// Find icon using [id]
+  factory AccountIcon.fromId(int id) {
+    // Check id value
+    if (id < 0 || id >= AccountIcon.values.length) {
+      return AccountIcon.account;
+    }
+    return AccountIcon.values[id];
+  }
 
 }
