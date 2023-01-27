@@ -1,5 +1,6 @@
 library my_api;
 
+import 'package:decimal/decimal.dart';
 import 'package:my_api/src/api/api_core.dart';
 import 'package:my_api/src/exceptions.dart';
 import 'package:my_api/src/log.dart';
@@ -127,7 +128,7 @@ class FinanceClient {
   ///
   /// [calc] defines type of calculation. And [attribute] defines column name
   /// which is calculated
-  Future<BigInt> calculate(Link link,
+  Future<Decimal> calculate(Link link,
     Map<String, dynamic> data,
     CalculationType calc,
     String attribute,
@@ -145,7 +146,7 @@ class FinanceClient {
     if (!regex.hasMatch(result)) {
       throw ActionFailedException(data);
     }
-    return BigInt.parse(result);
+    return Decimal.parse(result);
   }
 
   /// Create [account]
