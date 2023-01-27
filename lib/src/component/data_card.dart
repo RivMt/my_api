@@ -31,6 +31,9 @@ class _DataCardState extends State<DataCard> {
       onDoubleTap: widget.onDoubleTap,
       onLongPress: widget.onLongPress,
       onHover: widget.onHover,
+      customBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
