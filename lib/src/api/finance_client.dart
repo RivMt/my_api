@@ -1,30 +1,14 @@
 library my_api;
 
-import 'package:decimal/decimal.dart';
 import 'package:my_api/src/api/api_core.dart';
+import 'package:my_api/src/api/base_client.dart';
 import 'package:my_api/src/exceptions.dart';
-import 'package:my_api/src/log.dart';
 import 'package:my_api/src/model/account.dart';
 import 'package:my_api/src/model/category.dart';
 import 'package:my_api/src/model/payment.dart';
-import 'package:my_api/src/model/model.dart';
 import 'package:my_api/src/model/transaction.dart';
 
-/// Link
-enum Link {
-  accounts,
-  transactions,
-  payments,
-  categories,
-}
-
-class FinanceClient {
-
-  /// TAG for log system
-  static const _tag = "FinanceClient";
-
-  /// Client
-  final ApiClient _client = ApiClient();
+class FinanceClient extends BaseClient {
 
   /// Private instance for singleton pattern
   static final FinanceClient _instance = FinanceClient._();
@@ -34,126 +18,28 @@ class FinanceClient {
 
   /// Factory constructor for singleton pattern
   factory FinanceClient() => _instance;
+  
+  /// Accounts link
+  final String accounts = "accounts";
+  
+  /// Payments link
+  final String payments = "payments";
+  
+  /// Transactions link
+  final String transactions = "transactions";
+  
+  /// Categories link
+  final String categories = "categories";
 
   /// Home link
+  @override
   final String home = "finance/v1";
-
-  /// Set [_client]
-  void set({
-    required String url,
-    required String id,
-  }) {
-    _client.set(url: url, id: id);
-  }
-
-  /// Send request
-  Future<dynamic> send<T extends Model>(
-    ApiMethod method,
-    Link link,
-    Map<String, dynamic> data, {
-    Map<String, dynamic>? options,
-  }) async {
-    final Map<String, dynamic> body = {
-      "user_id": _client.id,
-      "user_secret": _client.secret,
-      "data": data,
-    };
-    if (options != null) {
-      body['options'] = options;
-    }
-    final response = await _client.send(method, "$home/${link.name}", body);
-    
-    return response['data'];
-  }
-
-  /// Create [data] from [link]
-  ///
-  /// It throws [ActionFailedException] on result is empty list.
-  /// It throws [MultipleDataException] on length of result is more than `1`.
-  Future<List> create<T extends Model>(Link link, Map<String, dynamic> data) async {
-    final List result = await send<T>(ApiMethod.put, link, data);
-    if (result.isEmpty) {
-      Log.e(_tag, "Data creation failed: $data");
-      throw ActionFailedException(data);
-    }
-    if (result.length > 1) {
-      Log.e(_tag, "Multiple data created: $data");
-      throw MultipleDataException(data);
-    }
-    return result;
-  }
-
-  /// Read [data] from [link]
-  ///
-  /// It throws [ActionFailedException] on result is empty list.
-  Future<List> read<T extends Model>(Link link, Map<String, dynamic> data) async {
-    final List result = await send<T>(ApiMethod.post, link, data);
-    if (result.isEmpty) {
-      Log.w(_tag, "No results: $data");
-      throw ActionFailedException(data);
-    }
-    return result;
-  }
-
-  /// Update [data] from [link]
-  ///
-  /// throws [ActionFailedException] on result is empty list
-  Future<List> update<T extends Model>(Link link, Map<String, dynamic> data) async {
-    final List result = await send<T>(ApiMethod.patch, link, data);
-    if (result.isEmpty) {
-      Log.e(_tag, "Update failed: $data");
-      throw ActionFailedException(data);
-    }
-    return result;
-  }
-
-  /// Delete [data] from [link]
-  ///
-  /// It throws [ActionFailedException] on result is empty list.
-  /// It throws [MultipleDataException] on length of result is more than `1`.
-  Future<List> delete<T extends Model>(Link link, Map<String, dynamic> data) async {
-    final List result = await send<T>(ApiMethod.delete, link, data);
-    if (result.isEmpty) {
-      Log.e(_tag, "Failed to delete: $data");
-      throw ActionFailedException(data);
-    }
-    if (result.length > 1) {
-      Log.w(_tag, "Multiple data deleted: $data");
-      throw MultipleDataException(data);
-    }
-    return result;
-  }
-
-  /// Request calculation result from [link] which fits to [data]
-  ///
-  /// [calc] defines type of calculation. And [attribute] defines column name
-  /// which is calculated
-  Future<Decimal> calculate(Link link,
-    Map<String, dynamic> data,
-    CalculationType calc,
-    String attribute,
-  ) async {
-    final result = await send(ApiMethod.post, link, data, options: _client.buildOptions(
-      calcType: calc,
-      calcAttribute: attribute,
-    ),);
-    // Check result is String
-    if (result is! String) {
-      throw ActionFailedException(data);
-    }
-    // Check result string is number
-    final RegExp regex = RegExp(r"[0-9.]");
-    if (!regex.hasMatch(result)) {
-      throw ActionFailedException(data);
-    }
-    return Decimal.parse(result);
-  }
 
   /// Create [account]
   Future<ApiResponse<Account?>> createAccount(Account account) async {
     late List result;
     try {
-      result = await create(Link.accounts, account.map);
+      result = await create(accounts, account.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Account?>(
         result: ApiResultCode.failed,
@@ -176,7 +62,7 @@ class FinanceClient {
   Future<ApiResponse<List<Account>>> readAccounts(Map<String, dynamic> condition) async {
     late List response;
     try {
-      response = await read(Link.accounts, condition);
+      response = await read(accounts, condition);
     } on ActionFailedException catch(_) {
       return ApiResponse(
         result: ApiResultCode.failed,
@@ -197,7 +83,7 @@ class FinanceClient {
   Future<ApiResponse<Account?>> updateAccount(Account account) async {
     late List result;
     try {
-      result = await update(Link.accounts, account.map);
+      result = await update(accounts, account.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Account?>(
         result: ApiResultCode.failed,
@@ -220,7 +106,7 @@ class FinanceClient {
   Future<ApiResponse<Account?>> deleteAccount(Account account) async {
     late List result;
     try {
-      result = await delete(Link.accounts, account.map);
+      result = await delete(accounts, account.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Account?>(
         result: ApiResultCode.failed,
@@ -245,7 +131,7 @@ class FinanceClient {
   Future<ApiResponse<Payment?>> createPayment(Payment payment) async {
     late List result;
     try {
-      result = await create(Link.payments, payment.map);
+      result = await create(payments, payment.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Payment?>(
         result: ApiResultCode.failed,
@@ -268,7 +154,7 @@ class FinanceClient {
   Future<ApiResponse<List<Payment>>> readPayments(Map<String, dynamic> condition) async {
     late List response;
     try {
-      response = await read(Link.payments, condition);
+      response = await read(payments, condition);
     } on ActionFailedException catch(_) {
       return ApiResponse(
         result: ApiResultCode.failed,
@@ -289,7 +175,7 @@ class FinanceClient {
   Future<ApiResponse<Payment?>> updatePayment(Payment payment) async {
     late List result;
     try {
-      result = await update(Link.payments, payment.map);
+      result = await update(payments, payment.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Payment?>(
         result: ApiResultCode.failed,
@@ -312,7 +198,7 @@ class FinanceClient {
   Future<ApiResponse<Payment?>> deletePayment(Payment payment) async {
     late List result;
     try {
-      result = await delete(Link.payments, payment.map);
+      result = await delete(payments, payment.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Payment?>(
         result: ApiResultCode.failed,
@@ -337,7 +223,7 @@ class FinanceClient {
   Future<ApiResponse<Transaction?>> createTransaction(Transaction transaction) async {
     late List result;
     try {
-      result = await create(Link.transactions, transaction.map);
+      result = await create(transactions, transaction.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Transaction?>(
         result: ApiResultCode.failed,
@@ -360,7 +246,7 @@ class FinanceClient {
   Future<ApiResponse<List<Transaction>>> readTransactions(Map<String, dynamic> condition) async {
     late List response;
     try {
-      response = await read(Link.transactions, condition);
+      response = await read(transactions, condition);
     } on ActionFailedException catch(_) {
       return ApiResponse(
         result: ApiResultCode.failed,
@@ -381,7 +267,7 @@ class FinanceClient {
   Future<ApiResponse<Transaction?>> updateTransaction(Transaction transaction) async {
     late List result;
     try {
-      result = await update(Link.transactions, transaction.map);
+      result = await update(transactions, transaction.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Transaction?>(
         result: ApiResultCode.failed,
@@ -404,7 +290,7 @@ class FinanceClient {
   Future<ApiResponse<Transaction?>> deleteTransaction(Transaction transaction) async {
     late List result;
     try {
-      result = await delete(Link.transactions, transaction.map);
+      result = await delete(transactions, transaction.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Transaction?>(
         result: ApiResultCode.failed,
@@ -429,7 +315,7 @@ class FinanceClient {
   Future<ApiResponse<Category?>> createCategory(Category category) async {
     late List result;
     try {
-      result = await create(Link.categories, category.map);
+      result = await create(categories, category.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Category?>(
         result: ApiResultCode.failed,
@@ -448,11 +334,11 @@ class FinanceClient {
     );
   }
 
-  /// Read categorys filtered by [condition]
+  /// Read categories filtered by [condition]
   Future<ApiResponse<List<Category>>> readCategories(Map<String, dynamic> condition) async {
     late List response;
     try {
-      response = await read(Link.categories, condition);
+      response = await read(categories, condition);
     } on ActionFailedException catch(_) {
       return ApiResponse(
         result: ApiResultCode.failed,
@@ -473,7 +359,7 @@ class FinanceClient {
   Future<ApiResponse<Category?>> updateCategory(Category category) async {
     late List result;
     try {
-      result = await update(Link.categories, category.map);
+      result = await update(categories, category.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Category?>(
         result: ApiResultCode.failed,
@@ -496,7 +382,7 @@ class FinanceClient {
   Future<ApiResponse<Category?>> deleteCategory(Category category) async {
     late List result;
     try {
-      result = await delete(Link.categories, category.map);
+      result = await delete(categories, category.map);
     } on ActionFailedException catch(_) {
       return ApiResponse<Category?>(
         result: ApiResultCode.failed,
