@@ -2,6 +2,8 @@ library my_api;
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 enum LogLevel {
   error,
   warning,
@@ -19,18 +21,24 @@ class Log {
     if (level.index > Log.level.index) {
       return;
     }
-    // Set color
-    stdout.write(color);
-    // Print tag
-    if (tag == null) {
-      stdout.write("[${level.name}] ");
+    if (kIsWeb) {
+      if (kDebugMode) {
+        print("[${level.name.substring(0, 1).toUpperCase()}/$tag] $msg");
+      }
     } else {
-      stdout.write("[${level.name.substring(0,1).toUpperCase()}/$tag] ");
+      // Set color
+      stdout.write(color);
+      // Print tag
+      if (tag == null) {
+        stdout.write("[${level.name}] ");
+      } else {
+        stdout.write("[${level.name.substring(0, 1).toUpperCase()}/$tag] ");
+      }
+      // Print msg
+      stdout.write("${msg ?? ""}");
+      // Reset color and print newline
+      stdout.write("\x1B[0m\n");
     }
-    // Print msg
-    stdout.write("${msg ?? ""}");
-    // Reset color and print newline
-    stdout.write("\x1B[0m\n");
   }
 
   static void e([String? tag, Object? msg]) {
