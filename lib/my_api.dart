@@ -9,6 +9,7 @@ export 'package:my_api/src/api/finance_client.dart';
 // UI
 export 'package:my_api/src/theme.dart';
 export 'package:my_api/src/component/data_card.dart';
+export 'package:my_api/src/component/login_page.dart';
 export 'package:my_api/src/component/transaction_card.dart';
 export 'package:my_api/src/component/wallet_item_card.dart';
 
