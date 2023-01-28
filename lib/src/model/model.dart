@@ -15,7 +15,7 @@ class Model {
   /// Raw data of this object
   Map<String, dynamic> map = {};
 
-  /// Create object using [map]
+  /// Constructor
   Model(this.map);
 
   /// Get value of [map] using [key]
@@ -35,6 +35,12 @@ class Model {
     // Throw
     throw InvalidModelException(key);
   }
+}
+
+class FinanceModel extends Model {
+
+  /// Create object using [map]
+  FinanceModel(super.map);
 
   /// ID (Read-only)
   int get id => getValue(keyId);
@@ -70,7 +76,7 @@ class Model {
   /// Check two models' [pid] is equal or not
   @override
   bool operator ==(Object other) {
-    if (other is Model) {
+    if (other is FinanceModel) {
       return pid == other.pid;
     }
     return super==(other);

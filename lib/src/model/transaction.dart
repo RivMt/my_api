@@ -25,7 +25,7 @@ enum TransactionType {
   }
 }
 
-class Transaction extends Model {
+class Transaction extends FinanceModel {
 
   static const String keyType = "type";
   static const String keyCategory = "category";

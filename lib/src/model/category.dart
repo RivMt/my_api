@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_api/src/model/model.dart';
 import 'package:my_api/src/model/transaction.dart';
 
-class Category extends Model {
+class Category extends FinanceModel {
 
   static const String keyType = "type";
   static const String keyCategory = "category";

@@ -3,7 +3,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/src/model/model.dart';
 
-class Payment extends Model {
+class Payment extends FinanceModel {
 
   static const String keyViewers = "viewers";
   static const String keyIcon = "icon";

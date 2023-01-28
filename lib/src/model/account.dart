@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/model.dart';
 
-class Account extends Model {
+class Account extends FinanceModel {
 
   static const String keyViewers = "viewers";
   static const String keyIcon = "icon";
