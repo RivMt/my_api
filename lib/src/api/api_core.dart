@@ -2,9 +2,11 @@ library my_api;
 
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/src/exceptions.dart';
 import 'package:my_api/src/log.dart';
+import 'package:my_api/src/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// TAG for log
@@ -55,8 +57,11 @@ void checkCode(int code, String url) {
 
 class ApiClient {
 
+  /// Key of user id for [SharedPreferences]
+  static const String keyPreferencesUserId = "api-user-id";
+
   /// Key of user secrets for [SharedPreferences]
-  static const String keyPreferencesSecret = "api-secret";
+  static const String keyPreferencesUserSecret = "api-user-secret";
 
   /// Base header of all requests
   static const Map<String, String> headers = {
@@ -67,10 +72,10 @@ class ApiClient {
   String url = "";
 
   /// User ID
-  String id = "";
+  String get id => user.userId;
 
   /// User secret key
-  String secret = "";
+  String get secret => user.userSecret;
 
   /// Duration of [secret] is available
   DateTime validation = DateTime.now();
@@ -78,6 +83,9 @@ class ApiClient {
   /// This session is valid when [secret] is not empty string and [validation]
   /// has still left time
   bool get valid => (secret != "" && DateTime.now().compareTo(validation) < 0);
+
+  /// [User] who currently logged in
+  User user = User({});
 
   /// Private instance for Singleton pattern
   static final ApiClient _coreApi = ApiClient._();
@@ -88,21 +96,25 @@ class ApiClient {
   /// Factory constructor for singleton pattern
   factory ApiClient() => _coreApi;
 
-  /// Set [url] and [id] to connect server
-  void set({
-    required String url,
-    required String id,
+  /// Init settings
+  ///
+  /// Throws [NullThrownError] when user data does not exists.
+  /// Throws [NotAuthenticatedException] when re-login required
+  Future<void> init({
+    required Function() onLoginRequired,
   }) async {
-    this.url = url;
-    this.id = id;
-    // Get secret
-    final prefs = await SharedPreferences.getInstance();
-    final String? result = await prefs.get(keyPreferencesSecret);
-    if (result == null) {
-      throw NullThrownError();
-    } else {
-      secret = result;
+    // Read server data
+    final String data = await rootBundle.loadString('key/server.json');
+    final json = jsonDecode(data);
+    url = json["url"];
+    // Authenticate
+    user = await loadUser();
+    if (!user.valid) {
+      Log.e(_tag, "Failed to login");
+      onLoginRequired();
     }
+    Log.i(_tag, "Login successful: ${user.email}");
+    return;
   }
 
   /// Send POST request
@@ -153,41 +165,62 @@ class ApiClient {
     return json.decode(response.body);
   }
 
-  /// Request [secret] using [password]
-  Future<bool> authenticate(String password) async {
-    final String url = "${this.url}/auth/v1/user";
-    // Request
-    final response = await http.post(Uri.parse(url),
-        body: {
-          "user_id": id,
-          "user_password": password,
-        }
-    );
-
-    // Check status code is error
-    try {
-      checkCode(response.statusCode, url);
-    } on Exception catch (_) {
-      Log.e(_tag, "Exception");
-      return false;
-    } on Error catch (_) {
-      Log.e(_tag, "Error");
-      return false;
+  /// Save user id and secret
+  void saveUser(User user) async {
+    if (!user.valid) {
+      return;
     }
-
-    // Check body is valid
-    final Map<String, dynamic> map = json.decode(response.body);
-    if (map.containsKey("user_secret")) {
-      secret = map["user_secret"];
-      // Save
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(keyPreferencesSecret, secret);
-      return true;
-    }
-
-    // Error
-    throw InvalidModelException("user_secret");
+    Log.v(_tag, "Userdata saved: ${user.userId}");
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(keyPreferencesUserId, user.userId);
+    await prefs.setString(keyPreferencesUserSecret, user.userSecret);
   }
+
+  /// Load user
+  Future<User> loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      final String id = prefs.getString(keyPreferencesUserId)!;
+      final String secret = prefs.getString(keyPreferencesUserSecret)!;
+      Log.v(_tag, "Userdata loaded: $id");
+      return await authenticate(id, secret);
+    } on Error catch(e) {
+      Log.e(_tag, "Error: $e");
+    }
+    return User({});
+  }
+
+  /// Send authenticate request using [body]
+  Future<User> auth(Map<String, dynamic> body) async {
+    // Request
+    final response = await send(
+        ApiMethod.post,
+        "auth/v1/users",
+        body,
+    );
+    final User user = User(response);
+
+    // Check body is not valid
+    if (!user.valid) {
+      throw InvalidModelException(User.keyUserSecret);
+    }
+
+    // Valid
+    saveUser(user);
+    return user;
+  }
+
+  /// Request [secret] using [password]
+  Future<User> login(String email, String password) async => auth({
+    "user_email": email,
+    "user_password": password,
+  });
+
+  /// Check user data is valid
+  Future<User> authenticate(String id, String secret) async => auth({
+    "user_id": id,
+    "user_secret": secret,
+  });
 
   /// Build options
   Map<String, dynamic> buildOptions({
