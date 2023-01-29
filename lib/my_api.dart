@@ -4,7 +4,6 @@ export 'package:my_api/src/log.dart';
 
 // API
 export 'package:my_api/src/api/api_core.dart';
-export 'package:my_api/src/api/finance_client.dart';
 
 // UI
 export 'package:my_api/src/theme.dart';
@@ -20,6 +19,3 @@ export 'package:my_api/src/model/payment.dart';
 export 'package:my_api/src/model/transaction.dart';
 export 'package:my_api/src/model/category.dart';
 export 'package:my_api/src/model/currency.dart';
-
-// Provider
-export 'package:my_api/src/provider/category_provider.dart';

@@ -35,7 +35,7 @@ enum CalculationType {
   min,
 }
 
-class ApiClient {
+class ApiCore {
 
   /// Key of user id for [SharedPreferences]
   static const String keyPreferencesUserId = "api-user-id";
@@ -68,13 +68,13 @@ class ApiClient {
   User user = User({});
 
   /// Private instance for Singleton pattern
-  static final ApiClient _coreApi = ApiClient._();
+  static final ApiCore _coreApi = ApiCore._();
 
   /// Private constructor for [_coreApi]
-  ApiClient._();
+  ApiCore._();
 
   /// Factory constructor for singleton pattern
-  factory ApiClient() => _coreApi;
+  factory ApiCore() => _coreApi;
 
   /// Init settings
   ///
@@ -115,34 +115,34 @@ class ApiClient {
       case ApiMethod.get:
         response = await http.get(
           Uri.parse(url),
-          headers: ApiClient.headers,
+          headers: ApiCore.headers,
         );
         break;
       case ApiMethod.post:
         response = await http.post(
           Uri.parse(url),
-          headers: ApiClient.headers,
+          headers: ApiCore.headers,
           body: json.encode(body),
         );
         break;
       case ApiMethod.put:
         response = await http.put(
           Uri.parse(url),
-          headers: ApiClient.headers,
+          headers: ApiCore.headers,
           body: json.encode(body),
         );
         break;
       case ApiMethod.patch:
         response = await http.patch(
           Uri.parse(url),
-          headers: ApiClient.headers,
+          headers: ApiCore.headers,
           body: json.encode(body),
         );
         break;
       case ApiMethod.delete:
         response = await http.delete(
           Uri.parse(url),
-          headers: ApiClient.headers,
+          headers: ApiCore.headers,
           body: json.encode(body),
         );
         break;
@@ -278,7 +278,14 @@ class ApiResponse<T> {
     required this.data,
   });
 
-  ApiResponse<List<E>> convert<E>(List<E> data) => ApiResponse<List<E>>(
+  /// Covert item in [data] and return new [ApiResponse]
+  ApiResponse<E> convert<E>(E data) => ApiResponse<E>(
+    result: result,
+    data: data,
+  );
+
+  /// Covert item in [data] and return new [ApiResponse]
+  ApiResponse<List<E>> converts<E>(List<E> data) => ApiResponse<List<E>>(
     result: result,
     data: data,
   );

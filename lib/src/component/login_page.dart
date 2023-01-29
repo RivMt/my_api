@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
 
   /// Try login
   void login() async {
-    final client = ApiClient();
+    final client = ApiCore();
     try {
       final User user = await client.login(email.text, password.text);
       if (user.valid) {
