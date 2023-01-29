@@ -25,7 +25,7 @@ class CategoryProvider {
   /// Request categories
   void update(WidgetRef ref, TransactionType type) async {
     final client = FinanceClient();
-    final ApiResponse<List<Category>> response = await client.readCategories({});
+    final ApiResponse<List<Category>> response = await client.read<Category>({});
     // If api request failed, return
     if (response.result != ApiResultCode.success) {
       return;

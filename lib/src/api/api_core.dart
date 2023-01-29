@@ -35,26 +35,6 @@ enum CalculationType {
   min,
 }
 
-/// Raise exception by [code]
-void checkCode(int code, String url) {
-  switch(code) {
-    case 200:
-      break;
-    case 301:
-      throw UriChangedException(url);
-    case 400:
-      throw RequestInvalidException(url);
-    case 401:
-      throw NotAuthenticatedException(url);
-    case 405:
-      throw PermissionDeniedException(url);
-    case 500:
-      throw HttpErrorException(url);
-    default:
-      throw UnimplementedError();
-  }
-}
-
 class ApiClient {
 
   /// Key of user id for [SharedPreferences]
@@ -126,7 +106,7 @@ class ApiClient {
   }
 
   /// Send POST request
-  Future<Map<String, dynamic>> send(ApiMethod method, String link, Map<String, dynamic>? body) async {
+  Future<ApiResponse<Map<String, dynamic>>> send(ApiMethod method, String link, Map<String, dynamic>? body) async {
     // Url
     final String url = "${this.url}/$link";
     // Send request
@@ -168,9 +148,18 @@ class ApiClient {
         break;
     }
     // Check response
-    checkCode(response.statusCode, url);
+    if (response.statusCode != 200) {
+      Log.w(_tag, "Failed to request: ${method.name.toUpperCase()}/ $url");
+      return ApiResponse(
+        result: ApiResultCode.failed,
+        data: {},
+      );
+    }
     // If exception does not thrown
-    return json.decode(response.body);
+    return ApiResponse(
+      result: ApiResultCode.success,
+      data: json.decode(response.body),
+    );
   }
 
   /// Save user id and secret
@@ -206,7 +195,12 @@ class ApiClient {
         "auth/v1/users",
         body,
     );
-    final User user = User(response);
+
+    // Check result
+    if (response.result != ApiResultCode.success) {
+      throw RequestFailedException();
+    }
+    final User user = User(response.data);
 
     // Check body is not valid
     if (!user.valid) {
@@ -273,13 +267,20 @@ enum ApiResultCode {
 
 class ApiResponse<T> {
 
+  /// Result
   final ApiResultCode result;
 
+  /// Data
   final T data;
 
   ApiResponse({
     required this.result,
     required this.data,
   });
+
+  ApiResponse<List<E>> convert<E>(List<E> data) => ApiResponse<List<E>>(
+    result: result,
+    data: data,
+  );
 
 }

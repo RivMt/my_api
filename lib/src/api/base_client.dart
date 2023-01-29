@@ -1,12 +1,6 @@
-import 'package:decimal/decimal.dart';
 import 'package:my_api/src/api/api_core.dart';
-import 'package:my_api/src/exceptions.dart';
-import 'package:my_api/src/log.dart';
 
 abstract class BaseClient {
-
-  /// TAG for log system
-  static const _tag = "BaseClient";
 
   /// Client
   final ApiClient _client = ApiClient();
@@ -15,7 +9,7 @@ abstract class BaseClient {
   String get home;
 
   /// Send request
-  Future<dynamic> send<T>(
+  Future<ApiResponse<Map<String, dynamic>>> send(
     ApiMethod method,
     String link,
     Map<String, dynamic> data, {
@@ -30,90 +24,66 @@ abstract class BaseClient {
       body['options'] = options;
     }
     final response = await _client.send(method, "$home/$link", body);
+    return response;
+  }
 
-    return response['data'];
+  /// Get path from [T]
+  String path<T>();
+
+  /// Covert [map] to [T]
+  dynamic convert<T>(Map<String, dynamic> map, [String key = "data"]);
+
+  /// Covert multiple items in [map] to [T]
+  List<T> converts<T>(Map<String, dynamic> map, [String key = "data"]) {
+    final List<T> list = [];
+    final data = (key == "") ? map : (map[key] ?? []);
+    for (Map<String, dynamic> m in data) {
+      list.add(convert<T>(m, ""));
+    }
+    return list;
   }
 
   /// Create [data] from [link]
-  ///
-  /// It throws [ActionFailedException] on result is empty list.
-  /// It throws [MultipleDataException] on length of result is more than `1`.
-  Future<List> create<T>(String link, Map<String, dynamic> data) async {
-    final List result = await send<T>(ApiMethod.put, link, data);
-    if (result.isEmpty) {
-      Log.e(_tag, "Data creation failed: $data");
-      throw ActionFailedException(data);
-    }
-    if (result.length > 1) {
-      Log.e(_tag, "Multiple data created: $data");
-      throw MultipleDataException(data);
-    }
-    return result;
+  Future<ApiResponse<List<T>>> create<T>(Map<String, dynamic> data) async {
+    final result = await send(ApiMethod.put, path<T>(), data);
+    return result.convert<T>(converts<T>(result.data));
   }
 
   /// Read [data] from [link]
-  ///
-  /// It throws [ActionFailedException] on result is empty list.
-  Future<List> read<T>(String link, Map<String, dynamic> data) async {
-    final List result = await send<T>(ApiMethod.post, link, data);
-    if (result.isEmpty) {
-      Log.w(_tag, "No results: $data");
-      throw ActionFailedException(data);
-    }
-    return result;
+  Future<ApiResponse<List<T>>> read<T>(Map<String, dynamic> data) async {
+    final result = await send(ApiMethod.post, path<T>(), data);
+    return result.convert<T>(converts<T>(result.data));
   }
 
   /// Update [data] from [link]
-  ///
-  /// throws [ActionFailedException] on result is empty list
-  Future<List> update<T>(String link, Map<String, dynamic> data) async {
-    final List result = await send<T>(ApiMethod.patch, link, data);
-    if (result.isEmpty) {
-      Log.e(_tag, "Update failed: $data");
-      throw ActionFailedException(data);
-    }
-    return result;
+  Future<ApiResponse<List<T>>> update<T>(Map<String, dynamic> data) async {
+    final result = await send(ApiMethod.patch, path<T>(), data);
+    return result.convert<T>(converts<T>(result.data));
   }
 
   /// Delete [data] from [link]
-  ///
-  /// It throws [ActionFailedException] on result is empty list.
-  /// It throws [MultipleDataException] on length of result is more than `1`.
-  Future<List> delete<T>(String link, Map<String, dynamic> data) async {
-    final List result = await send<T>(ApiMethod.delete, link, data);
-    if (result.isEmpty) {
-      Log.e(_tag, "Failed to delete: $data");
-      throw ActionFailedException(data);
-    }
-    if (result.length > 1) {
-      Log.w(_tag, "Multiple data deleted: $data");
-      throw MultipleDataException(data);
-    }
-    return result;
+  Future<ApiResponse<List<T>>> delete<T>(Map<String, dynamic> data) async {
+    final result = await send(ApiMethod.delete, path<T>(), data);
+    return result.convert<T>(converts<T>(result.data));
   }
 
   /// Request calculation result from [link] which fits to [data]
   ///
   /// [calc] defines type of calculation. And [attribute] defines column name
   /// which is calculated
-  Future<Decimal> calculate(String link,
+  Future<ApiResponse<Map<String, dynamic>>> calculate(String link,
       Map<String, dynamic> data,
       CalculationType calc,
       String attribute,
       ) async {
-    final result = await send(ApiMethod.post, link, data, options: _client.buildOptions(
-      calcType: calc,
-      calcAttribute: attribute,
-    ),);
-    // Check result is String
-    if (result is! String) {
-      throw ActionFailedException(data);
-    }
-    // Check result string is number
-    final RegExp regex = RegExp(r"[\d.]");
-    if (!regex.hasMatch(result)) {
-      throw ActionFailedException(data);
-    }
-    return Decimal.parse(result);
+    return await send(
+      ApiMethod.post,
+      link,
+      data,
+      options: _client.buildOptions(
+        calcType: calc,
+        calcAttribute: attribute,
+      ),
+    );
   }
 }
