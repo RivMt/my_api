@@ -98,15 +98,23 @@ class ApiClient {
 
   /// Init settings
   ///
-  /// Throws [NullThrownError] when user data does not exists.
-  /// Throws [NotAuthenticatedException] when re-login required
+  /// [onLoginRequired] triggers when login failed.
+  /// [url] is URL of API server. [filename] is location of `json` file
+  /// which has url information. One of parameter **MUST** be used among
+  /// [url] and [filename]
   Future<void> init({
     required Function() onLoginRequired,
+    String url = "",
+    String filename = "",
   }) async {
-    // Read server data
-    final String data = await rootBundle.loadString('key/server.json');
-    final json = jsonDecode(data);
-    url = json["url"];
+    if (filename != "") {
+      // Read server data
+      final String data = await rootBundle.loadString(filename);
+      final json = jsonDecode(data);
+      this.url = json["url"];
+    } else if (url != "") {
+      this.url = url;
+    }
     // Authenticate
     user = await loadUser();
     if (!user.valid) {
