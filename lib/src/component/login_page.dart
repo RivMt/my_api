@@ -37,7 +37,9 @@ class _LoginPageState extends State<LoginPage> {
     } on Error catch(e) {
       Log.e(_tag, "Error: $e");
     }
-    progressing = false;
+    setState(() {
+      progressing = false;
+    });
   }
 
   void close() {
@@ -47,32 +49,52 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_outlined,
+          ),
+          onPressed: () => close(),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(8),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: email,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: "E-mail"
+            Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: email,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      hintText: "E-mail",
+                      labelText: "E-mail",
+                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  TextFormField(
+                    controller: password,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      hintText: "Password",
+                      labelText: "Password",
+                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
               ),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            TextField(
-              controller: password,
-              obscureText: true,
-              decoration: const InputDecoration(
-                hintText: "Password"
-              ),
-              style: Theme.of(context).textTheme.bodyMedium,
             ),
             ElevatedButton(
               onPressed: () {
                 if (!progressing) {
-                  progressing = true;
+                  setState(() {
+                    progressing = true;
+                  });
                   login();
                 }
               },
