@@ -22,7 +22,7 @@ enum ApiMethod {
 }
 
 /// Types of DB sort order
-enum OrderType {
+enum SortOrderType {
   asc,
   desc,
 }
@@ -223,39 +223,6 @@ class ApiCore {
     "user_id": id,
     "user_secret": secret,
   });
-
-  /// Build options
-  Map<String, dynamic> buildOptions({
-    // Calculation
-    CalculationType? calcType,
-    String? calcAttribute,
-    // Order
-    OrderType? orderType,
-    String? orderAttribute,
-    // Limit
-    int? limit,
-  }) {
-    final Map<String, dynamic> map = {};
-    // Calc
-    if (calcType != null && calcAttribute != null) {
-      map["calc"] = {
-        "type": calcType.name.toUpperCase(),
-        "attr": calcAttribute,
-      };
-    }
-    // Order
-    if (orderType != null && orderAttribute != null) {
-      map["order"] = {
-        "type": orderType.name.toUpperCase(),
-        "attr": orderAttribute,
-      };
-    }
-    // Limits
-    if (limit != null) {
-      map["limit"] = limit;
-    }
-    return map;
-  }
 
 }
 

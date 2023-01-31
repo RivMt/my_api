@@ -10,14 +10,27 @@ class ApiClient {
   /// Client
   final ApiCore _client = ApiCore();
 
+  /// Init
+  ///
+  /// Call init method of [_client]
+  Future<void> init({
+    required Function() onLoginRequired,
+    String url = "",
+    String filename = "",
+  }) async => _client.init(
+    onLoginRequired: onLoginRequired,
+    url: url,
+    filename: filename,
+  );
+
   /// Send request
   Future<ApiResponse<Map<String, dynamic>>> send(
     ApiMethod method,
     String home,
     String path,
-    Map<String, dynamic> data, {
+    Map<String, dynamic> data, [
     Map<String, dynamic>? options,
-  }) async {
+  ]) async {
     final Map<String, dynamic> body = {
       "user_id": _client.id,
       "user_secret": _client.secret,
@@ -28,6 +41,39 @@ class ApiClient {
     }
     final response = await _client.send(method, "$home/$path", body);
     return response;
+  }
+
+  /// Build options
+  Map<String, dynamic> buildOptions({
+    // Calculation
+    CalculationType? calcType,
+    String? calcAttribute,
+    // Sort Order
+    SortOrderType? sortOrderType,
+    String? sortOrderAttribute,
+    // Limit
+    int? limit,
+  }) {
+    final Map<String, dynamic> map = {};
+    // Calc
+    if (calcType != null && calcAttribute != null) {
+      map["calc"] = {
+        "type": calcType.name.toUpperCase(),
+        "attr": calcAttribute,
+      };
+    }
+    // Order
+    if (sortOrderType != null && sortOrderAttribute != null) {
+      map["order"] = {
+        "type": sortOrderType.name.toUpperCase(),
+        "attr": sortOrderAttribute,
+      };
+    }
+    // Limits
+    if (limit != null) {
+      map["limit"] = limit;
+    }
+    return map;
   }
 
   /// Get home from [T]
@@ -95,8 +141,8 @@ class ApiClient {
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<List<T>>> read<T>(Map<String, dynamic> data) async {
-    final result = await send(ApiMethod.post, home<T>(), path<T>(), data);
+  Future<ApiResponse<List<T>>> read<T>(Map<String, dynamic> data, [Map<String, dynamic>? options]) async {
+    final result = await send(ApiMethod.post, home<T>(), path<T>(), data, options);
     return result.converts<T>(converts<T>(result.data));
   }
 
@@ -126,7 +172,7 @@ class ApiClient {
       home<T>(),
       path<T>(),
       data,
-      options: _client.buildOptions(
+      buildOptions(
         calcType: calc,
         calcAttribute: attribute,
       ),
