@@ -84,14 +84,14 @@ class AppTheme {
           fontSize: 16,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
-          height: 24,
+          //height: 24,
         ),
         bodyMedium: TextStyle(
           color: subtext,
           fontSize: 14,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
-          height: 20,
+          //height: 20,
         ),
       ),
       // TextField
@@ -139,6 +139,14 @@ class AppTheme {
           ),
         ),
       ),
+      // Card
+      cardTheme: CardTheme(
+        color: rearBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: const EdgeInsets.all(8),
+      )
     );
   }
 
