@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:decimal/intl.dart';
 import 'package:intl/intl.dart';
 
 enum Currency {
@@ -50,6 +51,6 @@ enum Currency {
       symbol: symbol,
       decimalDigits: digits,
     );
-    return currency.format(amount);
+    return currency.format(DecimalIntl(amount));
   }
 }
