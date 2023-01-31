@@ -43,7 +43,7 @@ class Account extends FinanceModel {
   set limitation(Decimal value) => map[keyLimitation] = value.toString();
 
   /// ID of currency
-  Currency get currency => getValue(keyCurrency, Currency.unknown);
+  Currency get currency => Currency.fromValue(getValue(keyCurrency, Currency.unknown.value));
 
   set currency(Currency currency) => map[keyCurrency] = currency.value;
 
