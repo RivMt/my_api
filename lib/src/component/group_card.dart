@@ -4,12 +4,15 @@ class GroupCard extends StatefulWidget {
   const GroupCard({
     super.key,
     required this.title,
-    this.children = const [],
+    required this.count,
+    required this.build,
   });
 
   final String title;
 
-  final List<Widget> children;
+  final int count;
+
+  final Widget? Function(BuildContext, int) build;
 
   @override
   _GroupCardState createState() => _GroupCardState();
@@ -19,10 +22,6 @@ class _GroupCardState extends State<GroupCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      margin: const EdgeInsets.all(8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,14 +30,18 @@ class _GroupCardState extends State<GroupCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                widget.title,
+                style: Theme.of(context).textTheme.titleMedium,
+              )
+            ],
           ),
           // Widgets
           ListView.builder(
             shrinkWrap: true,
-            itemCount: widget.children.length,
-            itemBuilder: (BuildContext context, int index) {
-              return widget.children[index];
-            },
+            itemCount: widget.count,
+            itemBuilder: widget.build,
           ),
         ],
       ),
