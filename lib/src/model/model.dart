@@ -2,14 +2,6 @@ library my_api;
 
 import 'package:my_api/src/exceptions.dart';
 
-const String keyId = "id";
-const String keyPid = "pid";
-const String keyLastUsed = "last_used";
-const String keyOwner = "owner_id";
-const String keyEditors = "editors_id";
-const String keyDescriptions = "descriptions";
-const String keyDeleted = "deleted";
-
 class Model {
 
   /// Raw data of this object
@@ -38,6 +30,14 @@ class Model {
 }
 
 class FinanceModel extends Model {
+
+  static const String keyId = "id";
+  static const String keyPid = "pid";
+  static const String keyLastUsed = "last_used";
+  static const String keyOwner = "owner_id";
+  static const String keyEditors = "editors_id";
+  static const String keyDescriptions = "descriptions";
+  static const String keyDeleted = "deleted";
 
   /// Create object using [map]
   FinanceModel(super.map);
