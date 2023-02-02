@@ -43,6 +43,10 @@ class WalletItemCard extends StatelessWidget {
     required this.foreground,
     required this.background,
     required this.icon,
+    this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onHover,
   });
 
   final IconData icon;
@@ -50,6 +54,10 @@ class WalletItemCard extends StatelessWidget {
   final Color foreground, background;
 
   final String title, subtitle;
+
+  final Function()? onTap, onDoubleTap, onLongPress;
+
+  final Function(bool)? onHover;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +75,10 @@ class WalletItemCard extends StatelessWidget {
         subtitle,
         style: Theme.of(context).textTheme.bodyMedium,
       ),
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
+      onHover: onHover,
     );
   }
 }
@@ -75,10 +87,18 @@ class AccountCard extends StatelessWidget {
   const AccountCard({
     super.key,
     required this.data,
+    this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onHover,
   });
 
   /// [Account] instance to display information
   final Account data;
+
+  final Function()? onTap, onDoubleTap, onLongPress;
+
+  final Function(bool)? onHover;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +108,10 @@ class AccountCard extends StatelessWidget {
       foreground: data.foreground,
       background: data.background,
       icon: data.icon.icon,
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
+      onHover: onHover,
     );
   }
 
@@ -97,10 +121,18 @@ class PaymentCard extends StatelessWidget {
   const PaymentCard({
     super.key,
     required this.data,
+    this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onHover,
   });
 
   /// [Payment] instance to display information
   final Payment data;
+
+  final Function()? onTap, onDoubleTap, onLongPress;
+
+  final Function(bool)? onHover;
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +142,10 @@ class PaymentCard extends StatelessWidget {
       foreground: data.foreground,
       background: data.background,
       icon: data.icon.icon,
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
+      onHover: onHover,
     );
   }
 

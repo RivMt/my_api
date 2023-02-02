@@ -11,6 +11,9 @@ class TransactionCard extends StatelessWidget {
     this.currency = Currency.unknown,
     required this.category,
     this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onHover,
   });
 
   /// Transaction
@@ -23,12 +26,13 @@ class TransactionCard extends StatelessWidget {
   final Category category;
 
   /// Tap action
-  final Function()? onTap;
+  final Function()? onTap, onDoubleTap, onLongPress;
+
+  final Function(bool)? onHover;
 
   @override
   Widget build(BuildContext context) {
     return DataCard(
-      onTap: onTap,
       leading: TransactionIcon(
         data: data,
         category: category,
@@ -41,6 +45,10 @@ class TransactionCard extends StatelessWidget {
         data.descriptions,
         style: Theme.of(context).textTheme.bodySmall,
       ),
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
+      onHover: onHover,
     );
   }
 }
@@ -75,7 +83,7 @@ class TransactionIcon extends StatelessWidget {
 
   /// Get color by [type], [included], and [background]
   Color? getColor(TransactionType type, bool included, bool background) {
-    final level = background ? 500 : 300;
+    final level = background ? 300 : 500;
     switch(type) {
       case TransactionType.expense:
         if (included) {
