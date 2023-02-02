@@ -30,16 +30,16 @@ class AppTheme {
       errorSecondary: Colors.red[300] ?? Colors.redAccent,
       // Foreground
       frontForeground: Colors.white,
-      middleForeground: Colors.white54,
-      rearForeground: Colors.white30,
+      middleForeground: Colors.grey[400] ?? Colors.white,
+      rearForeground: Colors.grey[600] ?? Colors.white,
       // Background
       background: Colors.black,
-      frontBackground: Colors.black12,
-      middleBackground: Colors.black38,
-      rearBackground: Colors.black54,
+      frontBackground: Colors.grey[800] ?? Colors.grey,
+      middleBackground: Colors.grey[850] ?? Colors.grey,
+      rearBackground: Colors.grey[900] ?? Colors.grey,
       // Text
       text: Colors.white,
-      subtext: Colors.white30,
+      subtext: Colors.grey[400] ?? Colors.white,
     );
   }
 
@@ -146,7 +146,15 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
         ),
         margin: const EdgeInsets.all(8),
-      )
+        elevation: 0,
+        shadowColor: Colors.transparent,
+      ),
+      // IconButton
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          iconColor: MaterialStateProperty.all(text),
+        ),
+      ),
     );
   }
 
