@@ -51,14 +51,17 @@ class _GroupCardState extends State<GroupCard> {
                     const SizedBox(width: 8,),
                     Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.chevron_right_outlined),
-                  onPressed: widget.onMorePressed,
-                )
+                Visibility(
+                  visible: (widget.onMorePressed != null),
+                  child: IconButton(
+                    icon: const Icon(Icons.chevron_right_outlined),
+                    onPressed: widget.onMorePressed,
+                  ),
+                ),
               ],
             ),
             // Widgets

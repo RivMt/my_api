@@ -60,12 +60,12 @@ class WalletItemCard extends StatelessWidget {
         background: background,
       ),
       main: Text(
-        subtitle,
-        style: Theme.of(context).textTheme.bodyMedium,
+        title,
+        style: Theme.of(context).textTheme.titleSmall,
       ),
       sub: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium,
+        subtitle,
+        style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
   }
@@ -83,8 +83,8 @@ class AccountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WalletItemCard(
-      title: data.currency.format(data.balance),
-      subtitle: data.descriptions,
+      title: data.descriptions,
+      subtitle: data.currency.format(data.balance),
       foreground: data.foreground,
       background: data.background,
       icon: data.icon.icon,
@@ -105,8 +105,8 @@ class PaymentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WalletItemCard(
-      title: data.descriptions,
-      subtitle: data.serialNumber,
+      title: data.serialNumber,
+      subtitle: data.descriptions,
       foreground: data.foreground,
       background: data.background,
       icon: data.icon.icon,

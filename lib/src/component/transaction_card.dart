@@ -39,7 +39,7 @@ class TransactionCard extends StatelessWidget {
       ),
       sub: Text(
         data.descriptions,
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: Theme.of(context).textTheme.bodySmall,
       ),
     );
   }

@@ -79,19 +79,45 @@ class AppTheme {
       ),
       // Text
       textTheme: TextTheme(
+        // Display
+        displayLarge: TextStyle(
+          color: text,
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.2,
+        ),
+        // Title
+        titleLarge: TextStyle(
+          color: text,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.15,
+        ),
         titleMedium: TextStyle(
           color: text,
           fontSize: 16,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
+        ),
+        titleSmall: TextStyle(
+          color: subtext,
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          letterSpacing: 0.15,
           //height: 24,
         ),
+        // Body
         bodyMedium: TextStyle(
           color: subtext,
           fontSize: 14,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
-          //height: 20,
+        ),
+        bodySmall: TextStyle(
+          color: subtext,
+          fontSize: 11,
+          fontWeight: FontWeight.normal,
+          letterSpacing: 0.25,
         ),
       ),
       // TextField

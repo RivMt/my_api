@@ -96,6 +96,11 @@ enum AccountIcon {
   /// [IconData]
   final IconData icon;
 
+  /// Name for translation
+  String get key {
+    return "accountType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
+  }
+
   /// Find icon using [id]
   factory AccountIcon.fromId(int id) {
     // Check id value
