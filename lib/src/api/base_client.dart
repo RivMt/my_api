@@ -158,11 +158,11 @@ class ApiClient {
     return result.converts<T>(converts<T>(result.data));
   }
 
-  /// Request calculation result from [link] which fits to [data]
+  /// Request calculation result which fits to [data]
   ///
   /// [calc] defines type of calculation. And [attribute] defines column name
   /// which is calculated
-  Future<ApiResponse<Decimal>> calculate<T>(String link,
+  Future<ApiResponse<Decimal>> calculate<T>(
       Map<String, dynamic> data,
       CalculationType calc,
       String attribute,
