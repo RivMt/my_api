@@ -13,6 +13,7 @@ export 'package:my_api/src/component/data_card.dart';
 export 'package:my_api/src/component/login_page.dart';
 export 'package:my_api/src/component/transaction_card.dart';
 export 'package:my_api/src/component/wallet_item_card.dart';
+export 'package:my_api/src/component/list_tail_button.dart';
 
 // Model
 export 'package:my_api/src/model/model.dart';
