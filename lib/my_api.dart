@@ -21,3 +21,6 @@ export 'package:my_api/src/model/payment.dart';
 export 'package:my_api/src/model/transaction.dart';
 export 'package:my_api/src/model/category.dart';
 export 'package:my_api/src/model/currency.dart';
+
+// Provider
+export 'package:my_api/src/provider/finance_provider.dart';
