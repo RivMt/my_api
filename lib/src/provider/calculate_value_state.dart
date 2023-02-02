@@ -9,14 +9,23 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
   static const _tag = "CalculateValueState";
 
   CalculateValueState(this.ref, {
-    required this.condition,
+    required Map<String, dynamic> condition,
     required this.type,
     required this.attribute,
-  }) : super(Decimal.parse("0"));
+  }) : super(Decimal.parse("0")) {
+    this.condition = condition;
+  }
 
   final Ref ref;
 
-  Map<String, dynamic> condition;
+  Map<String, dynamic> _condition = {};
+
+  Map<String, dynamic> get condition => _condition;
+
+  set condition(Map<String, dynamic> map) {
+    _condition = map;
+    request();
+  }
 
   final CalculationType type;
 
@@ -26,7 +35,7 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
   void clear() => state = Decimal.parse("0");
 
   /// Request [T] items fit to [condition] and filter by [options]
-  void request(Map<String, dynamic> condition, [Map<String, dynamic>? options]) async {
+  void request() async {
     final client = ApiClient();
     final ApiResponse<Decimal> response = await client.calculate<T>(condition, type, attribute);
     if (response.result != ApiResultCode.success) {
