@@ -4,7 +4,7 @@ export 'package:my_api/src/log.dart';
 
 // API
 export 'package:my_api/src/api/api_core.dart';
-export 'package:my_api/src/api/base_client.dart';
+export 'package:my_api/src/api/api_client.dart';
 
 // UI
 export 'package:my_api/src/theme.dart';
