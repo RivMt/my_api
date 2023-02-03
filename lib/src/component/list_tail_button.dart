@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ListTailButton extends StatefulWidget {
   const ListTailButton({
     super.key,
-    required this.leading,
+    required this.icon,
     required this.title,
     this.onTap,
     this.onDoubleTap,
@@ -11,7 +11,7 @@ class ListTailButton extends StatefulWidget {
     this.onHover,
   });
 
-  final Widget leading;
+  final IconData icon;
 
   final String title;
 
@@ -28,6 +28,7 @@ class _ListTailButtonState extends State<ListTailButton> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.transparent,
       child: InkWell(
         onTap: widget.onTap,
         onDoubleTap: widget.onDoubleTap,
@@ -36,17 +37,32 @@ class _ListTailButtonState extends State<ListTailButton> {
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            widget.leading,
-            const SizedBox(width: 8,),
-            Text(
-              widget.title,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardTheme.color,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  widget.icon,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              const SizedBox(width: 8,),
+              Text(
+                widget.title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
         ),
       ),
     );
