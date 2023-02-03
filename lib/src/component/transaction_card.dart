@@ -43,7 +43,7 @@ class TransactionCard extends StatelessWidget {
       ),
       sub: Text(
         data.descriptions,
-        style: Theme.of(context).textTheme.bodySmall,
+        style: Theme.of(context).textTheme.labelMedium,
       ),
       onTap: onTap,
       onDoubleTap: onDoubleTap,

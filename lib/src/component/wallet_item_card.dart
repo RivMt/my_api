@@ -43,6 +43,7 @@ class WalletItemCard extends StatelessWidget {
     required this.foreground,
     required this.background,
     required this.icon,
+    this.selected = false,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -55,6 +56,8 @@ class WalletItemCard extends StatelessWidget {
 
   final String title, subtitle;
 
+  final bool selected;
+
   final Function()? onTap, onDoubleTap, onLongPress;
 
   final Function(bool)? onHover;
@@ -65,15 +68,15 @@ class WalletItemCard extends StatelessWidget {
       leading: WalletItemIcon(
         icon: icon,
         foreground: foreground,
-        background: background,
+        background: selected ? Color.alphaBlend(Colors.white30, background) : background,
       ),
       main: Text(
-        title,
-        style: Theme.of(context).textTheme.titleSmall,
+        subtitle,
+        style: Theme.of(context).textTheme.labelMedium,
       ),
       sub: Text(
-        subtitle,
-        style: Theme.of(context).textTheme.bodyMedium,
+        title,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
       onTap: onTap,
       onDoubleTap: onDoubleTap,
@@ -91,10 +94,13 @@ class AccountCard extends StatelessWidget {
     this.onDoubleTap,
     this.onLongPress,
     this.onHover,
+    this.selected = false,
   });
 
   /// [Account] instance to display information
   final Account data;
+
+  final bool selected;
 
   final Function()? onTap, onDoubleTap, onLongPress;
 
@@ -103,11 +109,12 @@ class AccountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WalletItemCard(
-      title: data.descriptions,
-      subtitle: data.currency.format(data.balance),
+      title: data.currency.format(data.balance),
+      subtitle: data.descriptions,
       foreground: data.foreground,
       background: data.background,
       icon: data.icon.icon,
+      selected: selected,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
       onLongPress: onLongPress,
@@ -125,10 +132,13 @@ class PaymentCard extends StatelessWidget {
     this.onDoubleTap,
     this.onLongPress,
     this.onHover,
+    this.selected = false,
   });
 
   /// [Payment] instance to display information
   final Payment data;
+
+  final bool selected;
 
   final Function()? onTap, onDoubleTap, onLongPress;
 
@@ -137,11 +147,12 @@ class PaymentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WalletItemCard(
-      title: data.serialNumber,
-      subtitle: data.descriptions,
+      title: data.descriptions,
+      subtitle: data.serialNumber,
       foreground: data.foreground,
       background: data.background,
       icon: data.icon.icon,
+      selected: selected,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
       onLongPress: onLongPress,

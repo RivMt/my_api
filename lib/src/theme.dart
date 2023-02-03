@@ -119,6 +119,26 @@ class AppTheme {
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
+        // Label
+        labelLarge: TextStyle(
+          color: subtext,
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          letterSpacing: 0.25,
+        ),
+        labelMedium: TextStyle(
+          color: subtext,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.25,
+        ),
+        labelSmall: TextStyle(
+          color: subtext,
+          fontSize: 10,
+          fontWeight: FontWeight.normal,
+          letterSpacing: 0.25,
+          //height: 24,
+        ),
       ),
       // TextField
       inputDecorationTheme: InputDecorationTheme(
