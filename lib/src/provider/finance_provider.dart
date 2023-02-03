@@ -13,6 +13,22 @@ const String _tag = "FinanceProvider";
 
 class FinanceProvider {
 
+  static final account = StateNotifierProvider<FinanceModelDetailsState<Account>, Account?>((ref) {
+    return FinanceModelDetailsState<Account>(ref);
+  });
+
+  static final payment = StateNotifierProvider<FinanceModelDetailsState<Payment>, Payment?>((ref) {
+    return FinanceModelDetailsState<Payment>(ref);
+  });
+
+  static final transaction = StateNotifierProvider<FinanceModelDetailsState<Transaction>, Transaction?>((ref) {
+    return FinanceModelDetailsState<Transaction>(ref);
+  });
+
+  static final category = StateNotifierProvider<FinanceModelDetailsState<Category>, Category?>((ref) {
+    return FinanceModelDetailsState<Category>(ref);
+  });
+
   static final accounts = StateNotifierProvider<FinanceModelState<Account>, List<Account>>((ref) {
     return FinanceModelState<Account>(ref);
   });
@@ -92,5 +108,30 @@ class FinanceModelState<T> extends StateNotifier<List<T>> {
       return;
     }
     state = response.data;
+  }
+}
+
+class FinanceModelDetailsState<T> extends StateNotifier<T?> {
+
+  FinanceModelDetailsState(this.ref) : super(null);
+
+  final Ref ref;
+
+  /// Clear state
+  void clear() => state = null;
+
+  /// Request [T] items fit to [condition] and filter by [options]
+  void request(Map<String, dynamic> condition, [Map<String, dynamic>? options]) async {
+    final client = ApiClient();
+    final ApiResponse<List<T>> response = await client.read<T>(
+      condition,
+      options,
+    );
+    if (response.result != ApiResultCode.success) {
+      Log.e(_tag, "Failed to request $condition");
+      state = null;
+      return;
+    }
+    state = response.data[0];
   }
 }
