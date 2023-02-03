@@ -18,10 +18,14 @@ class Account extends FinanceModel {
   static const String keyForeground = "foreground";
   static const String keyBackground = "background";
 
+  static final Account unknown = Account({
+    FinanceModel.keyDescriptions: "Unknown",
+  });
+
   Account(super.map);
 
   /// List of viewers id
-  List<String> get viewers => getValue(keyViewers);
+  List<String> get viewers => getValue(keyViewers, []);
 
   set viewers(List<String> list) => map[keyViewers] = list;
 
@@ -33,12 +37,12 @@ class Account extends FinanceModel {
   /// Priority
   ///
   /// Default value is `0`
-  int get priority => getValue(keyPriority);
+  int get priority => getValue(keyPriority, 0);
 
   set priority(int value) => map[keyPriority] = value;
 
   /// Limitation of this account
-  Decimal get limitation => Decimal.parse(getValue(keyLimitation));
+  Decimal get limitation => Decimal.parse(getValue(keyLimitation, "0"));
 
   set limitation(Decimal value) => map[keyLimitation] = value.toString();
 
@@ -48,27 +52,27 @@ class Account extends FinanceModel {
   set currency(Currency currency) => map[keyCurrency] = currency.value;
 
   /// Balance of this account
-  Decimal get balance => Decimal.parse(getValue(keyBalance));
+  Decimal get balance => Decimal.parse(getValue(keyBalance, "0"));
 
   set balance(Decimal value) => map[keyBalance] = value.toString();
 
   /// Is this account handled as cash or not
-  bool get isCash => getValue(keyIsCash);
+  bool get isCash => getValue(keyIsCash, true);
 
   set isCash(bool value) => map[keyIsCash] = value;
 
   /// Serial number
-  String get serialNumber => getValue(keySerialNumber);
+  String get serialNumber => getValue(keySerialNumber, "");
 
   set serialNumber(String value) => map[keySerialNumber] = value;
 
   /// Foreground color
-  Color get foreground => Color(getValue(keyForeground));
+  Color get foreground => Color(getValue(keyForeground, -1));
 
   set foreground(Color color) => map[keyForeground] = color.value;
 
   /// Background color
-  Color get background => Color(getValue(keyBackground));
+  Color get background => Color(getValue(keyBackground, 1));
 
   set background(Color color) => map[keyBackground] = color.value;
 

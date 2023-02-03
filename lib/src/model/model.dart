@@ -43,33 +43,33 @@ class FinanceModel extends Model {
   FinanceModel(super.map);
 
   /// ID (Read-only)
-  int get id => getValue(keyId);
+  int get id => getValue(keyId, -1);
 
   /// PID (Read-only)
-  int get pid => getValue(keyPid);
+  int get pid => getValue(keyPid, -1);
 
   /// [DateTime] of lastly used
-  DateTime get lastUsed => DateTime.fromMillisecondsSinceEpoch(getValue(keyLastUsed));
+  DateTime get lastUsed => DateTime.fromMillisecondsSinceEpoch(getValue(keyLastUsed, 0));
 
   set lastUsed(DateTime dateTime) => map[keyLastUsed] = dateTime.millisecondsSinceEpoch;
 
   /// UID of owner
-  String get owner => getValue(keyOwner);
+  String get owner => getValue(keyOwner, "");
 
   set owner(String id) => throw UnimplementedError();
 
   /// List of editor UID
-  List<String> get editors => getValue(keyEditors);
+  List<String> get editors => getValue(keyEditors, []);
 
   set editors(List<String> list) => map[keyEditors] = list;
 
   /// Descriptions of this object
-  String get descriptions => getValue(keyDescriptions);
+  String get descriptions => getValue(keyDescriptions, "");
 
   set descriptions(String desc) => map[keyDescriptions] = desc;
 
   /// Is this object deleted or not
-  bool get deleted => getValue(keyDeleted);
+  bool get deleted => getValue(keyDeleted, false);
 
   set deleted(bool value) => map[keyDeleted] = value;
 
