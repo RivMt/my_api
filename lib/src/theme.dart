@@ -142,42 +142,65 @@ class AppTheme {
       ),
       // TextField
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
+        // Color
+        fillColor: middleBackground,
+        // Text
+        labelStyle: TextStyle(
+          color: subtext,
+          fontSize: 13,
+          fontWeight: FontWeight.normal,
+          letterSpacing: 0.25,
+        ),
+        hintStyle: TextStyle(
+          color: subtext,
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          letterSpacing: 0.25,
+        ),
+        helperMaxLines: 2,
+        helperStyle: TextStyle(
+          color: subtext,
+          fontSize: 12,
+          fontWeight: FontWeight.w300,
+          letterSpacing: 0.25,
+        ),
+        // Borders
+        border: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: middleForeground,
             width: 2,
           ),
         ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: middleForeground,
             width: 2,
           ),
         ),
-        errorBorder: OutlineInputBorder(
+        errorBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: errorPrimary,
             width: 2,
           ),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: primary,
             width: 2,
           ),
         ),
-        focusedErrorBorder: OutlineInputBorder(
+        focusedErrorBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: errorSecondary,
             width: 2,
           ),
         ),
-        disabledBorder: OutlineInputBorder(
+        disabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: rearForeground,
