@@ -3,7 +3,7 @@ import 'package:decimal/intl.dart';
 import 'package:intl/intl.dart';
 
 enum Currency {
-  unknown(-1, "", "uKn", 2),
+  unknown(-1, "?", "uKn", 2),
   won(0, "￦", "KRW", 0),
   yen(1, "￥", "JPY", 0),
   dollar(2, "＄", "USD", 2),
@@ -52,5 +52,10 @@ enum Currency {
       decimalDigits: digits,
     );
     return currency.format(DecimalIntl(amount));
+  }
+
+  /// Key for translation
+  String get key {
+    return "currencyType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
   }
 }
