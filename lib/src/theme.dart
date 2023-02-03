@@ -17,8 +17,8 @@ class AppTheme {
       middleBackground: Colors.white54,
       rearBackground: Colors.white38,
       // Text
-      text: Colors.black87,
-      subtext: Colors.black26,
+      text: Colors.black,
+      subtext: Colors.grey[900] ?? Colors.black,
       // AppBar
     );
   }
@@ -222,6 +222,12 @@ class AppTheme {
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
           iconColor: MaterialStateProperty.all(text),
+        ),
+      ),
+      // Checkbox
+      checkboxTheme: CheckboxThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(2),
         ),
       ),
     );
