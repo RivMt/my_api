@@ -45,6 +45,7 @@ class TransactionCard extends StatelessWidget {
         data.descriptions,
         style: Theme.of(context).textTheme.labelMedium,
       ),
+      color: Colors.transparent,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
       onLongPress: onLongPress,

@@ -6,6 +6,7 @@ class DataCard extends StatefulWidget {
     required this.leading,
     required this.main,
     required this.sub,
+    this.color,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -13,6 +14,8 @@ class DataCard extends StatefulWidget {
   });
 
   final Widget leading, main, sub;
+
+  final Color? color;
 
   final Function()? onTap, onDoubleTap, onLongPress;
 
@@ -27,6 +30,7 @@ class _DataCardState extends State<DataCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: widget.color,
       child: InkWell(
         onTap: widget.onTap,
         onDoubleTap: widget.onDoubleTap,
