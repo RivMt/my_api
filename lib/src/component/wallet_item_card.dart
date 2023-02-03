@@ -78,6 +78,7 @@ class WalletItemCard extends StatelessWidget {
         title,
         style: Theme.of(context).textTheme.titleMedium,
       ),
+      color: Colors.transparent,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
       onLongPress: onLongPress,
