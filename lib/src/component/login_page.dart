@@ -57,60 +57,62 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () => close(),
         ),
       ),
-      body: SingleChildScrollView(
+      body: Container(
         padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Form(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    controller: email,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      hintText: "E-mail",
-                      labelText: "E-mail",
+        alignment: Alignment.center,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width / InterfaceConstructor.panelNumber(context),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Form(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: email,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: "E-mail",
+                      ),
                     ),
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  TextFormField(
-                    controller: password,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      hintText: "Password",
-                      labelText: "Password",
+                    const SizedBox(height: 8,),
+                    TextFormField(
+                      controller: password,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: "Password",
+                      ),
                     ),
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (!progressing) {
-                  setState(() {
-                    progressing = true;
-                  });
-                  login();
-                }
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Visibility(
-                    visible: progressing,
-                    child: const CircularProgressIndicator(),
-                  ),
-                  const Text('OK'),
-                ],
+              const SizedBox(height: 8,),
+              ElevatedButton(
+                onPressed: () {
+                  if (!progressing) {
+                    setState(() {
+                      progressing = true;
+                    });
+                    login();
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Visibility(
+                      visible: progressing,
+                      child: const CircularProgressIndicator(),
+                    ),
+                    const Text('OK'),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
