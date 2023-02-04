@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
 
+  static const Color errorPrimary = Colors.red;
+
+  static final Color errorSecondary = Colors.red[300] ?? Colors.redAccent;
+
   static ThemeData get light {
     return _theme(
       primary: Colors.blue,
-      errorPrimary: Colors.red,
-      errorSecondary: Colors.red[300] ?? Colors.redAccent,
       // Foreground
       frontForeground: Colors.black87,
       middleForeground: Colors.black54,
@@ -26,8 +28,6 @@ class AppTheme {
   static ThemeData get dark {
     return _theme(
       primary: Colors.blue,
-      errorPrimary: Colors.red,
-      errorSecondary: Colors.red[300] ?? Colors.redAccent,
       // Foreground
       frontForeground: Colors.white,
       middleForeground: Colors.grey[400] ?? Colors.white,
@@ -46,8 +46,6 @@ class AppTheme {
   static ThemeData _theme({
     // Base
     required Color primary,
-    required Color errorPrimary,
-    required Color errorSecondary,
     // Foreground
     required Color frontForeground,
     required Color middleForeground,
@@ -198,7 +196,7 @@ class AppTheme {
         ),
         errorBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: errorPrimary,
             width: 2,
           ),
