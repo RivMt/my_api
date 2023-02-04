@@ -10,14 +10,14 @@ class AppTheme {
     return _theme(
       primary: Colors.blue,
       // Foreground
-      frontForeground: Colors.black87,
-      middleForeground: Colors.black54,
-      rearForeground: Colors.black38,
+      frontForeground: Colors.grey[900] ?? Colors.black,
+      middleForeground: Colors.grey[850] ?? Colors.black,
+      rearForeground: Colors.grey[800] ?? Colors.black,
       // Background
       background: Colors.white,
-      frontBackground: Colors.white60,
-      middleBackground: Colors.white54,
-      rearBackground: Colors.white38,
+      frontBackground: Colors.grey[500] ?? Colors.white,
+      middleBackground: Colors.grey[300] ?? Colors.white,
+      rearBackground: Colors.grey[100] ?? Colors.white,
       // Text
       text: Colors.black,
       subtext: Colors.grey[900] ?? Colors.black,
@@ -64,9 +64,15 @@ class AppTheme {
       primaryColor: primary,
       scaffoldBackgroundColor: background,
       // AppBar
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
+        iconTheme: IconThemeData(
+          color: text,
+        ),
+        actionsIconTheme: IconThemeData(
+          color: text,
+        ),
       ),
       // Floating Action Button
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -144,6 +150,7 @@ class AppTheme {
         contentPadding: const EdgeInsets.all(4),
         // Color
         fillColor: middleBackground,
+        filled: true,
         // Text
         labelStyle: TextStyle(
           color: subtext,
@@ -184,42 +191,42 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: middleForeground,
-            width: 2,
+            width: 3,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: middleForeground,
-            width: 2,
+            width: 3,
           ),
         ),
         errorBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(
             color: errorPrimary,
-            width: 2,
+            width: 3,
           ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: primary,
-            width: 2,
+            width: 3,
           ),
         ),
         focusedErrorBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: errorSecondary,
-            width: 2,
+            width: 3,
           ),
         ),
         disabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: rearForeground,
-            width: 2,
+            width: 3,
           ),
         ),
       ),

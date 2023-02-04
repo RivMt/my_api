@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 abstract class InterfaceConstructor {
 
-  static const _standardRatio = 0.7;
+  static const _standardRatio = 0.8;
 
   static int panelNumber(BuildContext context) {
     final double width, height;
