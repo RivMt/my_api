@@ -142,6 +142,8 @@ class AppTheme {
       ),
       // TextField
       inputDecorationTheme: InputDecorationTheme(
+        // Padding
+        contentPadding: const EdgeInsets.all(4),
         // Color
         fillColor: middleBackground,
         // Text
@@ -163,6 +165,21 @@ class AppTheme {
           fontSize: 12,
           fontWeight: FontWeight.w300,
           letterSpacing: 0.25,
+        ),
+        // Prefix and suffix
+        prefixIconColor: subtext,
+        prefixStyle: TextStyle(
+          color: subtext,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.15,
+        ),
+        suffixIconColor: subtext,
+        suffixStyle: TextStyle(
+          color: subtext,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.15,
         ),
         // Borders
         border: UnderlineInputBorder(
@@ -218,16 +235,96 @@ class AppTheme {
         elevation: 0,
         shadowColor: Colors.transparent,
       ),
-      // IconButton
+      // Buttons
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
           iconColor: MaterialStateProperty.all(text),
         ),
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all(0),
+          shadowColor: MaterialStateProperty.all(Colors.transparent),
+          padding: MaterialStateProperty.all(const EdgeInsets.all(4)),
+          textStyle: MaterialStateProperty.resolveWith((states) {
+            late Color color;
+            if (states.contains(MaterialState.disabled)) {
+              color = rearForeground;
+            } else {
+              color = text;
+            }
+            return TextStyle(
+              color: color,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.15,
+            );
+          }),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          textStyle: MaterialStateProperty.resolveWith((states) {
+            late Color color;
+            if (states.contains(MaterialState.disabled)) {
+              color = rearForeground;
+            } else {
+              color = primary;
+            }
+            return TextStyle(
+              color: color,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.15,
+            );
+          }),
+        )
+      ),
       // Checkbox
       checkboxTheme: CheckboxThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(2),
+        ),
+        side: BorderSide(
+          color: middleForeground,
+          width: 2,
+        ),
+      ),
+      // Modal Bottom Sheet
+      bottomSheetTheme: BottomSheetThemeData(
+        modalBackgroundColor: rearBackground,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            )
+        ),
+      ),
+      // Dialog
+      dialogTheme: DialogTheme(
+        backgroundColor: rearBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        titleTextStyle: TextStyle(
+          color: text,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.15,
+        ),
+        contentTextStyle: TextStyle(
+          color: subtext,
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          letterSpacing: 0.25,
+        ),
+      ),
+      // ListTile
+      listTileTheme: ListTileThemeData(
+        iconColor: text,
+        textColor: text,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );
