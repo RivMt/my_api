@@ -12,6 +12,7 @@ export 'package:my_api/src/component/interface_constructor.dart';
 export 'package:my_api/src/component/group_card.dart';
 export 'package:my_api/src/component/data_card.dart';
 export 'package:my_api/src/component/login_page.dart';
+export 'package:my_api/src/component/message_box.dart';
 export 'package:my_api/src/component/transaction_card.dart';
 export 'package:my_api/src/component/wallet_item_card.dart';
 export 'package:my_api/src/component/list_tail_button.dart';
