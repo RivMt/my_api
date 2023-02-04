@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/src/component/data_card.dart';
 import 'package:my_api/src/model/category.dart';
-import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/transaction.dart';
 
 class TransactionCard extends StatelessWidget {
   const TransactionCard({
     super.key,
     required this.data,
-    this.currency = Currency.unknown,
     required this.category,
     this.onTap,
     this.onDoubleTap,
@@ -18,9 +16,6 @@ class TransactionCard extends StatelessWidget {
 
   /// Transaction
   final Transaction data;
-
-  /// Currency value
-  final Currency currency;
 
   /// Category
   final Category category;
@@ -32,13 +27,15 @@ class TransactionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = data.altCurrency ?? data.currency;
+    final amount = data.altAmount ?? data.amount;
     return DataCard(
       leading: TransactionIcon(
         data: data,
         category: category,
       ),
       main: Text(
-        currency.format(data.amount),
+        currency.format(amount),
         style: Theme.of(context).textTheme.titleMedium,
       ),
       sub: Text(

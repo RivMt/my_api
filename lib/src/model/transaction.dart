@@ -1,6 +1,7 @@
 library my_api;
 
 import 'package:decimal/decimal.dart';
+import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/model.dart';
 
 enum TransactionType {
@@ -32,7 +33,10 @@ class Transaction extends FinanceModel {
   static const String keyPaidDate = "paid_date";
   static const String keyAccountID = "account_id";
   static const String keyPaymentID = "payment_id";
+  static const String keyCurrency = "currency";
   static const String keyAmount = "amount";
+  static const String keyAltCurrency = "alt_currency";
+  static const String keyAltAmount = "alt_amount";
   static const String keyCalculatedDate = "calculated_date";
   static const String keyIncluded = "included";
   static const String keyEfficiencyDate = "efficiency_date";
@@ -68,10 +72,53 @@ class Transaction extends FinanceModel {
 
   set paymentId(int pid) => map[keyPaymentID] = pid;
 
+  /// Currency of this transaction
+  Currency get currency => Currency.fromValue(getValue(keyCurrency, Currency.unknown.value));
+
+  set currency(Currency currency) => map[keyCurrency] = currency.value;
+
   /// Amount of this transaction
-  Decimal get amount => Decimal.parse(getValue(keyAmount));
+  Decimal get amount => Decimal.parse(getValue(keyAmount, "0"));
 
   set amount(Decimal value) => map[keyAmount] = value.toString();
+
+  /// Alternative currency of this transaction
+  ///
+  /// This is used for foreign currency transaction. For example, transaction
+  /// is paid by Euro, and money withdrew (or will withdraw) from Dollar
+  /// account, [altCurrency] is Euro, and [currency] is Dollar.
+  Currency? get altCurrency {
+    final value = getValue(keyAltCurrency, null);
+    if (value == null) {
+      return null;
+    }
+    return Currency.fromValue(value);
+  }
+
+  set altCurrency(Currency? currency) {
+    if (currency != null) {
+      map[keyCurrency] = currency.value;
+    }
+  }
+
+  /// Alternative mount of this transaction
+  ///
+  /// This is used for foreign currency transaction. For example, transaction
+  /// is paid by 5 euros, and money withdrew (or will withdraw) from 2 dollars
+  /// account, [altAmount] is `5`, and [amount] is `2`.
+  Decimal? get altAmount {
+    final value = getValue(keyAltAmount, null);
+    if (value == null) {
+      return null;
+    }
+    return Decimal.parse(value);
+  }
+
+  set altAmount(Decimal? value) {
+    if (value != null) {
+      map[keyAltAmount] = value;
+    }
+  }
 
   /// [DateTime] of this transaction calculated
   DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate));
