@@ -15,7 +15,7 @@ class FinanceModelState<T> extends StateNotifier<List<T>> {
   void clear() => state = [];
 
   /// Request [T] items fit to [condition] and filter by [options]
-  void request(Map<String, dynamic> condition, [Map<String, dynamic>? options]) async {
+  void request(List<Map<String, dynamic>> condition, [Map<String, dynamic>? options]) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(
       condition,
@@ -43,7 +43,7 @@ class FinanceModelDetailsState<T> extends StateNotifier<T?> {
   void request(Map<String, dynamic> condition, [Map<String, dynamic>? options]) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(
-      condition,
+      [condition],
       options,
     );
     if (response.result != ApiResultCode.success) {

@@ -28,7 +28,7 @@ class ApiClient {
     ApiMethod method,
     String home,
     String path,
-    Map<String, dynamic> data, [
+    List<Map<String, dynamic>> data, [
     Map<String, dynamic>? options,
   ]) async {
     final Map<String, dynamic> body = {
@@ -135,25 +135,25 @@ class ApiClient {
   }
 
   /// Create [data] from [link]
-  Future<ApiResponse<List<T>>> create<T>(Map<String, dynamic> data) async {
+  Future<ApiResponse<List<T>>> create<T>(List<Map<String, dynamic>> data) async {
     final result = await send(ApiMethod.put, home<T>(), path<T>(), data);
     return result.converts<T>(converts<T>(result.data));
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<List<T>>> read<T>(Map<String, dynamic> data, [Map<String, dynamic>? options]) async {
+  Future<ApiResponse<List<T>>> read<T>(List<Map<String, dynamic>> data, [Map<String, dynamic>? options]) async {
     final result = await send(ApiMethod.post, home<T>(), path<T>(), data, options);
     return result.converts<T>(converts<T>(result.data));
   }
 
   /// Update [data] from [link]
-  Future<ApiResponse<List<T>>> update<T>(Map<String, dynamic> data) async {
+  Future<ApiResponse<List<T>>> update<T>(List<Map<String, dynamic>> data) async {
     final result = await send(ApiMethod.patch, home<T>(), path<T>(), data);
     return result.converts<T>(converts<T>(result.data));
   }
 
   /// Delete [data] from [link]
-  Future<ApiResponse<List<T>>> delete<T>(Map<String, dynamic> data) async {
+  Future<ApiResponse<List<T>>> delete<T>(List<Map<String, dynamic>> data) async {
     final result = await send(ApiMethod.delete, home<T>(), path<T>(), data);
     return result.converts<T>(converts<T>(result.data));
   }
@@ -171,7 +171,7 @@ class ApiClient {
       ApiMethod.post,
       home<T>(),
       path<T>(),
-      data,
+      [data],
       buildOptions(
         calcType: calc,
         calcAttribute: attribute,
