@@ -1,7 +1,5 @@
 library my_api;
 
-import 'package:my_api/src/exceptions.dart';
-
 class Model {
 
   /// Raw data of this object
@@ -15,17 +13,13 @@ class Model {
   /// **DO NOT** call this directly. Use several properties variables to access.
   /// When [key] is not included in [map], return [defaultValue]. If [defaultValue]
   /// does not set, throws [InvalidModeException].
-  getValue(String key, [dynamic defaultValue]) {
+  getValue(String key, dynamic defaultValue) {
     // Check key is exist
     if (map.containsKey(key)) {
       return map[key];
     }
-    // Return default value when it is set
-    if (defaultValue != null) {
-      return defaultValue;
-    }
-    // Throw
-    throw InvalidModelException(key);
+    // Return default value
+    return defaultValue;
   }
 }
 

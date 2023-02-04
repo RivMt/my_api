@@ -28,7 +28,7 @@ class Payment extends FinanceModel {
   Payment(super.map);
 
   /// List of viewers id
-  List<String> get viewers => getValue(keyViewers);
+  List<String> get viewers => getValue(keyViewers, []);
 
   set viewers(List<String> list) => map[keyViewers] = list;
 
@@ -40,37 +40,37 @@ class Payment extends FinanceModel {
   /// Priority
   ///
   /// Default value is `0`
-  int get priority => getValue(keyPriority);
+  int get priority => getValue(keyPriority, 0);
 
   set priority(int value) => map[keyPriority] = value;
 
   /// Limitation of this account
-  Decimal get limitation => Decimal.parse(getValue(keyLimitation));
+  Decimal get limitation => Decimal.parse(getValue(keyLimitation, "0"));
 
   set limitation(Decimal value) => map[keyLimitation] = value.toString();
 
   /// Is this account handled as cash or not
-  bool get isCredit => getValue(keyIsCredit);
+  bool get isCredit => getValue(keyIsCredit, false);
 
   set isCredit(bool value) => map[keyIsCredit] = value;
 
   /// Serial number
-  String get serialNumber => getValue(keySerialNumber);
+  String get serialNumber => getValue(keySerialNumber, "");
 
   set serialNumber(String value) => map[keySerialNumber] = value;
 
   /// Foreground color
-  Color get foreground => Color(getValue(keyForeground));
+  Color get foreground => Color(getValue(keyForeground, Colors.white.value));
 
   set foreground(Color color) => map[keyForeground] = color.value;
 
   /// Background color
-  Color get background => Color(getValue(keyBackground));
+  Color get background => Color(getValue(keyBackground, Colors.black.value));
 
   set background(Color color) => map[keyBackground] = color.value;
 
   /// Beginning day of range when this payment paid
-  int get payBegin => getValue(keyPayBegin);
+  int get payBegin => getValue(keyPayBegin, payDayMin);
 
   set payBegin(int value) {
     final list = [payDayMin, value, payDayMax];
@@ -79,7 +79,7 @@ class Payment extends FinanceModel {
   }
 
   /// End day of range when this payment paid
-  int get payEnd => getValue(keyPayEnd);
+  int get payEnd => getValue(keyPayEnd, payDayMax);
 
   set payEnd(int value) {
     final list = [payDayMin, value, payDayMax];
@@ -88,7 +88,7 @@ class Payment extends FinanceModel {
   }
 
   /// Date of this payment paid on current month
-  int get payDate => getValue(keyPayDate);
+  int get payDate => getValue(keyPayDate, 14);
 
   set payDate(int value) {
     final list = [payDayMin, value, payDayMax];

@@ -58,17 +58,17 @@ class Transaction extends FinanceModel {
   set category(int value) => map[keyCategory] = value;
 
   /// [DateTime] of this transaction paid
-  DateTime get paidDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyPaidDate));
+  DateTime get paidDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyPaidDate, 0));
 
   set paidDate(DateTime date) => map[keyPaidDate] = date.millisecondsSinceEpoch;
 
   /// PID of [Account] this transaction occurred
-  int get accountId => getValue(keyAccountID);
+  int get accountId => getValue(keyAccountID, 0);
 
   set accountId(int pid) => map[keyAccountID] = pid;
 
   /// PID of [Payment] this transaction handled
-  int get paymentId => getValue(keyPaymentID);
+  int get paymentId => getValue(keyPaymentID, 0);
 
   set paymentId(int pid) => map[keyPaymentID] = pid;
 
@@ -121,12 +121,12 @@ class Transaction extends FinanceModel {
   }
 
   /// [DateTime] of this transaction calculated
-  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate));
+  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0));
 
   set calculatedDate(DateTime date) => map[keyCalculatedDate] = date.millisecondsSinceEpoch;
 
   /// Value of this transaction included in statics
-  bool get included => getValue(keyIncluded);
+  bool get included => getValue(keyIncluded, true);
 
   set included(bool value) => map[keyIncluded] = value;
 
