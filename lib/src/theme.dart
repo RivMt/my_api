@@ -229,7 +229,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        margin: const EdgeInsets.all(8),
+        margin: const EdgeInsets.all(4),
         elevation: 0,
         shadowColor: Colors.transparent,
       ),

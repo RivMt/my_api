@@ -13,7 +13,7 @@ class GroupCard extends StatefulWidget {
   static const int width = 480;
 
   /// Default height
-  static const int height = 240;
+  static const int height = 250;
 
   /// Title
   final String title;
