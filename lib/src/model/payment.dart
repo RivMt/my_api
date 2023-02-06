@@ -1,4 +1,7 @@
 library my_api;
+
+import 'dart:math';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/src/model/currency.dart';
@@ -80,22 +83,14 @@ class Payment extends FinanceModel {
   set background(Color color) => map[keyBackground] = color.value;
 
   /// Beginning day of range when this payment paid
-  int get payBegin => getValue(keyPayBegin, payDayMin);
+  PaymentRangePoint get payBegin => PaymentRangePoint.fromCode(getValue(keyPayBegin, PaymentRangePoint.defaultBegin.code));
 
-  set payBegin(int value) {
-    final list = [payDayMin, value, payDayMax];
-    list.sort();
-    map[keyPayBegin] = list[1];
-  }
+  set payBegin(PaymentRangePoint point) => map[keyPayBegin] = point.code;
 
   /// End day of range when this payment paid
-  int get payEnd => getValue(keyPayEnd, payDayMax);
+  PaymentRangePoint get payEnd => PaymentRangePoint.fromCode(getValue(keyPayEnd, PaymentRangePoint.defaultEnd.code));
 
-  set payEnd(int value) {
-    final list = [payDayMin, value, payDayMax];
-    list.sort();
-    map[keyPayEnd] = list[1];
-  }
+  set payEnd(PaymentRangePoint point) => map[keyPayEnd] = point.code;
 
   /// Date of this payment paid on current month
   int get payDate => getValue(keyPayDate, 14);
@@ -106,6 +101,93 @@ class Payment extends FinanceModel {
     map[keyPayDate] = list[1];
   }
 
+}
+
+class PaymentRangePoint {
+
+  static final defaultBegin = PaymentRangePoint(1, Payment.payDayMin);
+
+  static final defaultEnd = PaymentRangePoint(1, Payment.payDayMax);
+
+  /// Point of payment range
+  ///
+  /// [month] must be bigger than or equal to `0`, otherwise it will be `0`.
+  /// And [day] must be bigger than or equal to [Payment.payDayMin] - `1` and
+  /// smaller than or equal to [Payment.payDayMax].
+  PaymentRangePoint(int month, int day) {
+    this.month = max(month, 0);
+    final days = [Payment.payDayMin, day, Payment.payDayMax];
+    days.sort();
+    this.day = days[1];
+  }
+
+  /// Point of payment range
+  ///
+  /// [month] is quotient of value which divide [code] by `100`.
+  /// [day] is remainder of value which divide [code] by `100`.
+  PaymentRangePoint.fromCode(int code) {
+    month = code ~/ 100;
+    day = code % 100;
+  }
+
+  /// How many months before
+  ///
+  /// `0` means current month, and `1` is last month. Of course `100` means 100
+  /// months before
+  late final int month;
+
+  /// Day
+  ///
+  /// `1` means first day of month. [Payment.payDayMax] means last day of month.
+  late final int day;
+
+  /// Code
+  ///
+  /// This is value which is saved at DB.
+  int get code => month * 100 + day;
+
+  /// Compare this and other [PaymentRangePoint]
+  ///
+  /// If returned value is `0`, this and [other] is exactly same point.
+  /// And value is bigger than `0`, this is after (more future) than [other].
+  /// Finally, value is smaller than `0`, this is before (more past) than [other].
+  ///
+  /// Also, absolute value of returned is how many days between this and [other].
+  /// This method asserts one month is **ALWAYS 30 days**.
+  int compareTo(PaymentRangePoint other) {
+    if (month > other.month) {
+      return ((Payment.payDayMax - day + 1) + other.day) * -1;
+    } else if (month < other.month) {
+      return (day + (Payment.payDayMax - other.day + 1));
+    } else {
+      if (day < other.day) {
+        return (other.day - day + 1) * -1;
+      } else if (day > other.day) {
+        return day - other.day + 1;
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  @override
+  int get hashCode => code;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is PaymentRangePoint) {
+      return compareTo(other) == 0;
+    }
+    return super==(other);
+  }
+
+  bool operator <(PaymentRangePoint other) => compareTo(other) < 0;
+
+  bool operator <=(PaymentRangePoint other) => compareTo(other) <= 0;
+
+  bool operator >=(PaymentRangePoint other) => compareTo(other) >= 0;
+
+  bool operator >(PaymentRangePoint other) => compareTo(other) > 0;
 }
 
 enum PaymentIcon {
