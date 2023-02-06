@@ -59,6 +59,93 @@ class AppTheme {
     required Color text,
     required Color subtext,
   }) {
+    // InputDecoration
+    final inputDecoration = InputDecorationTheme(
+      // Padding
+      contentPadding: const EdgeInsets.all(4),
+      // Color
+      fillColor: middleBackground,
+      filled: true,
+      // Text
+      labelStyle: TextStyle(
+        color: subtext,
+        fontSize: 13,
+        fontWeight: FontWeight.normal,
+        letterSpacing: 0.25,
+      ),
+      hintStyle: TextStyle(
+        color: subtext,
+        fontSize: 14,
+        fontWeight: FontWeight.normal,
+        letterSpacing: 0.25,
+      ),
+      helperMaxLines: 2,
+      helperStyle: TextStyle(
+        color: subtext,
+        fontSize: 12,
+        fontWeight: FontWeight.w300,
+        letterSpacing: 0.25,
+      ),
+      // Prefix and suffix
+      prefixIconColor: subtext,
+      prefixStyle: TextStyle(
+        color: subtext,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0.15,
+      ),
+      suffixIconColor: subtext,
+      suffixStyle: TextStyle(
+        color: subtext,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0.15,
+      ),
+      // Borders
+      border: UnderlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(
+          color: middleForeground,
+          width: 3,
+        ),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(
+          color: middleForeground,
+          width: 3,
+        ),
+      ),
+      errorBorder: UnderlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(
+          color: errorPrimary,
+          width: 3,
+        ),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(
+          color: primary,
+          width: 3,
+        ),
+      ),
+      focusedErrorBorder: UnderlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(
+          color: errorSecondary,
+          width: 3,
+        ),
+      ),
+      disabledBorder: UnderlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(
+          color: rearForeground,
+          width: 3,
+        ),
+      ),
+    );
+    // ThemeData
     return ThemeData(
       // Color
       primaryColor: primary,
@@ -145,91 +232,7 @@ class AppTheme {
         ),
       ),
       // TextField
-      inputDecorationTheme: InputDecorationTheme(
-        // Padding
-        contentPadding: const EdgeInsets.all(4),
-        // Color
-        fillColor: middleBackground,
-        filled: true,
-        // Text
-        labelStyle: TextStyle(
-          color: subtext,
-          fontSize: 13,
-          fontWeight: FontWeight.normal,
-          letterSpacing: 0.25,
-        ),
-        hintStyle: TextStyle(
-          color: subtext,
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-          letterSpacing: 0.25,
-        ),
-        helperMaxLines: 2,
-        helperStyle: TextStyle(
-          color: subtext,
-          fontSize: 12,
-          fontWeight: FontWeight.w300,
-          letterSpacing: 0.25,
-        ),
-        // Prefix and suffix
-        prefixIconColor: subtext,
-        prefixStyle: TextStyle(
-          color: subtext,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.15,
-        ),
-        suffixIconColor: subtext,
-        suffixStyle: TextStyle(
-          color: subtext,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.15,
-        ),
-        // Borders
-        border: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: middleForeground,
-            width: 3,
-          ),
-        ),
-        enabledBorder: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: middleForeground,
-            width: 3,
-          ),
-        ),
-        errorBorder: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            color: errorPrimary,
-            width: 3,
-          ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: primary,
-            width: 3,
-          ),
-        ),
-        focusedErrorBorder: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: errorSecondary,
-            width: 3,
-          ),
-        ),
-        disabledBorder: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: rearForeground,
-            width: 3,
-          ),
-        ),
-      ),
+      inputDecorationTheme: inputDecoration,
       // Card
       cardTheme: CardTheme(
         color: rearBackground,
@@ -331,6 +334,21 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
+      ),
+      // Dropdown
+      dropdownMenuTheme: DropdownMenuThemeData(
+        textStyle: TextStyle(
+          color: text,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.15,
+        ),
+        inputDecorationTheme: inputDecoration,
+        menuStyle: MenuStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          )),
+        )
       ),
     );
   }
