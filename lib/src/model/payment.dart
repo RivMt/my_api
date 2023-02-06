@@ -1,6 +1,7 @@
 library my_api;
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/model.dart';
 
 class Payment extends FinanceModel {
@@ -10,6 +11,7 @@ class Payment extends FinanceModel {
   static const String keyPriority = "priority";
   static const String keyLimitation = "limitation";
   static const String keyIsCredit = "is_credit";
+  static const String keyCurrency = "currency";
   static const String keySerialNumber = "serial_number";
   static const String keyForeground = "foreground";
   static const String keyBackground = "background";
@@ -24,6 +26,9 @@ class Payment extends FinanceModel {
   ///
   /// 31th day is regarded as 30th
   static const int payDayMax = 30;
+
+  /// Unknown payment
+  static final Payment unknown = Payment({});
 
   Payment(super.map);
 
@@ -53,6 +58,11 @@ class Payment extends FinanceModel {
   bool get isCredit => getValue(keyIsCredit, false);
 
   set isCredit(bool value) => map[keyIsCredit] = value;
+
+  /// Currency of this payment
+  Currency get currency => Currency.fromValue(getValue(keyCurrency, Currency.unknown.value));
+
+  set currency(Currency currency) => map[keyCurrency] = currency.value;
 
   /// Serial number
   String get serialNumber => getValue(keySerialNumber, "");
@@ -125,6 +135,11 @@ enum PaymentIcon {
       return PaymentIcon.card;
     }
     return PaymentIcon.values[id];
+  }
+
+  /// Key for localization
+  String get key {
+    return "paymentType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
   }
 
 }
