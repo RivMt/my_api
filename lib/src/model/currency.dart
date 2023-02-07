@@ -58,4 +58,7 @@ enum Currency {
   String get key {
     return "currencyType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
   }
+
+  /// List of all currencies without [unknown]
+  static List<Currency> get validValues => values.where((item) => item.value != Currency.unknown.value).toList(growable: false);
 }
