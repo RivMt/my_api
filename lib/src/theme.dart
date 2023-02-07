@@ -350,6 +350,13 @@ class AppTheme {
           )),
         )
       ),
+      // Badge
+      badgeTheme: BadgeThemeData(
+        backgroundColor: primary,
+        textColor: frontForeground,
+        smallSize: 8,
+        largeSize: 16,
+      ),
     );
   }
 

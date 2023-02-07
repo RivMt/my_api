@@ -10,26 +10,32 @@ class WalletItemIcon extends StatelessWidget {
     required this.foreground,
     required this.background,
     required this.icon,
+    this.selected = false,
   });
 
   final Color foreground, background;
 
   final IconData icon;
 
+  final bool selected;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 32,
-      height: 32,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: background,
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Icon(
-        icon,
-        color: foreground,
+    return Badge(
+      isLabelVisible: selected,
+      child: Container(
+        width: 32,
+        height: 32,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: background,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Icon(
+          icon,
+          color: foreground,
+        ),
       ),
     );
   }
@@ -68,7 +74,8 @@ class WalletItemCard extends StatelessWidget {
       leading: WalletItemIcon(
         icon: icon,
         foreground: foreground,
-        background: selected ? Color.alphaBlend(Colors.white30, background) : background,
+        background: background,
+        selected: selected,
       ),
       main: Text(
         subtitle,
