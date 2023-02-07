@@ -23,6 +23,7 @@ class WalletItemIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Badge(
       isLabelVisible: selected,
+      backgroundColor: foreground,
       child: Container(
         width: 32,
         height: 32,
