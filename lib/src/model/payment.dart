@@ -101,6 +101,30 @@ class Payment extends FinanceModel {
     map[keyPayDate] = list[1];
   }
 
+  /// Get date which transaction will be calculated from [paidDate]
+  DateTime getCalculatedDate(DateTime paidDate) {
+    // Month
+    late int delta;
+    if (payBegin.month == payEnd.month) {
+      assert(payBegin.day <= payEnd.day);
+      delta = payBegin.month;
+    } else {
+      assert(payBegin.month > payEnd.month);
+      final int day = min(paidDate.day, payDayMax);
+      final last = DateTime(paidDate.year, paidDate.month + 1, 0); // Last day of paidDate' month
+      assert(payBegin.day > payEnd.day);
+      if (payBegin.day <= day && day <= last.day) {
+        delta = payBegin.month;
+      } else if (day >= 1 && day <= payEnd.day) {
+        delta = payEnd.month;
+      }
+    }
+    // Day
+    final int last = DateTime(paidDate.year, paidDate.month + delta + 1, 0).day;
+    // Return
+    return DateTime(paidDate.year, paidDate.month + delta, min(payDate, last));
+  }
+
 }
 
 class PaymentRangePoint {
