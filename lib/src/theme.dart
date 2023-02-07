@@ -6,6 +6,25 @@ class AppTheme {
 
   static final Color errorSecondary = Colors.red[300] ?? Colors.redAccent;
 
+  static const int alphaFocused = 36;
+
+  static const int alphaPressed = 24;
+
+  static const int alphaHovered = 12;
+
+  static MaterialStateProperty<Color?>? textButtonOverlay(Color color) {
+    return MaterialStateProperty.resolveWith((states) {
+      if (states.contains(MaterialState.pressed)) {
+        return color.withAlpha(AppTheme.alphaPressed);
+      } else if (states.contains(MaterialState.hovered)) {
+        return color.withAlpha(AppTheme.alphaHovered);
+      } else if (states.contains(MaterialState.focused)) {
+        return color.withAlpha(AppTheme.alphaFocused);
+      }
+      return null;
+    });
+  }
+
   static ThemeData get light {
     return _theme(
       primary: Colors.blue,
@@ -286,6 +305,7 @@ class AppTheme {
               letterSpacing: 0.15,
             );
           }),
+          overlayColor: textButtonOverlay(primary),
         )
       ),
       // Checkbox
