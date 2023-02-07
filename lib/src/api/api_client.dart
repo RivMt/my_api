@@ -163,7 +163,7 @@ class ApiClient {
   /// [calc] defines type of calculation. And [attribute] defines column name
   /// which is calculated
   Future<ApiResponse<Decimal>> calculate<T>(
-      Map<String, dynamic> data,
+      List<Map<String, dynamic>> data,
       CalculationType calc,
       String attribute,
       ) async {
@@ -171,7 +171,7 @@ class ApiClient {
       ApiMethod.post,
       home<T>(),
       path<T>(),
-      [data],
+      data,
       buildOptions(
         calcType: calc,
         calcAttribute: attribute,
