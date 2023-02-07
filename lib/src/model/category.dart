@@ -7,13 +7,13 @@ import 'package:my_api/src/model/transaction.dart';
 class Category extends FinanceModel {
 
   static const String keyType = "type";
-  static const String keyCategory = "category";
+  static const String keyIncluded = "category";
   static const String keyIcon = "icon";
   static const String keyName = "name";
 
   static final Category unknown = Category({
     keyType: TransactionType.expense,
-    keyCategory: -1,
+    keyIncluded: -1,
     keyIcon: -1,
     keyName: "unknown",
   });
@@ -27,17 +27,17 @@ class Category extends FinanceModel {
 
   set type(TransactionType value) => map[keyType] = value.code;
 
-  /// Category
+  /// Included
   ///
-  /// Default value is `0`
-  int get category => getValue(keyCategory, 0);
+  /// Default value is `true`
+  bool get included => getValue(keyIncluded, true);
 
-  set category(int value) => map[keyCategory] = value;
+  set included(bool value) => map[keyIncluded] = value;
 
   /// Icon
-  CategoryIcon get icon => CategoryIcon.fromId(getValue(keyIcon, CategoryIcon.unknown.id));
+  CategorySymbol get icon => CategorySymbol.fromId(getValue(keyIcon, CategorySymbol.unknown.id));
 
-  set icon(CategoryIcon icon) => map[keyIcon] = icon.id;
+  set icon(CategorySymbol icon) => map[keyIcon] = icon.id;
 
   /// Name
   String get name => getValue(keyName, "");
@@ -46,7 +46,7 @@ class Category extends FinanceModel {
 
 }
 
-enum CategoryIcon {
+enum CategorySymbol {
   unknown(-1, Icons.circle_outlined),
   arrowDown(0, Icons.arrow_downward_rounded),
   beverage(1, Icons.emoji_food_beverage_outlined),
@@ -124,7 +124,7 @@ enum CategoryIcon {
   checkroom(73, Icons.checkroom_outlined),
   upload(74, Icons.upload_outlined);
 
-  const CategoryIcon(this.id, this.icon);
+  const CategorySymbol(this.id, this.icon);
 
   /// Unique value
   final int id;
@@ -133,11 +133,11 @@ enum CategoryIcon {
   final IconData icon;
 
   /// Find category icon using [id]
-  factory CategoryIcon.fromId(int id) {
+  factory CategorySymbol.fromId(int id) {
     // Check id value range
-    if (id < -1 || id >= CategoryIcon.values.length-1) {
-      return CategoryIcon.unknown;
+    if (id < -1 || id >= CategorySymbol.values.length-1) {
+      return CategorySymbol.unknown;
     }
-    return CategoryIcon.values[id + 1];
+    return CategorySymbol.values[id + 1];
   }
 }

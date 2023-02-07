@@ -9,6 +9,7 @@ export 'package:my_api/src/api/api_client.dart';
 // UI
 export 'package:my_api/src/theme.dart';
 export 'package:my_api/src/component/interface_constructor.dart';
+export 'package:my_api/src/component/category_card.dart';
 export 'package:my_api/src/component/group_card.dart';
 export 'package:my_api/src/component/data_card.dart';
 export 'package:my_api/src/component/login_page.dart';
