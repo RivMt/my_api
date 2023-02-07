@@ -377,6 +377,13 @@ class AppTheme {
         smallSize: 8,
         largeSize: 16,
       ),
+      // PopupMenu
+      popupMenuTheme: PopupMenuThemeData(
+        color: middleBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
     );
   }
 

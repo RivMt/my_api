@@ -6,7 +6,7 @@ class GroupCard extends StatefulWidget {
     required this.title,
     required this.count,
     required this.build,
-    this.onMorePressed,
+    this.button,
   });
 
   /// Default width
@@ -21,11 +21,11 @@ class GroupCard extends StatefulWidget {
   /// Number of children
   final int count;
 
+  /// Top-right button
+  final Widget? button;
+
   /// Build list
   final Widget? Function(BuildContext, int) build;
-
-  /// Triggers on right arrow button pressed
-  final Function()? onMorePressed;
 
   @override
   _GroupCardState createState() => _GroupCardState();
@@ -56,11 +56,8 @@ class _GroupCardState extends State<GroupCard> {
                   ],
                 ),
                 Visibility(
-                  visible: (widget.onMorePressed != null),
-                  child: IconButton(
-                    icon: const Icon(Icons.chevron_right_outlined),
-                    onPressed: widget.onMorePressed,
-                  ),
+                  visible: widget.button != null,
+                  child: widget.button ?? const SizedBox(),
                 ),
               ],
             ),
