@@ -12,6 +12,24 @@ class AppTheme {
 
   static const int alphaHovered = 12;
 
+  static const double sizeDisplayLarge = 28;
+
+  static const double sizeTitleLarge = 18;
+
+  static const double sizeTitleMedium = 16;
+
+  static const double sizeTitleSmall = 12;
+
+  static const double sizeBodyMedium = 14;
+
+  static const double sizeBodySmall = 12;
+
+  static const double sizeLabelLarge = 16;
+
+  static const double sizeLabelMedium = 14;
+
+  static const double sizeLabelSmall = 12;
+
   static MaterialStateProperty<Color?>? textButtonOverlay(Color color) {
     return MaterialStateProperty.resolveWith((states) {
       if (states.contains(MaterialState.pressed)) {
@@ -88,20 +106,20 @@ class AppTheme {
       // Text
       labelStyle: TextStyle(
         color: subtext,
-        fontSize: 13,
+        fontSize: sizeLabelSmall,
         fontWeight: FontWeight.normal,
         letterSpacing: 0.25,
       ),
       hintStyle: TextStyle(
         color: subtext,
-        fontSize: 14,
+        fontSize: sizeBodyMedium,
         fontWeight: FontWeight.normal,
         letterSpacing: 0.25,
       ),
       helperMaxLines: 2,
       helperStyle: TextStyle(
         color: subtext,
-        fontSize: 12,
+        fontSize: sizeBodySmall,
         fontWeight: FontWeight.w300,
         letterSpacing: 0.25,
       ),
@@ -109,14 +127,14 @@ class AppTheme {
       prefixIconColor: subtext,
       prefixStyle: TextStyle(
         color: subtext,
-        fontSize: 16,
+        fontSize: sizeLabelLarge,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.15,
       ),
       suffixIconColor: subtext,
       suffixStyle: TextStyle(
         color: subtext,
-        fontSize: 16,
+        fontSize: sizeLabelLarge,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.15,
       ),
@@ -192,26 +210,26 @@ class AppTheme {
         // Display
         displayLarge: TextStyle(
           color: text,
-          fontSize: 28,
+          fontSize: sizeDisplayLarge,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.2,
         ),
         // Title
         titleLarge: TextStyle(
           color: text,
-          fontSize: 18,
+          fontSize: sizeTitleLarge,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.15,
         ),
         titleMedium: TextStyle(
           color: text,
-          fontSize: 16,
+          fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
         ),
         titleSmall: TextStyle(
           color: subtext,
-          fontSize: 12,
+          fontSize: sizeTitleSmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.15,
           //height: 24,
@@ -219,32 +237,32 @@ class AppTheme {
         // Body
         bodyMedium: TextStyle(
           color: subtext,
-          fontSize: 14,
+          fontSize: sizeBodyMedium,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         bodySmall: TextStyle(
           color: subtext,
-          fontSize: 11,
+          fontSize: sizeBodySmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         // Label
         labelLarge: TextStyle(
           color: subtext,
-          fontSize: 16,
+          fontSize: sizeLabelLarge,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         labelMedium: TextStyle(
           color: subtext,
-          fontSize: 14,
+          fontSize: sizeLabelMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.25,
         ),
         labelSmall: TextStyle(
           color: subtext,
-          fontSize: 10,
+          fontSize: sizeLabelSmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
           //height: 24,
@@ -282,7 +300,7 @@ class AppTheme {
             }
             return TextStyle(
               color: color,
-              fontSize: 16,
+              fontSize: sizeTitleMedium,
               fontWeight: FontWeight.w500,
               letterSpacing: 0.15,
             );
@@ -300,7 +318,7 @@ class AppTheme {
             }
             return TextStyle(
               color: color,
-              fontSize: 16,
+              fontSize: sizeTitleMedium,
               fontWeight: FontWeight.w500,
               letterSpacing: 0.15,
             );
@@ -336,13 +354,13 @@ class AppTheme {
         ),
         titleTextStyle: TextStyle(
           color: text,
-          fontSize: 16,
+          fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
         ),
         contentTextStyle: TextStyle(
           color: subtext,
-          fontSize: 14,
+          fontSize: sizeBodyMedium,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
@@ -359,7 +377,7 @@ class AppTheme {
       dropdownMenuTheme: DropdownMenuThemeData(
         textStyle: TextStyle(
           color: text,
-          fontSize: 16,
+          fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
         ),
