@@ -41,9 +41,9 @@ class Payment extends FinanceModel {
   set viewers(List<String> list) => map[keyViewers] = list;
 
   /// Index of icon
-  PaymentIcon get icon => PaymentIcon.fromId(getValue(keyIcon, PaymentIcon.card.id));
+  PaymentSymbol get icon => PaymentSymbol.fromId(getValue(keyIcon, PaymentSymbol.card.id));
 
-  set icon(PaymentIcon icon) => map[keyIcon] = icon.id;
+  set icon(PaymentSymbol icon) => map[keyIcon] = icon.id;
 
   /// Priority
   ///
@@ -214,7 +214,7 @@ class PaymentRangePoint {
   bool operator >(PaymentRangePoint other) => compareTo(other) > 0;
 }
 
-enum PaymentIcon {
+enum PaymentSymbol {
   card(0, Icons.credit_card),
   cash(1, Icons.money),
   point(2, Icons.card_giftcard_rounded),
@@ -227,7 +227,7 @@ enum PaymentIcon {
   toll(9, Icons.toll_outlined);
 
 
-  const PaymentIcon(this.id, this.icon);
+  const PaymentSymbol(this.id, this.icon);
 
   /// Unique value
   final int id;
@@ -235,12 +235,12 @@ enum PaymentIcon {
   /// [IconData]
   final IconData icon;
 
-  factory PaymentIcon.fromId(int id) {
+  factory PaymentSymbol.fromId(int id) {
     // Check id
-    if (id < 0 || id >= PaymentIcon.values.length) {
-      return PaymentIcon.card;
+    if (id < 0 || id >= PaymentSymbol.values.length) {
+      return PaymentSymbol.card;
     }
-    return PaymentIcon.values[id];
+    return PaymentSymbol.values[id];
   }
 
   /// Key for localization

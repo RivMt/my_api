@@ -30,9 +30,9 @@ class Account extends FinanceModel {
   set viewers(List<String> list) => map[keyViewers] = list;
 
   /// Index of icon
-  AccountIcon get icon => AccountIcon.fromId(getValue(keyIcon, AccountIcon.account.id));
+  AccountSymbol get icon => AccountSymbol.fromId(getValue(keyIcon, AccountSymbol.account.id));
 
-  set icon(AccountIcon icon) => map[keyIcon] = icon.id;
+  set icon(AccountSymbol icon) => map[keyIcon] = icon.id;
 
   /// Priority
   ///
@@ -78,7 +78,7 @@ class Account extends FinanceModel {
 
 }
 
-enum AccountIcon {
+enum AccountSymbol {
   saving(0, Icons.savings_outlined),
   account(1, Icons.folder_outlined),
   cash(2, Icons.money),
@@ -92,7 +92,7 @@ enum AccountIcon {
   mileage(10, Icons.airplane_ticket_outlined);
 
 
-  const AccountIcon(this.id, this.icon);
+  const AccountSymbol(this.id, this.icon);
 
   /// Unique value
   final int id;
@@ -106,12 +106,12 @@ enum AccountIcon {
   }
 
   /// Find icon using [id]
-  factory AccountIcon.fromId(int id) {
+  factory AccountSymbol.fromId(int id) {
     // Check id value
-    if (id < 0 || id >= AccountIcon.values.length) {
-      return AccountIcon.account;
+    if (id < 0 || id >= AccountSymbol.values.length) {
+      return AccountSymbol.account;
     }
-    return AccountIcon.values[id];
+    return AccountSymbol.values[id];
   }
 
 }
