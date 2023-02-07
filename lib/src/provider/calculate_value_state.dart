@@ -9,30 +9,21 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
   static const _tag = "CalculateValueState";
 
   CalculateValueState(this.ref, {
-    required List<Map<String, dynamic>> conditions,
+    required this.conditions,
     required this.type,
     required this.attribute,
-  }) : super(Decimal.parse("0")) {
-    this.conditions = conditions;
-  }
+  }) : super(Decimal.zero);
 
   final Ref ref;
 
-  List<Map<String, dynamic>> _conditions = [{}];
-
-  List<Map<String, dynamic>> get conditions => _conditions;
-
-  set conditions(List<Map<String, dynamic>> map) {
-    _conditions = map;
-    request();
-  }
+  List<Map<String, dynamic>> conditions = [{}];
 
   final CalculationType type;
 
   final String attribute;
 
   /// Clear state
-  void clear() => state = Decimal.parse("0");
+  void clear() => state = Decimal.zero;
 
   /// Request [T] items fit to [conditions] and filter by [options]
   void request() async {
