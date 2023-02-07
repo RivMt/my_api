@@ -110,6 +110,9 @@ class ApiClient {
     final data = (key == "") ? map : map[key];
     switch(T) {
       case Decimal:
+        if (data is! String) {
+          return Decimal.zero;
+        }
         return Decimal.parse(data);
       case Account:
         return Account(data);
