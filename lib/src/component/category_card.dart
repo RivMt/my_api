@@ -13,6 +13,9 @@ class CategoryCard extends StatelessWidget {
     this.onHover,
   });
 
+  /// Card height
+  static const int height = 72;
+
   /// Category
   final Category category;
 
@@ -27,7 +30,7 @@ class CategoryCard extends StatelessWidget {
       leading: CategoryIcon(
         type: category.type,
         icon: category.icon.icon,
-        included: true,
+        included: category.included,
       ),
       main: Text(
         category.name,
@@ -75,7 +78,7 @@ class CategoryIcon extends StatelessWidget {
 
   /// Get color by [type], [included], and [background]
   Color? getColor(TransactionType type, bool included, bool background) {
-    final level = background ? 300 : 500;
+    final level = background ? 200 : 500;
     switch(type) {
       case TransactionType.expense:
         if (included) {

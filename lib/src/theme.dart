@@ -12,6 +12,8 @@ class AppTheme {
 
   static const int alphaHovered = 12;
 
+  static const int alphaDisabled = 5;
+
   static const double sizeDisplayLarge = 28;
 
   static const double sizeTitleLarge = 18;
@@ -38,6 +40,8 @@ class AppTheme {
         return color.withAlpha(AppTheme.alphaHovered);
       } else if (states.contains(MaterialState.focused)) {
         return color.withAlpha(AppTheme.alphaFocused);
+      } else if (states.contains(MaterialState.disabled)) {
+        return color.withAlpha(AppTheme.alphaDisabled);
       }
       return null;
     });
@@ -202,8 +206,9 @@ class AppTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: rearBackground,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(16),
         ),
+        foregroundColor: primary,
       ),
       // Text
       textTheme: TextTheme(
@@ -401,6 +406,30 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
+      ),
+      // Chip
+      chipTheme: ChipThemeData(
+        elevation: 0,
+        backgroundColor: middleBackground,
+        disabledColor: rearBackground,
+        selectedColor: primary,
+        labelStyle: TextStyle(
+          color: text,
+          fontSize: sizeBodyMedium,
+        ),
+        secondarySelectedColor: primary,
+        secondaryLabelStyle: TextStyle(
+          color: text,
+          fontSize: sizeBodyMedium,
+        ),
+        shadowColor: Colors.transparent,
+        side: const BorderSide(
+          color: Colors.transparent,
+        )
+      ),
+      // Divider
+      dividerTheme: DividerThemeData(
+        color: rearForeground,
       ),
     );
   }

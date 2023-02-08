@@ -7,7 +7,7 @@ import 'package:my_api/src/model/transaction.dart';
 class Category extends FinanceModel {
 
   static const String keyType = "type";
-  static const String keyIncluded = "category";
+  static const String keyIncluded = "included";
   static const String keyIcon = "icon";
   static const String keyName = "name";
 
