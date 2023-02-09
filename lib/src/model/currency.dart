@@ -11,7 +11,7 @@ enum Currency {
   poundSterling(4, "￡", "GBP", 2),
   yuanRenminbi(5, "￥", "CNY", 2);
 
-  const Currency(this.value, this.symbol, this.code, this.digits);
+  const Currency(this.value, this.symbol, this.code, this.decimalDigits);
 
   /// Unique value of currency
   final int value;
@@ -22,8 +22,8 @@ enum Currency {
   /// 3 letter code of currency
   final String code;
 
-  /// Number of digits
-  final int digits;
+  /// Number of decimal part digits
+  final int decimalDigits;
 
   /// Find [Currency] using [value]
   factory Currency.fromValue(int value) {
@@ -49,7 +49,7 @@ enum Currency {
   String format(Decimal amount) {
     final currency = NumberFormat.currency(
       symbol: symbol,
-      decimalDigits: digits,
+      decimalDigits: decimalDigits,
     );
     return currency.format(DecimalIntl(amount));
   }
