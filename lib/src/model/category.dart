@@ -21,6 +21,19 @@ class Category extends FinanceModel {
 
   Category(super.map);
 
+  /// Is this valid or not
+  bool get isValid {
+    // Pid
+    if (map.containsKey(FinanceModel.keyPid) && pid < 0) {
+      return false;
+    }
+    // Type
+    if (type == TransactionType.unknown) {
+      return false;
+    }
+    return true;
+  }
+
   /// Type
   ///
   /// Default value is [TransactionType.expense]

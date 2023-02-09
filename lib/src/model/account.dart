@@ -19,10 +19,20 @@ class Account extends FinanceModel {
   static const String keyBackground = "background";
 
   static final Account unknown = Account({
+    FinanceModel.keyPid: -1,
     FinanceModel.keyDescriptions: "Unknown",
   });
 
   Account(super.map);
+
+  bool get isValid {
+    // Pid
+    if (map.containsKey(FinanceModel.keyPid) && pid < 0) {
+      return false;
+    }
+    // Otherwise
+    return true;
+  }
 
   /// List of viewers id
   List<String> get viewers => getValue(keyViewers, []);

@@ -1,6 +1,8 @@
 library my_api;
 
-class Model {
+abstract class Model {
+
+  static final maxDate = DateTime(2200, 12, 31);
 
   /// Raw data of this object
   Map<String, dynamic> map = {};

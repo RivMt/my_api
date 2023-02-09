@@ -43,6 +43,48 @@ class Transaction extends FinanceModel {
 
   Transaction(super.map);
 
+  /// Check data is valid
+  bool get isValid {
+    // PID
+    if (map.containsKey(FinanceModel.keyPid) && pid <= 0) {
+      return false;
+    }
+    // Category
+    if (category < 0) {
+      return false;
+    }
+    // Account
+    if (accountId <= 0) {
+      return false;
+    }
+    // Payment
+    if (paymentId < 0) {
+      return false;
+    }
+    // Currency
+    if (currency == Currency.unknown) {
+      return false;
+    }
+    // Amount
+    if (amount <= Decimal.zero) {
+      return false;
+    }
+    // Alt
+    if ((altCurrency != null && altAmount == null) ||
+        (altCurrency == null && altAmount != null) ||
+        (altCurrency == Currency.unknown) ||
+        (altAmount != null && altAmount! <= Decimal.zero)
+    ) {
+      return false;
+    }
+    // Utility days
+    if (utilityDays < 1) {
+      return false;
+    }
+    // Otherwise
+    return true;
+  }
+
   /// Type
   ///
   /// Default value is [TransactionType.expense]

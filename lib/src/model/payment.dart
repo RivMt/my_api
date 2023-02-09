@@ -33,7 +33,27 @@ class Payment extends FinanceModel {
   /// Unknown payment
   static final Payment unknown = Payment({});
 
+  /// No payment
+  static final Payment none = Payment({FinanceModel.keyPid: 0});
+
   Payment(super.map);
+
+  bool get isValid {
+    // Pid
+    if (map.containsKey(FinanceModel.keyPid) && pid < 0) {
+      return false;
+    }
+    // Currency
+    if (currency == Currency.unknown) {
+      return false;
+    }
+    // Pay range
+    if (payBegin > payEnd) {
+      return false;
+    }
+    // Otherwise
+    return true;
+  }
 
   /// List of viewers id
   List<String> get viewers => getValue(keyViewers, []);
