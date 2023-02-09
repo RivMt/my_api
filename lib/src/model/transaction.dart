@@ -159,7 +159,7 @@ class Transaction extends FinanceModel {
 
   set altCurrency(Currency? currency) {
     if (currency != null) {
-      map[keyCurrency] = currency.value;
+      map[keyAltCurrency] = currency.value;
     }
   }
 
