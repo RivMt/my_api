@@ -35,13 +35,16 @@ class TransactionCard extends StatelessWidget {
         data: data,
         category: category,
       ),
-      main: Text(
+      top: Text(
         currency.format(amount),
         style: Theme.of(context).textTheme.titleMedium,
       ),
-      sub: Text(
-        data.descriptions,
-        style: Theme.of(context).textTheme.labelMedium,
+      bottom: Visibility(
+        visible: data.descriptions.isNotEmpty,
+        child: Text(
+          data.descriptions,
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
       ),
       color: Colors.transparent,
       onTap: onTap,

@@ -4,8 +4,8 @@ class DataCard extends StatefulWidget {
   const DataCard({
     super.key,
     required this.leading,
-    required this.main,
-    required this.sub,
+    required this.top,
+    required this.bottom,
     this.isUnknown = false,
     this.unknownMessage,
     this.color,
@@ -15,12 +15,22 @@ class DataCard extends StatefulWidget {
     this.onHover,
   });
 
-  final Widget leading, main, sub;
+  /// [Widget] which is located at start position of card
+  final Widget leading;
 
+  /// [Widget] which is located at upper side of card
+  final Widget top;
+
+  /// [Widget] which is located at lower side of card
+  final Widget bottom;
+
+  /// Background [Color] of this card
   final Color? color;
 
+  /// Value of show [unknownMessage] or not
   final bool isUnknown;
 
+  /// If [isUnknown] is `true`, show this rather than [top], [bottom] and [leading]
   final String? unknownMessage;
 
   final Function()? onTap, onDoubleTap, onLongPress;
@@ -71,8 +81,8 @@ class _DataCardState extends State<DataCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      widget.main,
-                      widget.sub,
+                      widget.top,
+                      widget.bottom,
                     ],
                   ),
                 ],

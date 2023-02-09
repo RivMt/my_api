@@ -86,11 +86,14 @@ class WalletItemCard extends StatelessWidget {
         background: background,
         selected: selected,
       ),
-      main: Text(
-        subtitle,
-        style: Theme.of(context).textTheme.labelMedium,
+      top: Visibility(
+        visible: subtitle.isNotEmpty,
+        child: Text(
+          subtitle,
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
       ),
-      sub: Text(
+      bottom: Text(
         title,
         style: Theme.of(context).textTheme.titleMedium,
       ),

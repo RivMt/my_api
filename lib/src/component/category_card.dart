@@ -38,13 +38,16 @@ class CategoryCard extends StatelessWidget {
         icon: category.icon.icon,
         included: category.isIncluded,
       ),
-      main: Text(
+      top: Text(
         category.name,
         style: Theme.of(context).textTheme.titleMedium,
       ),
-      sub: Text(
-        category.descriptions,
-        style: Theme.of(context).textTheme.labelMedium,
+      bottom: Visibility(
+        visible: category.descriptions.isNotEmpty,
+        child: Text(
+          category.descriptions,
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
       ),
       color: Colors.transparent,
       onTap: onTap,
