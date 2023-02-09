@@ -39,7 +39,7 @@ class Transaction extends FinanceModel {
   static const String keyAltAmount = "alt_amount";
   static const String keyCalculatedDate = "calculated_date";
   static const String keyIncluded = "included";
-  static const String keyEfficiencyDate = "efficiency_date";
+  static const String keyUtilityDays = "utility_days";
 
   Transaction(super.map);
 
@@ -58,9 +58,20 @@ class Transaction extends FinanceModel {
   set category(int value) => map[keyCategory] = value;
 
   /// [DateTime] of this transaction paid
-  DateTime get paidDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyPaidDate, 0));
+  DateTime get paidDate {
+    final value = getValue(keyPaidDate, -1);
+    if (value < 0) {
+      return DateTime.now().toUtc();
+    }
+    return DateTime.fromMillisecondsSinceEpoch(value, isUtc: true);
+  }
 
-  set paidDate(DateTime date) => map[keyPaidDate] = date.millisecondsSinceEpoch;
+  set paidDate(DateTime date) {
+    if (!date.isUtc) {
+      paidDate = date.toUtc();
+    }
+    map[keyPaidDate] = date.millisecondsSinceEpoch;
+  }
 
   /// PID of [Account] this transaction occurred
   int get accountId => getValue(keyAccountID, 0);
@@ -121,9 +132,14 @@ class Transaction extends FinanceModel {
   }
 
   /// [DateTime] of this transaction calculated
-  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0));
+  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0), isUtc: true);
 
-  set calculatedDate(DateTime date) => map[keyCalculatedDate] = date.millisecondsSinceEpoch;
+  set calculatedDate(DateTime date) {
+    if (!date.isUtc) {
+      calculatedDate = date.toUtc();
+    }
+    map[keyCalculatedDate] = date.millisecondsSinceEpoch;
+  }
 
   /// Value of this transaction included in statics
   bool get included => getValue(keyIncluded, true);
@@ -131,9 +147,9 @@ class Transaction extends FinanceModel {
   set included(bool value) => map[keyIncluded] = value;
 
   /// Days of this transaction is efficient
-  int get efficiencyDate => getValue(keyEfficiencyDate, 1);
+  int get utilityDays => getValue(keyUtilityDays, 1);
 
-  set efficiencyDate(int value) => map[keyEfficiencyDate] = value;
+  set utilityDays(int value) => map[keyUtilityDays] = value;
 
 
 }

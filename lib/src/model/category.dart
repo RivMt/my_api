@@ -12,8 +12,9 @@ class Category extends FinanceModel {
   static const String keyName = "name";
 
   static final Category unknown = Category({
-    keyType: TransactionType.expense,
-    keyIncluded: -1,
+    FinanceModel.keyPid: -1,
+    keyType: TransactionType.expense.code,
+    keyIncluded: false,
     keyIcon: -1,
     keyName: "unknown",
   });
