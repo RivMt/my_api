@@ -18,9 +18,9 @@ class Payment extends FinanceModel {
   static const String keySerialNumber = "serial_number";
   static const String keyForeground = "foreground";
   static const String keyBackground = "background";
-  static const String keyPayBegin = "keyPayBegin";
-  static const String keyPayEnd = "keyPayEnd";
-  static const String keyPayDate = "keyPayDate";
+  static const String keyPayBegin = "pay_begin";
+  static const String keyPayEnd = "pay_end";
+  static const String keyPayDate = "pay_date";
 
   /// Minimum day of payment day
   static const int payDayMin = 1;
