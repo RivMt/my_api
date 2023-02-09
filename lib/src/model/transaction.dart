@@ -160,6 +160,8 @@ class Transaction extends FinanceModel {
   set altCurrency(Currency? currency) {
     if (currency != null) {
       map[keyAltCurrency] = currency.value;
+    } else {
+      map[keyAltCurrency] = null;
     }
   }
 
@@ -178,7 +180,9 @@ class Transaction extends FinanceModel {
 
   set altAmount(Decimal? value) {
     if (value != null) {
-      map[keyAltAmount] = value;
+      map[keyAltAmount] = value.toString();
+    } else {
+      map[keyAltAmount] = null;
     }
   }
 
