@@ -70,7 +70,7 @@ class TransactionIcon extends StatelessWidget {
     return CategoryIcon(
       type: data.type,
       icon: category.icon.icon,
-      included: data.included,
+      included: data.isIncluded,
     );
   }
 

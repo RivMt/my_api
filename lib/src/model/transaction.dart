@@ -185,9 +185,9 @@ class Transaction extends FinanceModel {
   }
 
   /// Value of this transaction included in statics
-  bool get included => getValue(keyIncluded, true);
+  bool get isIncluded => getValue(keyIncluded, true);
 
-  set included(bool value) => map[keyIncluded] = value;
+  set isIncluded(bool value) => map[keyIncluded] = value;
 
   /// Days of this transaction is efficient
   int get utilityDays => getValue(keyUtilityDays, 1);

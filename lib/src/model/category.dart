@@ -44,9 +44,9 @@ class Category extends FinanceModel {
   /// Included
   ///
   /// Default value is `true`
-  bool get included => getValue(keyIncluded, true);
+  bool get isIncluded => getValue(keyIncluded, true);
 
-  set included(bool value) => map[keyIncluded] = value;
+  set isIncluded(bool value) => map[keyIncluded] = value;
 
   /// Icon
   CategorySymbol get icon => CategorySymbol.fromId(getValue(keyIcon, CategorySymbol.unknown.id));

@@ -36,7 +36,7 @@ class CategoryCard extends StatelessWidget {
       leading: CategoryIcon(
         type: category.type,
         icon: category.icon.icon,
-        included: category.included,
+        included: category.isIncluded,
       ),
       main: Text(
         category.name,
