@@ -1,5 +1,7 @@
 library my_api;
 
+import 'dart:math';
+
 import 'package:decimal/decimal.dart';
 import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/model.dart';
@@ -41,6 +43,12 @@ class Transaction extends FinanceModel {
   static const String keyCalculatedDate = "calculated_date";
   static const String keyIncluded = "included";
   static const String keyUtilityDays = "utility_days";
+
+  /// Maximum digits of integer part of [amount]
+  static const int maxIntegerPartDigits = 20;
+
+  /// Maximum digits of decimal part of [amount]
+  static const int maxDecimalPartDigits = 2;
 
   Transaction(super.map);
 
@@ -194,5 +202,12 @@ class Transaction extends FinanceModel {
 
   set utilityDays(int value) => map[keyUtilityDays] = value;
 
-
+  /// Regular expression for check amount
+  RegExp get regexAmount {
+    final decimal = currency.decimalDigits > 0
+        ? "(\\.\\d{0,${min(currency.decimalDigits, maxDecimalPartDigits)}})?"
+        : "";
+    const integer = "\\d{0,$maxIntegerPartDigits}";
+    return RegExp("^$integer$decimal\$");
+  }
 }
