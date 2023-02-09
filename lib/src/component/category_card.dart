@@ -98,6 +98,8 @@ class CategoryIcon extends StatelessWidget {
         } else {
           return Colors.teal[level];
         }
+      case TransactionType.unknown:
+        return Colors.grey[level];
     }
   }
 
