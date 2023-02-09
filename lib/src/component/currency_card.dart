@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/src/component/data_card.dart';
 import 'package:my_api/src/model/currency.dart';
-import 'package:my_api/src/theme.dart';
 
 class CurrencyCard extends StatelessWidget {
   const CurrencyCard({
@@ -20,7 +19,7 @@ class CurrencyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DataCard(
       leading: CurrencyIcon(
-        code: data.code,
+        icon: data.icon,
         foreground: Colors.white,
         background: Theme.of(context).primaryColor,
       ),
@@ -42,13 +41,13 @@ class CurrencyIcon extends StatelessWidget {
     super.key,
     required this.foreground,
     required this.background,
-    required this.code,
+    required this.icon,
     this.selected = false,
   });
 
   final Color foreground, background;
 
-  final String code;
+  final IconData icon;
 
   final bool selected;
 
@@ -66,13 +65,9 @@ class CurrencyIcon extends StatelessWidget {
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(4),
         ),
-        child: Text(
-          code,
-          style: const TextStyle(
-            fontSize: AppTheme.sizeTitleSmall,
-            letterSpacing: 0.1,
-            color: Colors.white,
-          ),
+        child: Icon(
+          icon,
+          color: foreground,
         ),
       ),
     );

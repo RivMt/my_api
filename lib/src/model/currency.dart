@@ -1,17 +1,19 @@
 import 'package:decimal/decimal.dart';
 import 'package:decimal/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:my_api/src/icon/currency_symbol_icons.dart';
 
 enum Currency {
-  unknown(-1, "?", "uKn", 2),
-  won(0, "￦", "KRW", 0),
-  yen(1, "￥", "JPY", 0),
-  dollar(2, "＄", "USD", 2),
-  euro(3, "€", "EUR", 2),
-  poundSterling(4, "￡", "GBP", 2),
-  yuanRenminbi(5, "￥", "CNY", 2);
+  unknown(-1, "?", "uKn", 2, CurrencySymbol.sign),
+  won(0, "￦", "KRW", 0, CurrencySymbol.krw),
+  yen(1, "￥", "JPY", 0, CurrencySymbol.jpy),
+  dollar(2, "＄", "USD", 2, CurrencySymbol.usd),
+  euro(3, "€", "EUR", 2, CurrencySymbol.eur),
+  poundSterling(4, "￡", "GBP", 2, CurrencySymbol.gbp),
+  yuanRenminbi(5, "￥", "CNY", 2, CurrencySymbol.cny);
 
-  const Currency(this.value, this.symbol, this.code, this.decimalDigits);
+  const Currency(this.value, this.symbol, this.code, this.decimalDigits, this.icon);
 
   /// Unique value of currency
   final int value;
@@ -24,6 +26,9 @@ enum Currency {
 
   /// Number of decimal part digits
   final int decimalDigits;
+
+  /// [IconData] of symbol
+  final IconData icon;
 
   /// Find [Currency] using [value]
   factory Currency.fromValue(int value) {

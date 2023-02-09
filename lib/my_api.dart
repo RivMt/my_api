@@ -20,6 +20,9 @@ export 'package:my_api/src/component/transaction_card.dart';
 export 'package:my_api/src/component/wallet_item_card.dart';
 export 'package:my_api/src/component/list_tail_button.dart';
 
+// Icon
+export 'package:my_api/src/icon/currency_symbol_icons.dart';
+
 // Model
 export 'package:my_api/src/model/model.dart';
 export 'package:my_api/src/model/account.dart';
