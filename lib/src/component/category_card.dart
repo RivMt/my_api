@@ -7,6 +7,7 @@ class CategoryCard extends StatelessWidget {
   const CategoryCard({
     super.key,
     required this.category,
+    this.unknownMessage,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -19,6 +20,9 @@ class CategoryCard extends StatelessWidget {
   /// Category
   final Category category;
 
+  /// Unknown message
+  final String? unknownMessage;
+
   /// Tap action
   final Function()? onTap, onDoubleTap, onLongPress;
 
@@ -27,6 +31,8 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DataCard(
+      isUnknown: category == Category.unknown,
+      unknownMessage: unknownMessage,
       leading: CategoryIcon(
         type: category.type,
         icon: category.icon.icon,

@@ -51,6 +51,8 @@ class WalletItemCard extends StatelessWidget {
     required this.background,
     required this.icon,
     this.selected = false,
+    this.isUnknown = false,
+    this.unknownMessage,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -65,6 +67,10 @@ class WalletItemCard extends StatelessWidget {
 
   final bool selected;
 
+  final bool isUnknown;
+
+  final String? unknownMessage;
+
   final Function()? onTap, onDoubleTap, onLongPress;
 
   final Function(bool)? onHover;
@@ -72,6 +78,8 @@ class WalletItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DataCard(
+      isUnknown: isUnknown,
+      unknownMessage: unknownMessage,
       leading: WalletItemIcon(
         icon: icon,
         foreground: foreground,
@@ -99,17 +107,28 @@ class AccountCard extends StatelessWidget {
   const AccountCard({
     super.key,
     required this.data,
+    this.selected = false,
+    this.showBalance = true,
+    this.unknownMessage,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
     this.onHover,
-    this.selected = false,
   });
 
   /// [Account] instance to display information
   final Account data;
 
   final bool selected;
+
+  /// Value of show account's balance or not
+  ///
+  /// If `true`, balance is used for title and description is used for subtitle.
+  /// Otherwise, description is used for title and serial number is used for
+  /// subtitle.
+  final bool showBalance;
+
+  final String? unknownMessage;
 
   final Function()? onTap, onDoubleTap, onLongPress;
 
@@ -118,12 +137,18 @@ class AccountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WalletItemCard(
-      title: data.currency.format(data.balance),
-      subtitle: data.descriptions,
+      title: showBalance
+          ? data.currency.format(data.balance)
+          : data.descriptions,
+      subtitle: showBalance
+          ? data.descriptions
+          : data.serialNumber,
       foreground: data.foreground,
       background: data.background,
       icon: data.icon.icon,
       selected: selected,
+      isUnknown: data == Account.unknown,
+      unknownMessage: unknownMessage,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
       onLongPress: onLongPress,
@@ -137,17 +162,20 @@ class PaymentCard extends StatelessWidget {
   const PaymentCard({
     super.key,
     required this.data,
+    this.selected = false,
+    this.unknownMessage,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
     this.onHover,
-    this.selected = false,
   });
 
   /// [Payment] instance to display information
   final Payment data;
 
   final bool selected;
+
+  final String? unknownMessage;
 
   final Function()? onTap, onDoubleTap, onLongPress;
 
@@ -162,6 +190,8 @@ class PaymentCard extends StatelessWidget {
       background: data.background,
       icon: data.icon.icon,
       selected: selected,
+      isUnknown: data == Payment.unknown,
+      unknownMessage: unknownMessage,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
       onLongPress: onLongPress,
