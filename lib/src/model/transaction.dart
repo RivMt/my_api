@@ -5,6 +5,7 @@ import 'package:my_api/src/model/currency.dart';
 import 'package:my_api/src/model/model.dart';
 
 enum TransactionType {
+  unknown(-1),
   expense(0),
   income(1);
 
@@ -21,7 +22,7 @@ enum TransactionType {
       case 1:
         return TransactionType.income;
       default:
-        throw RangeError("$code is not valid code");
+        return TransactionType.unknown;
     }
   }
 }
