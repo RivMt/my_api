@@ -59,6 +59,18 @@ enum Currency {
     return currency.format(DecimalIntl(amount));
   }
 
+  /// Format [amount] to current currency's format without symbol
+  String formatWithoutSymbol(Decimal amount) {
+    final f = format(amount);
+    return f.substring(1, f.length);
+  }
+
+  /// Convert currency formatted [str] to [Decimal]
+  Decimal convert(String str) {
+    final regex = RegExp(r"[^\d.]");
+    return Decimal.parse(str.replaceAll(regex, ""));
+  }
+
   /// Key for translation
   String get key {
     return "currencyType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";

@@ -1,5 +1,7 @@
 library my_api;
 
+import 'dart:math';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/src/model/currency.dart';
@@ -18,6 +20,12 @@ class Account extends FinanceModel {
   static const String keyForeground = "foreground";
   static const String keyBackground = "background";
 
+  /// Maximum digits of integer part
+  static const int maxIntegerPartDigits = 30;
+
+  /// Maximum digits of decimal part
+  static const int maxDecimalPartDigits = 2;
+
   static final Account unknown = Account({
     FinanceModel.keyPid: -1,
     FinanceModel.keyDescriptions: "Unknown",
@@ -30,8 +38,21 @@ class Account extends FinanceModel {
     if (map.containsKey(FinanceModel.keyPid) && pid < 0) {
       return false;
     }
+    // Description
+    if (descriptions == "") {
+      return false;
+    }
+    // Currency
+    if (currency == Currency.unknown) {
+      return false;
+    }
     // Otherwise
     return true;
+  }
+
+  /// [RegExp] for verify [amount] and [altAmount]
+  RegExp get regex {
+    return getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
   }
 
   /// List of viewers id

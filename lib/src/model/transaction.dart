@@ -206,12 +206,8 @@ class Transaction extends FinanceModel {
 
   set utilityDays(int value) => map[keyUtilityDays] = value;
 
-  /// Regular expression for check amount
-  RegExp get regexAmount {
-    final decimal = currency.decimalDigits > 0
-        ? "(\\.\\d{0,${min(currency.decimalDigits, maxDecimalPartDigits)}})?"
-        : "";
-    const integer = "\\d{0,$maxIntegerPartDigits}";
-    return RegExp("^$integer$decimal\$");
+  /// [RegExp] for verify [amount] and [altAmount]
+  RegExp get regex {
+    return getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
   }
 }

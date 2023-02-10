@@ -71,42 +71,42 @@ void main() {
       data.amount = Decimal.parse(
           gen(Transaction.maxIntegerPartDigits + 2)
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
     test('Extra integer part with extra decimal part', () {
       data.currency = Currency.won;
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits + 2)}.${gen(Transaction.maxDecimalPartDigits + 2)}"
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
     test('Extra integer part with appropriate decimal part', () {
       data.currency = Currency.won;
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits + 2)}.${gen(Transaction.maxDecimalPartDigits - 1)}"
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
     test('Appropriate integer part with no decimal part', () {
       data.currency = Currency.won;
       data.amount = Decimal.parse(
           gen(Transaction.maxIntegerPartDigits - 2)
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), true);
+      expect(data.regex.hasMatch(data.amount.toString()), true);
     });
     test('Appropriate integer part with extra decimal part', () {
       data.currency = Currency.won;
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits - 2)}.${gen(Transaction.maxDecimalPartDigits + 2)}"
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
     test('Appropriate integer part with appropriate decimal part', () {
       data.currency = Currency.won;
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits - 2)}.${gen(Transaction.maxDecimalPartDigits - 1)}"
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
   });
 
@@ -121,7 +121,7 @@ void main() {
       data.amount = Decimal.parse(
           gen(Transaction.maxIntegerPartDigits + 2)
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
     test('Extra integer part with extra decimal part', () {
       data.currency = Currency.dollar;
@@ -129,7 +129,7 @@ void main() {
           "${gen(Transaction.maxIntegerPartDigits + 2)}.${gen(
               Transaction.maxDecimalPartDigits + 2)}"
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
     test('Extra integer part with appropriate decimal part', () {
       data.currency = Currency.dollar;
@@ -137,14 +137,14 @@ void main() {
           "${gen(Transaction.maxIntegerPartDigits + 2)}.${gen(
               Transaction.maxDecimalPartDigits - 1)}"
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
     test('Appropriate integer part with no decimal part', () {
       data.currency = Currency.dollar;
       data.amount = Decimal.parse(
           gen(Transaction.maxIntegerPartDigits - 2)
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), true);
+      expect(data.regex.hasMatch(data.amount.toString()), true);
     });
     test('Appropriate integer part with extra decimal part', () {
       data.currency = Currency.dollar;
@@ -152,7 +152,7 @@ void main() {
           "${gen(Transaction.maxIntegerPartDigits - 2)}.${gen(
               Transaction.maxDecimalPartDigits + 2)}"
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), false);
+      expect(data.regex.hasMatch(data.amount.toString()), false);
     });
     test('Appropriate integer part with appropriate decimal part', () {
       data.currency = Currency.dollar;
@@ -160,7 +160,7 @@ void main() {
           "${gen(Transaction.maxIntegerPartDigits - 2)}.${gen(
               Transaction.maxDecimalPartDigits - 1)}"
       );
-      expect(data.regexAmount.hasMatch(data.amount.toString()), true);
+      expect(data.regex.hasMatch(data.amount.toString()), true);
     });
   });
 }

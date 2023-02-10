@@ -22,6 +22,12 @@ class Payment extends FinanceModel {
   static const String keyPayEnd = "pay_end";
   static const String keyPayDate = "pay_date";
 
+  /// Maximum digits of integer part
+  static const int maxIntegerPartDigits = 30;
+
+  /// Maximum digits of decimal part
+  static const int maxDecimalPartDigits = 2;
+
   /// Minimum day of payment day
   static const int payDayMin = 1;
 
@@ -43,16 +49,30 @@ class Payment extends FinanceModel {
     if (map.containsKey(FinanceModel.keyPid) && pid < 0) {
       return false;
     }
+    // Description
+    if (descriptions == "") {
+      return false;
+    }
     // Currency
     if (currency == Currency.unknown) {
       return false;
     }
     // Pay range
-    if (payBegin > payEnd) {
-      return false;
+    if (isCredit) {
+      if (payEnd < payBegin ||
+          (payBegin.month - payEnd.month > 0 && payBegin.day != payEnd.day + 1) ||
+          (payEnd.month == 0 && payDate <= payEnd.day) ||
+          (payBegin.month == payEnd.month && (payBegin.day != payDayMin || payEnd.day != payDayMax))) {
+        return false;
+      }
     }
     // Otherwise
     return true;
+  }
+
+  /// [RegExp] for verify [amount] and [altAmount]
+  RegExp get regex {
+    return getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
   }
 
   /// List of viewers id
