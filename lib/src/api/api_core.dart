@@ -51,6 +51,9 @@ class ApiCore {
   /// Base url of server
   String url = "";
 
+  /// Base path of authentication
+  String authPath = "auth/v1/users";
+
   /// User ID
   String get id => user.userId;
 
@@ -97,7 +100,7 @@ class ApiCore {
     }
     // Authenticate
     user = await loadUser();
-    if (!user.valid) {
+    if (!user.isValid) {
       Log.e(_tag, "Failed to login");
       onLoginRequired();
     }
@@ -164,7 +167,7 @@ class ApiCore {
 
   /// Save user id and secret
   void saveUser(User user) async {
-    if (!user.valid) {
+    if (!user.isValid) {
       return;
     }
     Log.v(_tag, "Userdata saved: ${user.userId}");
@@ -192,7 +195,7 @@ class ApiCore {
     // Request
     final response = await send(
         ApiMethod.post,
-        "auth/v1/users",
+        authPath,
         body,
     );
 
@@ -203,7 +206,7 @@ class ApiCore {
     final User user = User(response.data);
 
     // Check body is not valid
-    if (!user.valid) {
+    if (!user.isValid) {
       throw InvalidModelException(User.keyUserSecret);
     }
 
@@ -212,17 +215,32 @@ class ApiCore {
     return user;
   }
 
-  /// Request [secret] using [password]
+  /// Request [secret] using [email] and [password]
   Future<User> login(String email, String password) async => auth({
-    "user_email": email,
-    "user_password": password,
+    User.keyEmail: email,
+    User.keyPassword: password,
   });
 
-  /// Check user data is valid
+  /// Check user data with [id] and [secret] is valid
   Future<User> authenticate(String id, String secret) async => auth({
-    "user_id": id,
-    "user_secret": secret,
+    User.keyUserId: id,
+    User.keyUserSecret: secret,
   });
+
+  /// Register new user
+  Future<User> register(User user, String password) async {
+    final map = user.map;
+    map[User.keyPassword] = password;
+    final response = await send(
+      ApiMethod.put,
+      authPath,
+      map
+    );
+    if (response.result != ApiResultCode.success) {
+      return user;
+    }
+    return auth(map);
+  }
 
 }
 

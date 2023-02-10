@@ -10,8 +10,25 @@ class User extends Model {
   static const String keyGender = "gender";
   static const String keyValidation = "validation";
   static const String keyUserSecret = "user_secret";
+  static const String keyPassword = "user_password";
+
+  static const int minPasswordLength = 8;
 
   User(super.map);
+
+  /// Check password validation
+  static bool checkPassword(String password) {
+    // Length
+    if (password.length < minPasswordLength) {
+      return false;
+    }
+    // Allow letter
+    final allow = RegExp(r"[^a-z\d._\-@!~`#$%^&*()=+\[\]{}:;/?]");
+    if (allow.hasMatch(password)) {
+      return false;
+    }
+    return true;
+  }
 
   /// Unique identification code (Read-only)
   String get userId => getValue(keyUserId, "");
@@ -48,7 +65,7 @@ class User extends Model {
   String get userSecret => getValue(keyUserSecret, "");
 
   /// Valid
-  bool get valid => (userId != "" && userSecret != "");
+  bool get isValid => (userId != "" && userSecret != "");
 
 }
 
@@ -64,10 +81,10 @@ class UserGender {
   static const int codeFemale = 1;
 
   /// Constant for Gender MALE
-  static final UserGender male = UserGender(codeMale, "male");
+  static final UserGender male = UserGender(codeMale, "Male");
 
   /// Constant for Gender FEMALE
-  static final UserGender female = UserGender(codeFemale, "female");
+  static final UserGender female = UserGender(codeFemale, "Female");
 
   /// Users can define gender themself
   UserGender(this.code, this.name);

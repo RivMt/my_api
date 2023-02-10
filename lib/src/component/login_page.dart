@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/my_api.dart';
+import 'package:my_api/src/component/register_page.dart';
 import 'package:my_api/src/model/user.dart';
 
 class LoginPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
     final client = ApiCore();
     try {
       final User user = await client.login(email.text, password.text);
-      if (user.valid) {
+      if (user.isValid) {
         Log.i(_tag, "Login successful: ${user.email}");
         close();
         return;
@@ -110,6 +111,11 @@ class _LoginPageState extends State<LoginPage> {
                     const Text('OK'),
                   ],
                 ),
+              ),
+              const SizedBox(height: 8,),
+              ElevatedButton(
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage())),
+                child: const Text('Register'),
               ),
             ],
           ),
