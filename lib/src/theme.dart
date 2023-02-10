@@ -196,10 +196,10 @@ class AppTheme {
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         iconTheme: IconThemeData(
-          color: text,
+          color: primary,
         ),
         actionsIconTheme: IconThemeData(
-          color: text,
+          color: primary,
         ),
       ),
       // Floating Action Button
