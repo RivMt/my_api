@@ -1,5 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:my_api/core/api/api_core.dart';
+import 'package:my_api/core/log.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/payment.dart';
@@ -193,14 +194,15 @@ class ApiClient {
 
   /// Get preference value from [key]
   ///
-  /// If [SharedPreference] does not have value about [key], this requests
-  /// API server to get value. And that request also failed, return
-  /// [Preference] instance that has [defaultValue].
+  /// If [SharedPreference] does not have value about [key], it requests
+  /// API server to get value and save to local. And that request also failed,
+  /// return [Preference] instance that has [defaultValue].
   Future<Preference> getPreference(String key, dynamic defaultValue) async {
     // Check local preference has value
     final prefs = await SharedPreferences.getInstance();
     final local = prefs.getString(key);
     if (local != null) {
+      Log.i("GetPref", "Get preference $key=$local from local strorage");
       return Preference.fromKV({},
         key: key,
         value: local,
@@ -211,9 +213,14 @@ class ApiClient {
       Preference.keyKey: key,
     }]);
     if (response.result == ApiResultCode.success && response.data.length == 1) {
-      return response.data[0];
+      final value = response.data[0];
+      // Save to local
+      Log.i("GetPref", "Get preference $key=${value.rawValue} from API server");
+      prefs.setString(key, value.rawValue);
+      return value;
     }
     // Otherwise, return default
+    Log.w("GetPref", "Unable to find $key from anywhere");
     return Preference.fromKV({},
       key: key,
       value: defaultValue,
