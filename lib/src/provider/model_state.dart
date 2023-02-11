@@ -3,11 +3,11 @@ import 'package:my_api/src/api/api_core.dart';
 import 'package:my_api/src/api/api_client.dart';
 import 'package:my_api/src/log.dart';
 
-const String _tag = "FinanceProvider";
+const String _tag = "ModelProvider";
 
-class FinanceModelState<T> extends StateNotifier<List<T>> {
+class ModelsState<T> extends StateNotifier<List<T>> {
 
-  FinanceModelState(this.ref) : super([]);
+  ModelsState(this.ref) : super([]);
 
   final Ref ref;
 
@@ -30,9 +30,9 @@ class FinanceModelState<T> extends StateNotifier<List<T>> {
   }
 }
 
-class FinanceModelDetailsState<T> extends StateNotifier<T?> {
+class ModelState<T> extends StateNotifier<T?> {
 
-  FinanceModelDetailsState(this.ref) : super(null);
+  ModelState(this.ref) : super(null);
 
   final Ref ref;
 

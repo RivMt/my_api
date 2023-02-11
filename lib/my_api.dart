@@ -33,5 +33,5 @@ export 'package:my_api/src/model/currency.dart';
 export 'package:my_api/src/model/preference.dart';
 
 // Provider
-export 'package:my_api/src/provider/finance_model_state.dart';
+export 'package:my_api/src/provider/model_state.dart';
 export 'package:my_api/src/provider/calculate_value_state.dart';
