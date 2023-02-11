@@ -15,6 +15,14 @@ class Preference extends Model {
 
   Preference(super.map);
 
+  Preference.fromKV(super.map, {
+    required String key,
+    required dynamic value,
+  }) {
+    this.key = key;
+    this.value = value;
+  }
+
   /// Encode raw [value] to string-style data
   static String encode(dynamic value) {
     late String type;
@@ -72,5 +80,8 @@ class Preference extends Model {
   dynamic get value => decode(getValue(keyValue, ""));
 
   set value(dynamic value) => map[keyValue] = encode(value);
+
+  /// Raw value of preference
+  String get rawValue => getValue(keyValue, "");
 
 }

@@ -5,6 +5,7 @@ import 'package:my_api/src/model/category.dart';
 import 'package:my_api/src/model/payment.dart';
 import 'package:my_api/src/model/preference.dart';
 import 'package:my_api/src/model/transaction.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
 
@@ -188,5 +189,54 @@ class ApiClient {
       ),
     );
     return result.convert<Decimal>(convert<Decimal>(result.data));
+  }
+
+  /// Get preference value from [key]
+  ///
+  /// If [SharedPreference] does not have value about [key], this requests
+  /// API server to get value. And that request also failed, return
+  /// [Preference] instance that has [defaultValue].
+  Future<Preference> getPreference(String key, dynamic defaultValue) async {
+    // Check local preference has value
+    final prefs = await SharedPreferences.getInstance();
+    final local = prefs.getString(key);
+    if (local != null) {
+      return Preference.fromKV({},
+        key: key,
+        value: local,
+      );
+    }
+    // If not exists, send request to API server
+    final response = await read<Preference>([{
+      Preference.keyKey: key,
+    }]);
+    if (response.result == ApiResultCode.success && response.data.length == 1) {
+      return response.data[0];
+    }
+    // Otherwise, return default
+    return Preference.fromKV({},
+      key: key,
+      value: defaultValue,
+    );
+  }
+
+  /// Set [value] about [key]
+  ///
+  /// It request to save [pref] to server. If it failed, don't save to local
+  /// storage. It only save [pref] to local storage when request succeed.
+  ///
+  /// This process is required to idealize local and server.
+  Future<ApiResponse<Preference>> setPreference(Preference pref) async {
+    // Save in server first
+    final response = await create<Preference>([pref.map]);
+    if (response.result != ApiResultCode.success || response.data.length != 1) {
+      // If failed, return failed response
+      return response.convert(Preference.unknown);
+    }
+    // Save local
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(pref.key, pref.rawValue);
+    //
+    return response.convert(response.data[0]);
   }
 }
