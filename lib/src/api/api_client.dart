@@ -3,6 +3,7 @@ import 'package:my_api/src/api/api_core.dart';
 import 'package:my_api/src/model/account.dart';
 import 'package:my_api/src/model/category.dart';
 import 'package:my_api/src/model/payment.dart';
+import 'package:my_api/src/model/preference.dart';
 import 'package:my_api/src/model/transaction.dart';
 
 class ApiClient {
@@ -84,6 +85,8 @@ class ApiClient {
       case Transaction:
       case Category:
         return "finance/v1";
+      case Preference:
+        return "userdata/v1";
       default:
         throw UnimplementedError();
     }
@@ -100,6 +103,8 @@ class ApiClient {
         return "transactions";
       case Category:
         return "categories";
+      case Preference:
+        return "preferences";
       default:
         throw UnimplementedError();
     }
@@ -122,6 +127,8 @@ class ApiClient {
         return Transaction(data);
       case Category:
         return Category(data);
+      case Preference:
+        return Preference(data);
       default:
         throw UnimplementedError();
     }
