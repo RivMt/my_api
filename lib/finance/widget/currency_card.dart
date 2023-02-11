@@ -1,8 +1,8 @@
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:my_api/src/component/data_card.dart';
-import 'package:my_api/src/model/currency.dart';
+import 'package:my_api/core/widget/data_card.dart';
+import 'package:my_api/finance/model/currency.dart';
 
 class CurrencyCard extends StatelessWidget {
   const CurrencyCard({

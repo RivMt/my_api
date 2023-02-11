@@ -4,9 +4,9 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:my_api/src/exceptions.dart';
-import 'package:my_api/src/log.dart';
-import 'package:my_api/src/model/user.dart';
+import 'package:my_api/core/exceptions.dart';
+import 'package:my_api/core/log.dart';
+import 'package:my_api/core/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// TAG for log

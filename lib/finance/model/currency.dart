@@ -2,7 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:decimal/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_api/src/icon/currency_symbol_icons.dart';
+import 'package:my_api/finance/icon/currency_symbol_icons.dart';
 
 enum Currency {
   unknown(-1, "?", "uKn", 2, CurrencySymbol.sign),

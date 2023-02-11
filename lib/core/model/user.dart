@@ -1,4 +1,4 @@
-import 'package:my_api/src/model/model.dart';
+import 'package:my_api/core/model/model.dart';
 
 class User extends Model {
 

@@ -1,10 +1,10 @@
 import 'package:decimal/decimal.dart';
-import 'package:my_api/src/api/api_core.dart';
-import 'package:my_api/src/model/account.dart';
-import 'package:my_api/src/model/category.dart';
-import 'package:my_api/src/model/payment.dart';
-import 'package:my_api/src/model/preference.dart';
-import 'package:my_api/src/model/transaction.dart';
+import 'package:my_api/core/api/api_core.dart';
+import 'package:my_api/finance/model/account.dart';
+import 'package:my_api/finance/model/category.dart';
+import 'package:my_api/finance/model/payment.dart';
+import 'package:my_api/core/model/preference.dart';
+import 'package:my_api/finance/model/transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {

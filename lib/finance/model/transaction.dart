@@ -3,8 +3,8 @@ library my_api;
 import 'dart:math';
 
 import 'package:decimal/decimal.dart';
-import 'package:my_api/src/model/currency.dart';
-import 'package:my_api/src/model/model.dart';
+import 'package:my_api/finance/model/currency.dart';
+import 'package:my_api/core/model/model.dart';
 
 enum TransactionType {
   unknown(-1),

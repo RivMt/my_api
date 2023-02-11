@@ -1,9 +1,9 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:my_api/src/model/account.dart';
-import 'package:my_api/src/model/currency.dart';
-import 'package:my_api/src/model/payment.dart';
-import 'package:my_api/src/model/transaction.dart';
+import 'package:my_api/finance/model/account.dart';
+import 'package:my_api/finance/model/currency.dart';
+import 'package:my_api/finance/model/payment.dart';
+import 'package:my_api/finance/model/transaction.dart';
 
 void main() {
   group("Account Test", () {

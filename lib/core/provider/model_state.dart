@@ -1,7 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_api/src/api/api_core.dart';
-import 'package:my_api/src/api/api_client.dart';
-import 'package:my_api/src/log.dart';
+import 'package:my_api/core/api/api_core.dart';
+import 'package:my_api/core/api/api_client.dart';
+import 'package:my_api/core/log.dart';
 
 const String _tag = "ModelProvider";
 

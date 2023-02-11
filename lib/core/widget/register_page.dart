@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_api/src/api/api_core.dart';
-import 'package:my_api/src/component/interface_constructor.dart';
-import 'package:my_api/src/model/user.dart';
+import 'package:my_api/core/api/api_core.dart';
+import 'package:my_api/core/widget/interface_constructor.dart';
+import 'package:my_api/core/model/user.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

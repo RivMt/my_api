@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_api/my_api.dart';
-import 'package:my_api/src/component/register_page.dart';
-import 'package:my_api/src/model/user.dart';
+import 'package:my_api/core/api/api_core.dart';
+import 'package:my_api/core/widget/interface_constructor.dart';
+import 'package:my_api/core/widget/register_page.dart';
+import 'package:my_api/core/log.dart';
+import 'package:my_api/core/model/user.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_api/src/theme.dart';
+import 'package:my_api/core/theme.dart';
 
 class ModalHeader extends StatefulWidget {
   const ModalHeader({

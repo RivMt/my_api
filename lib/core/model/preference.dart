@@ -1,5 +1,5 @@
 import 'package:decimal/decimal.dart';
-import 'package:my_api/my_api.dart';
+import 'package:my_api/core.dart';
 
 class Preference extends Model {
 

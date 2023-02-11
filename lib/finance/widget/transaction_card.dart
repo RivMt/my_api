@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_api/src/component/data_card.dart';
-import 'package:my_api/src/component/category_card.dart';
-import 'package:my_api/src/model/category.dart';
-import 'package:my_api/src/model/transaction.dart';
+import 'package:my_api/core/widget/data_card.dart';
+import 'package:my_api/finance/widget/category_card.dart';
+import 'package:my_api/finance/model/category.dart';
+import 'package:my_api/finance/model/transaction.dart';
 
 class TransactionCard extends StatelessWidget {
   const TransactionCard({
