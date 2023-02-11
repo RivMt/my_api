@@ -32,74 +32,90 @@ class AppTheme {
 
   static const double sizeLabelSmall = 12;
 
+  /// Primary swatch
+  static late Color primary;
+
+  /// Foreground color located at top of screen depth
+  static late Color frontForeground;
+
+  /// Foreground color located at middle of screen depth
+  static late Color middleForeground;
+
+  /// Foreground color located at bottom of screen depth
+  static late Color rearForeground;
+
+  /// Default background
+  static late Color background;
+
+  /// Background color located at top of screen depth
+  static late Color frontBackground;
+
+  /// Background color located at middle of screen depth
+  static late Color middleBackground;
+
+  /// Background color located at bottom of screen depth
+  static late Color rearBackground;
+
+  /// Primary text color
+  static late Color text;
+
+  /// Secondary text color
+  static late Color subtext;
+
+  /// Light theme
+  static ThemeData light(Color primary) {
+    AppTheme.primary = primary;
+    // Foreground
+    frontForeground = Colors.grey[900] ?? Colors.black;
+    middleForeground = Colors.grey[850] ?? Colors.black;
+    rearForeground = Colors.grey[800] ?? Colors.black;
+    // Background
+    background = Colors.white;
+    frontBackground = Colors.grey[100] ?? Colors.white;
+    middleBackground = Colors.grey[300] ?? Colors.white;
+    rearBackground = Colors.grey[400] ?? Colors.white;
+    // Text
+    text = Colors.black;
+    subtext = Colors.grey[900] ?? Colors.black;
+    // Return
+    return _theme;
+  }
+
+  /// Dark theme
+  static ThemeData dark(Color primary) {
+    AppTheme.primary = primary;
+    // Foreground
+    frontForeground = Colors.white;
+    middleForeground = Colors.grey[400] ?? Colors.white;
+    rearForeground = Colors.grey[600] ?? Colors.white;
+    // Background
+    background = Colors.black;
+    frontBackground = Colors.grey[800] ?? Colors.grey;
+    middleBackground = Colors.grey[850] ?? Colors.grey;
+    rearBackground = Colors.grey[900] ?? Colors.grey;
+    // Text
+    text = Colors.white;
+    subtext = Colors.grey[400] ?? Colors.white;
+    // Return
+    return _theme;
+  }
+
   static MaterialStateProperty<Color?>? textButtonOverlay(Color color) {
     return MaterialStateProperty.resolveWith((states) {
       if (states.contains(MaterialState.pressed)) {
-        return color.withAlpha(AppTheme.alphaPressed);
+        return color.withAlpha(alphaPressed);
       } else if (states.contains(MaterialState.hovered)) {
-        return color.withAlpha(AppTheme.alphaHovered);
+        return color.withAlpha(alphaHovered);
       } else if (states.contains(MaterialState.focused)) {
-        return color.withAlpha(AppTheme.alphaFocused);
+        return color.withAlpha(alphaFocused);
       } else if (states.contains(MaterialState.disabled)) {
-        return color.withAlpha(AppTheme.alphaDisabled);
+        return color.withAlpha(alphaDisabled);
       }
       return null;
     });
   }
 
-  static ThemeData get light {
-    return _theme(
-      primary: Colors.blue,
-      // Foreground
-      frontForeground: Colors.grey[900] ?? Colors.black,
-      middleForeground: Colors.grey[850] ?? Colors.black,
-      rearForeground: Colors.grey[800] ?? Colors.black,
-      // Background
-      background: Colors.white,
-      frontBackground: Colors.grey[500] ?? Colors.white,
-      middleBackground: Colors.grey[300] ?? Colors.white,
-      rearBackground: Colors.grey[100] ?? Colors.white,
-      // Text
-      text: Colors.black,
-      subtext: Colors.grey[900] ?? Colors.black,
-      // AppBar
-    );
-  }
-
-  static ThemeData get dark {
-    return _theme(
-      primary: Colors.blue,
-      // Foreground
-      frontForeground: Colors.white,
-      middleForeground: Colors.grey[400] ?? Colors.white,
-      rearForeground: Colors.grey[600] ?? Colors.white,
-      // Background
-      background: Colors.black,
-      frontBackground: Colors.grey[800] ?? Colors.grey,
-      middleBackground: Colors.grey[850] ?? Colors.grey,
-      rearBackground: Colors.grey[900] ?? Colors.grey,
-      // Text
-      text: Colors.white,
-      subtext: Colors.grey[400] ?? Colors.white,
-    );
-  }
-
-  static ThemeData _theme({
-    // Base
-    required Color primary,
-    // Foreground
-    required Color frontForeground,
-    required Color middleForeground,
-    required Color rearForeground,
-    // Background
-    required Color background,
-    required Color frontBackground,
-    required Color middleBackground,
-    required Color rearBackground,
-    // Text
-    required Color text,
-    required Color subtext,
-  }) {
+  static ThemeData get _theme {
     // InputDecoration
     final inputDecoration = InputDecorationTheme(
       // Padding
