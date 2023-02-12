@@ -39,14 +39,18 @@ class Preference extends Model {
       type = "B";
     } else if (value is List) {
       type = "L";
-      final s = StringBuffer();
-      for(int i=0; i < value.length; i++) {
-        s.write(encode(value[i]));
-        if (i < value.length-1) {
-          s.write(",");
-        }
+      final s = [];
+      for (dynamic item in value) {
+        s.add(encode(item));
       }
-      str = s.toString();
+      str = s.join(",");
+    } else if (value is Map) {
+      type = "M";
+      final s = [];
+      for(dynamic key in value.keys) {
+        s.add("${encode(key)}:${encode(value[key])}");
+      }
+      str = s.join(",");
     } else {
       throw UnsupportedError("Unsupported type of value: $value");
     }
@@ -59,7 +63,7 @@ class Preference extends Model {
   /// **B** is [bool], and **L** is [List]. It does not support nested list.
   static dynamic decode(final String data) {
     // If value is too short, return null
-    if (data.length < 2) {
+    if (data.isEmpty) {
       return null;
     }
     // Check type
@@ -82,6 +86,18 @@ class Preference extends Model {
           list.add(decode(p));
         }
         return list;
+      case "M":
+        if (data.substring(1, data.length) == "") {
+          return {};
+        }
+        final primitives = data.substring(1, data.length).split(",");
+        final Map map = {};
+        for(String p in primitives) {
+          final kv = p.split(":");
+          assert(kv.length == 2);
+          map[decode(kv[0])] = decode(kv[1]);
+        }
+        return map;
       default:
         return null;
     }

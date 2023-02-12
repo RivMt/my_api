@@ -197,6 +197,15 @@ void main() {
       final Preference pref = Preference.fromKV({}, key: key, value: value);
       expect(pref.value, value);
     });
+    test('Map', () {
+      final value = {
+        "A": 0,
+        "B": Decimal.zero,
+        0: "Hi"
+      };
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value, value);
+    });
     test('Equality', () {
       const value = 0;
       final Preference a = Preference.fromKV({}, key: key, value: value);

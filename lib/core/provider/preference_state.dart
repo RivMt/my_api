@@ -49,6 +49,20 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
     request();
   }
 
+  /// Delete preference as [key]
+  Future delete(String key) async {
+    // Try from server first
+    final response = await ApiClient().delete([{
+      Preference.keyKey: key,
+    }]);
+    if (response.result != ApiResultCode.success || response.data.length != 1) {
+      return;
+    }
+    // After success, remove from state
+    state.remove(key);
+    request();
+  }
+
   /// Request [Preference]s filtered by [keys]
   Future request([Map<String, dynamic>? settings]) async {
     // Apply keys
