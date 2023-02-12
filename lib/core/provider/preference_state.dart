@@ -8,6 +8,8 @@ final preferenceProvider = StateNotifierProvider<PreferenceState, Map<String, Pr
   return PreferenceState(ref);
 });
 
+const String _tag = "Prefs";
+
 class PreferenceState extends StateNotifier<Map<String, Preference>> {
 
   PreferenceState(this.ref) : super(<String, Preference>{});
@@ -35,7 +37,7 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
   /// storage. It only save [pref] to local storage when request succeed.
   ///
   /// This process is required to idealize local and server.
-  void set(Preference pref) async {
+  Future set(Preference pref) async {
     // Save in server first
     final response = await ApiClient().create<Preference>([pref.map]);
     if (response.result != ApiResultCode.success || response.data.length != 1) {
@@ -48,7 +50,7 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
   }
 
   /// Request [Preference]s filtered by [keys]
-  void request([Map<String, dynamic>? settings]) async {
+  Future request([Map<String, dynamic>? settings]) async {
     // Apply keys
     if (settings != null) {
       setDefaults(settings);
@@ -64,12 +66,13 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
     final client = ApiClient();
     final ApiResponse<List<Preference>> response = await client.read<Preference>(condition);
     if (response.result != ApiResultCode.success) {
-      Log.e("", "Failed to request $condition");
+      Log.e(_tag, "Failed to request $condition");
       clear();
       return;
     }
     // Apply
     for(Preference pref in response.data) {
+      Log.i(_tag, "Request completed: $pref");
       state[pref.key] = pref;
     }
   }
