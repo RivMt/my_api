@@ -193,7 +193,7 @@ void main() {
       expect(pref.value, value);
     });
     test('List', () {
-      const value = ["SA", "SB", "SC"];
+      const value = ["A", "B", "C"];
       final Preference pref = Preference.fromKV({}, key: key, value: value);
       expect(pref.value, value);
     });
