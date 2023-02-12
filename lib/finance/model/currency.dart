@@ -31,7 +31,7 @@ enum Currency {
   final IconData icon;
 
   /// Find [Currency] using [value]
-  factory Currency.fromValue(int value) {
+  factory Currency.fromValue(int? value) {
     switch(value) {
       case 0:
         return Currency.won;
@@ -77,5 +77,5 @@ enum Currency {
   }
 
   /// List of all currencies without [unknown]
-  static List<Currency> get validValues => values.where((item) => item.value != Currency.unknown.value).toList(growable: false);
+  static List<Currency> get validValues => values.sublist(1, values.length);
 }
