@@ -1,5 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:my_api/core/model/preference.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
@@ -161,6 +162,46 @@ void main() {
               Transaction.maxDecimalPartDigits - 1)}"
       );
       expect(data.regex.hasMatch(data.amount.toString()), true);
+    });
+  });
+  // Preference
+  group('Preferences Test', () {
+    const key = "test";
+    test('Integer', () {
+      const value = 0;
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value, value);
+    });
+    test('String', () {
+      const value = "TEST";
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value, value);
+    });
+    test('Decimal', () {
+      final value = Decimal.parse("1.52");
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value, value);
+    });
+    test('double', () {
+      const value = 0.5;
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value, value);
+    });
+    test('Bool', () {
+      const value = false;
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value, value);
+    });
+    test('List', () {
+      const value = ["SA", "SB", "SC"];
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value, value);
+    });
+    test('Equality', () {
+      const value = 0;
+      final Preference a = Preference.fromKV({}, key: key, value: value);
+      final Preference b = Preference.fromKV({}, key: key, value: value);
+      expect(a, b);
     });
   });
 }
