@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:my_api/core/theme.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/model/currency.dart';
 
@@ -9,28 +10,46 @@ class CurrencyCard extends StatelessWidget {
     super.key,
     required this.data,
     this.amount,
+    this.onTap,
+    this.selected = false,
+    this.useIconBackground = true,
   });
 
   final Currency data;
 
   final Decimal? amount;
 
+  final bool selected;
+
+  final bool useIconBackground;
+
+  final Function()? onTap;
+
   @override
   Widget build(BuildContext context) {
     return DataCard(
       leading: CurrencyIcon(
         icon: data.icon,
-        foreground: Colors.white,
-        background: Theme.of(context).primaryColor,
+        selected: selected,
+        foreground: AppTheme.text,
+        background: useIconBackground
+            ? Theme.of(context).primaryColor
+            : Colors.transparent,
       ),
       top: Text(
         data.key.tr(),
-        style: Theme.of(context).textTheme.labelMedium,
+        style: (amount != null)
+            ? Theme.of(context).textTheme.labelMedium
+            : Theme.of(context).textTheme.titleMedium,
       ),
-      bottom: Text(
-        data.format(amount ?? Decimal.zero),
-        style: Theme.of(context).textTheme.titleMedium,
+      bottom: Visibility(
+        visible: amount != null,
+        child: Text(
+          data.format(amount ?? Decimal.zero),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
       ),
+      onTap: onTap,
     );
   }
 }
