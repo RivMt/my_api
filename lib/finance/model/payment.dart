@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/finance/model/currency.dart';
-import 'package:my_api/core/model/model.dart';
+import 'package:my_api/finance/model/finance_model.dart';
 
 class Payment extends FinanceModel {
 
@@ -72,7 +72,7 @@ class Payment extends FinanceModel {
 
   /// [RegExp] for verify [amount] and [altAmount]
   RegExp get regex {
-    return getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
+    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
   }
 
   /// List of viewers id

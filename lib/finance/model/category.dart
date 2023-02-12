@@ -1,7 +1,7 @@
 library my_api;
 
 import 'package:flutter/material.dart';
-import 'package:my_api/core/model/model.dart';
+import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/transaction.dart';
 
 class Category extends FinanceModel {
