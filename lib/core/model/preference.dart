@@ -26,6 +26,7 @@ class Preference extends Model {
   /// Encode raw [value] to string-style data
   static String encode(dynamic value) {
     late String type;
+    String str = value.toString();
     if (value is int) {
       type = "I";
     } else if (value is String) {
@@ -36,13 +37,26 @@ class Preference extends Model {
       type = "d";
     } else if (value is bool) {
       type = "B";
+    } else if (value is List) {
+      type = "L";
+      final s = StringBuffer();
+      for(int i=0; i < value.length; i++) {
+        s.write(encode(value[i]));
+        if (i < value.length-1) {
+          s.write(",");
+        }
+      }
+      str = s.toString();
     } else {
       throw UnsupportedError("Unsupported type of value: $value");
     }
-    return "$type$value";
+    return "$type$str";
   }
 
   /// Decode string-style [data] to raw [value]
+  ///
+  /// **I** is [int], **S** is [String], **D** is [Decimal], **d** is [double],
+  /// **B** is [bool], and **L** is [List]. It does not support nested list.
   static dynamic decode(final String data) {
     // If value is too short, return null
     if (data.length < 2) {
@@ -61,6 +75,13 @@ class Preference extends Model {
         return double.parse(data.substring(1, data.length));
       case "B": // Boolean
         return data.substring(1,2).toLowerCase() == "t";
+      case "L": // List
+        final primitives = data.substring(1, data.length).split(",");
+        final List list = [];
+        for(String p in primitives) {
+          list.add(decode(p));
+        }
+        return list;
       default:
         return null;
     }
@@ -83,5 +104,19 @@ class Preference extends Model {
 
   /// Raw value of preference
   String get rawValue => getValue(keyValue, "");
+
+  @override
+  String toString() => "(Pref) $key = $rawValue";
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object? other) {
+    if (other is Preference) {
+      return (key == other.key && value == other.value) || (key == other.key);
+    }
+    return super==(other);
+  }
 
 }
