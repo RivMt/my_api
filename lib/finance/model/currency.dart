@@ -11,7 +11,7 @@ enum Currency {
   dollar(2, "＄", "USD", 2, CurrencySymbol.usd),
   euro(3, "€", "EUR", 2, CurrencySymbol.eur),
   poundSterling(4, "￡", "GBP", 2, CurrencySymbol.gbp),
-  yuanRenminbi(5, "￥", "CNY", 2, CurrencySymbol.cny);
+  yuanRenminbi(5, "¥", "CNY", 2, CurrencySymbol.cny);
 
   const Currency(this.value, this.symbol, this.code, this.decimalDigits, this.icon);
 
