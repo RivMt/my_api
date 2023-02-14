@@ -62,6 +62,20 @@ void main() {
       expect(date, DateTime(year, 8, payment.payDate));
     });
   });
+  group("Transaction", () {
+    test('Utility end to utility days conversion', () {
+      final t = Transaction({});
+      t.paidDate = DateTime(2022, 10, 1);
+      t.utilityEnd = DateTime(2022, 10, 3);
+      assert(t.utilityDays == 3);
+    });
+    test('Utility days to utility end conversion', () {
+      final t = Transaction({});
+      t.paidDate = DateTime(2022, 10, 1);
+      t.utilityDays = 3;
+      assert(t.utilityEnd == DateTime(2022, 10, 3).toUtc());
+    });
+  });
   group("Transaction Amount Verification Test (Integer part only currency)", () {
     final data = Transaction({});
     String gen(length) {
@@ -110,9 +124,7 @@ void main() {
       expect(data.regex.hasMatch(data.amount.toString()), false);
     });
   });
-
-  group("Transaction Amount Verification Test (Integer part with decimal part currency)", ()
-  {
+  group("Transaction Amount Verification Test (Integer part with decimal part currency)", () {
     final data = Transaction({});
     String gen(length) {
       return List.generate(length, (index) => index % 9 + 1).join("");
