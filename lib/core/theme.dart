@@ -32,6 +32,9 @@ class AppTheme {
 
   static const double sizeLabelSmall = 12;
 
+  /// Is theme is dark or not
+  static late bool isDarkMode;
+
   /// Primary swatch
   static late Color primary;
 
@@ -65,6 +68,7 @@ class AppTheme {
   /// Light theme
   static ThemeData light(Color primary) {
     AppTheme.primary = primary;
+    isDarkMode = false;
     // Foreground
     frontForeground = Colors.grey[900] ?? Colors.black;
     middleForeground = Colors.grey[850] ?? Colors.black;
@@ -84,6 +88,7 @@ class AppTheme {
   /// Dark theme
   static ThemeData dark(Color primary) {
     AppTheme.primary = primary;
+    isDarkMode = true;
     // Foreground
     frontForeground = Colors.white;
     middleForeground = Colors.grey[400] ?? Colors.white;
@@ -204,6 +209,7 @@ class AppTheme {
     );
     // ThemeData
     return ThemeData(
+      brightness: isDarkMode ? Brightness.dark : Brightness.light,
       // Color
       primaryColor: primary,
       scaffoldBackgroundColor: background,
@@ -356,6 +362,17 @@ class AppTheme {
           color: middleForeground,
           width: 2,
         ),
+        fillColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.pressed)) {
+            return primary;
+          } else if (states.contains(MaterialState.hovered)) {
+            return primary;
+          } else if (states.contains(MaterialState.selected)) {
+            return primary;
+          } else {
+            return null;
+          }
+        }),
       ),
       // Modal Bottom Sheet
       bottomSheetTheme: BottomSheetThemeData(
