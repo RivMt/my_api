@@ -42,7 +42,7 @@ class Transaction extends FinanceModel {
   static const String keyAltAmount = "alt_amount";
   static const String keyCalculatedDate = "calculated_date";
   static const String keyIncluded = "included";
-  static const String keyUtilityDays = "utility_days";
+  static const String keyUtilityEnd = "utility_end";
 
   /// Maximum digits of integer part of [amount]
   static const int maxIntegerPartDigits = 20;
@@ -121,7 +121,7 @@ class Transaction extends FinanceModel {
     if (!date.isUtc) {
       paidDate = date.toUtc();
     }
-    map[keyPaidDate] = date.millisecondsSinceEpoch;
+    map[keyPaidDate] = date.toUtc().millisecondsSinceEpoch;
   }
 
   /// PID of [Account] this transaction occurred
@@ -193,7 +193,7 @@ class Transaction extends FinanceModel {
     if (!date.isUtc) {
       calculatedDate = date.toUtc();
     }
-    map[keyCalculatedDate] = date.millisecondsSinceEpoch;
+    map[keyCalculatedDate] = date.toUtc().millisecondsSinceEpoch;
   }
 
   /// Value of this transaction included in statics
@@ -201,10 +201,15 @@ class Transaction extends FinanceModel {
 
   set isIncluded(bool value) => map[keyIncluded] = value;
 
-  /// Days of this transaction is efficient
-  int get utilityDays => getValue(keyUtilityDays, 1);
+  /// Last date of this transaction is utility
+  DateTime get utilityEnd => DateTime.fromMillisecondsSinceEpoch(getValue(keyUtilityEnd, paidDate.millisecondsSinceEpoch), isUtc: true);
 
-  set utilityDays(int value) => map[keyUtilityDays] = value;
+  set utilityEnd(DateTime value) => map[keyUtilityEnd] = value.millisecondsSinceEpoch;
+
+  /// Days of this transaction is utility
+  int get utilityDays => utilityEnd.difference(paidDate).inDays+1;
+
+  set utilityDays(int value) => map[keyUtilityEnd] = paidDate.add(Duration(days: value-1)).toUtc().millisecondsSinceEpoch;
 
   /// [RegExp] for verify [amount] and [altAmount]
   RegExp get regex {
