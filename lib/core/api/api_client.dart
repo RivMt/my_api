@@ -33,6 +33,7 @@ class ApiClient {
     String path,
     List<Map<String, dynamic>> data, [
     Map<String, dynamic>? options,
+    Map<String, dynamic>? queries,
   ]) async {
     final Map<String, dynamic> body = {
       "user_id": _client.id,
@@ -42,7 +43,15 @@ class ApiClient {
     if (options != null) {
       body['options'] = options;
     }
-    final response = await _client.send(method, "$home/$path", body);
+    String query = "";
+    if (queries != null) {
+      final q = [];
+      for (String key in queries.keys) {
+        q.add("$key=${queries[key]}");
+      }
+      query = "?${q.join("&")}";
+    }
+    final response = await _client.send(method, "$home/$path$query", body);
     return response;
   }
 
@@ -175,10 +184,11 @@ class ApiClient {
   /// [calc] defines type of calculation. And [attribute] defines column name
   /// which is calculated
   Future<ApiResponse<Decimal>> calculate<T>(
-      List<Map<String, dynamic>> data,
-      CalculationType calc,
-      String attribute,
-      ) async {
+    List<Map<String, dynamic>> data,
+    CalculationType calc,
+    String attribute, [
+      Map<String, dynamic>? queries,
+  ]) async {
     final result = await send(
       ApiMethod.post,
       home<T>(),
@@ -188,6 +198,7 @@ class ApiClient {
         calcType: calc,
         calcAttribute: attribute,
       ),
+      queries,
     );
     return result.convert<Decimal>(convert<Decimal>(result.data));
   }

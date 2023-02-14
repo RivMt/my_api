@@ -12,6 +12,7 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
     required this.conditions,
     required this.type,
     required this.attribute,
+    this.queries,
   }) : super(Decimal.zero);
 
   final Ref ref;
@@ -22,13 +23,15 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
 
   final String attribute;
 
+  Map<String, dynamic>? queries;
+
   /// Clear state
   void clear() => state = Decimal.zero;
 
   /// Request [T] items fit to [conditions] and filter by [options]
   void request() async {
     final client = ApiClient();
-    final ApiResponse<Decimal> response = await client.calculate<T>(conditions, type, attribute);
+    final ApiResponse<Decimal> response = await client.calculate<T>(conditions, type, attribute, queries);
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to request $conditions");
       state = Decimal.parse("0");
