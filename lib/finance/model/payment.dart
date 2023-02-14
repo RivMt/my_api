@@ -142,6 +142,9 @@ class Payment extends FinanceModel {
   }
 
   /// Get date which transaction will be calculated from [paidDate]
+  ///
+  /// This method calculates [DateTime] in LOCAL time. If you want UTC time,
+  /// you must call `toUtc` returned value.
   DateTime getCalculatedDate(DateTime paidDate) {
     // Month
     late int delta;

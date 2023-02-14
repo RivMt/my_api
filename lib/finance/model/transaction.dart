@@ -108,13 +108,13 @@ class Transaction extends FinanceModel {
 
   set category(int value) => map[keyCategory] = value;
 
-  /// [DateTime] of this transaction paid
+  /// [DateTime] of this transaction paid in LOCAL
   DateTime get paidDate {
     final value = getValue(keyPaidDate, -1);
     if (value < 0) {
       return DateTime.now().toUtc();
     }
-    return DateTime.fromMillisecondsSinceEpoch(value, isUtc: true);
+    return DateTime.fromMillisecondsSinceEpoch(value, isUtc: true).toLocal();
   }
 
   set paidDate(DateTime date) {
@@ -186,8 +186,8 @@ class Transaction extends FinanceModel {
     }
   }
 
-  /// [DateTime] of this transaction calculated
-  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0), isUtc: true);
+  /// [DateTime] of this transaction calculated in LOCAL
+  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0), isUtc: true).toLocal();
 
   set calculatedDate(DateTime date) {
     if (!date.isUtc) {
@@ -201,8 +201,8 @@ class Transaction extends FinanceModel {
 
   set isIncluded(bool value) => map[keyIncluded] = value;
 
-  /// Last date of this transaction is utility
-  DateTime get utilityEnd => DateTime.fromMillisecondsSinceEpoch(getValue(keyUtilityEnd, paidDate.millisecondsSinceEpoch), isUtc: true);
+  /// Last date of this transaction is utility in LOCAL
+  DateTime get utilityEnd => DateTime.fromMillisecondsSinceEpoch(getValue(keyUtilityEnd, paidDate.millisecondsSinceEpoch), isUtc: true).toLocal();
 
   set utilityEnd(DateTime value) => map[keyUtilityEnd] = value.millisecondsSinceEpoch;
 
