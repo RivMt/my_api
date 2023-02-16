@@ -28,6 +28,7 @@ class CurrencyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DataCard(
+      color: Colors.transparent,
       leading: CurrencyIcon(
         icon: data.icon,
         selected: selected,
