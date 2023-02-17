@@ -9,11 +9,14 @@ class UserCard extends StatelessWidget {
     super.key,
     required this.user,
     this.onTap,
+    this.onLongPress,
   });
 
   final User user;
 
   final Function()? onTap;
+
+  final Function()? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,7 @@ class UserCard extends StatelessWidget {
         style: Theme.of(context).textTheme.labelMedium,
       ),
       onTap: onTap,
+      onLongPress: onLongPress,
     );
   }
 }
