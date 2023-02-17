@@ -75,9 +75,9 @@ class AppTheme {
     rearForeground = Colors.grey[800] ?? Colors.black;
     // Background
     background = Colors.white;
-    frontBackground = Colors.grey[100] ?? Colors.white;
-    middleBackground = Colors.grey[300] ?? Colors.white;
-    rearBackground = Colors.grey[400] ?? Colors.white;
+    frontBackground = Colors.grey[200] ?? Colors.white;
+    middleBackground = Colors.grey[100] ?? Colors.white;
+    rearBackground = Colors.white;
     // Text
     text = Colors.black;
     subtext = Colors.grey[900] ?? Colors.black;
@@ -217,11 +217,16 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
+        elevation: 0,
         iconTheme: IconThemeData(
           color: primary,
         ),
         actionsIconTheme: IconThemeData(
           color: primary,
+        ),
+        titleTextStyle: TextStyle(
+          color: text,
+          fontSize: sizeTitleLarge,
         ),
       ),
       // Floating Action Button

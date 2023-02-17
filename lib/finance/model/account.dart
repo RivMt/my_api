@@ -98,12 +98,12 @@ class Account extends FinanceModel {
   set serialNumber(String value) => map[keySerialNumber] = value;
 
   /// Foreground color
-  Color get foreground => Color(getValue(keyForeground, -1));
+  Color get foreground => Color(getValue(keyForeground, Colors.white.value));
 
   set foreground(Color color) => map[keyForeground] = color.value;
 
   /// Background color
-  Color get background => Color(getValue(keyBackground, 1));
+  Color get background => Color(getValue(keyBackground, Colors.black.value));
 
   set background(Color color) => map[keyBackground] = color.value;
 
