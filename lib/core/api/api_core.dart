@@ -2,7 +2,6 @@ library my_api;
 
 import 'dart:convert';
 
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/exceptions.dart';
 import 'package:my_api/core/log.dart';
@@ -84,27 +83,30 @@ class ApiCore {
   /// [onLoginRequired] triggers when login failed.
   /// [url] is URL of API server. [filename] is location of `json` file
   /// which has url information. One of parameter **MUST** be used among
-  /// [url] and [filename]
+  /// [url] and [filename].
+  /// You can select `Production` and `Test` server using [useTest]. If it
+  /// is `null`, server will be selected by [kDebugMode]. Otherwise, follow its
+  /// value.
+  ///
+  /// The structure of `json` file like below.
+  /// ```json
+  /// {
+  ///   "url": PRODUCTION-SERVER-ADDRESS,
+  ///   "test": TEST-SERVER-ADDRESS
+  /// }
+  /// ```
   Future<void> init({
     required Function() onLoginRequired,
-    String url = "",
-    String filename = "",
+    required String url,
   }) async {
-    if (filename != "") {
-      // Read server data
-      final String data = await rootBundle.loadString(filename);
-      final json = jsonDecode(data);
-      this.url = json["url"];
-    } else if (url != "") {
-      this.url = url;
-    }
+    this.url = url;
     // Authenticate
     user = await loadUser();
     if (!user.isValid) {
-      Log.e(_tag, "Failed to login");
+      Log.e(_tag, "Failed to connect server: $url");
       onLoginRequired();
     }
-    Log.i(_tag, "Login successful: ${user.email}");
+    Log.i(_tag, "Connected: $url");
     return;
   }
 

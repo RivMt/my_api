@@ -15,16 +15,41 @@ class ApiClient {
 
   /// Init
   ///
-  /// Call init method of [_client]
+  /// Initiate server connection. If login is required, [onLoginRequired]
+  /// will be triggered.
+  ///
+  /// [preferences] are `json` data of server addresses.
+  ///
+  /// You can select `Production` and `Test` server using [useTest]. If it
+  /// is `null`, server will be selected by [kDebugMode]. Otherwise, follow its
+  /// value.
+  ///
+  /// The structure of `json` file like below.
+  /// ```json
+  /// {
+  ///   "url": PRODUCTION-SERVER-ADDRESS,
+  ///   "test": TEST-SERVER-ADDRESS
+  /// }
+  /// ```
   Future<void> init({
     required Function() onLoginRequired,
-    String url = "",
-    String filename = "",
-  }) async => _client.init(
-    onLoginRequired: onLoginRequired,
-    url: url,
-    filename: filename,
-  );
+    required Map<String, dynamic> preferences,
+    bool? useTest,
+  }) async {
+    // Check json file
+    if (!preferences.containsKey("url") || !preferences.containsKey("test")) {
+      throw const FileSystemException("Key 'url' or 'test' does not exists.");
+    }
+    // Load url from json
+    final bool setup = useTest ?? kDebugMode;
+    final String url = setup ? preferences["test"]! : preferences["url"]!;
+    _serverType = setup ? ServerType.test : ServerType.production;
+    // Init
+    _client.init(
+      onLoginRequired: onLoginRequired,
+      url: url,
+    );
+  }
 
   /// Send request
   Future<ApiResponse<Map<String, dynamic>>> send(
