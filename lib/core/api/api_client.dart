@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:decimal/decimal.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:my_api/core/api/api_core.dart';
 import 'package:my_api/core/log.dart';
 import 'package:my_api/finance/model/account.dart';
@@ -12,6 +15,12 @@ class ApiClient {
 
   /// Client
   final ApiCore _client = ApiCore();
+
+  /// Getter of [_serverType]
+  ServerType get serverType => _serverType;
+
+  /// Type of currently connected server
+  ServerType _serverType = ServerType.unknown;
 
   /// Init
   ///
@@ -282,4 +291,11 @@ class ApiClient {
     //
     return response.convert(response.data[0]);
   }
+}
+
+/// Type of server
+enum ServerType {
+  unknown,
+  test,
+  production,
 }
