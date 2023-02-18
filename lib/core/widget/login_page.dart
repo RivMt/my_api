@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/core/api/api_core.dart';
-import 'package:my_api/core/widget/interface_constructor.dart';
+import 'package:my_api/core/screen_planner.dart';
 import 'package:my_api/core/widget/register_page.dart';
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(8),
         alignment: Alignment.center,
         child: SizedBox(
-          width: MediaQuery.of(context).size.width / InterfaceConstructor.panelNumber(context),
+          width: ScreenPlanner(context).panelWidth,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

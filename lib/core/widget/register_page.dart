@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/core/api/api_core.dart';
-import 'package:my_api/core/widget/interface_constructor.dart';
+import 'package:my_api/core/screen_planner.dart';
 import 'package:my_api/core/model/user.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -87,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width / InterfaceConstructor.panelNumber(context);
+    final width = ScreenPlanner(context).panelWidth;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

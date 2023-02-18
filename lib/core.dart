@@ -8,7 +8,7 @@ export 'package:my_api/core/api/api_client.dart';
 
 // UI
 export 'package:my_api/core/theme.dart';
-export 'package:my_api/core/widget/interface_constructor.dart';
+export 'package:my_api/core/screen_planner.dart';
 export 'package:my_api/core/widget/group_card.dart';
 export 'package:my_api/core/widget/data_card.dart';
 export 'package:my_api/core/widget/login_page.dart';
