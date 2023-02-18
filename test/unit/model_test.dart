@@ -73,7 +73,7 @@ void main() {
       final t = Transaction({});
       t.paidDate = DateTime(2022, 10, 1);
       t.utilityDays = 3;
-      assert(t.utilityEnd == DateTime(2022, 10, 3).toUtc());
+      assert(t.utilityEnd == DateTime(2022, 10, 3));
     });
   });
   group("Transaction Amount Verification Test (Integer part only currency)", () {
