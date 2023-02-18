@@ -41,12 +41,16 @@ class CategoryCard extends StatelessWidget {
       top: Text(
         category.name,
         style: Theme.of(context).textTheme.titleMedium,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
       ),
       bottom: Visibility(
         visible: category.descriptions.isNotEmpty,
         child: Text(
           category.descriptions,
           style: Theme.of(context).textTheme.labelMedium,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
         ),
       ),
       color: Colors.transparent,

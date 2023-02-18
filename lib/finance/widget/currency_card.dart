@@ -42,12 +42,16 @@ class CurrencyCard extends StatelessWidget {
         style: (amount != null)
             ? Theme.of(context).textTheme.labelMedium
             : Theme.of(context).textTheme.titleMedium,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
       ),
       bottom: Visibility(
         visible: amount != null,
         child: Text(
           data.format(amount ?? Decimal.zero),
           style: Theme.of(context).textTheme.titleMedium,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
         ),
       ),
       onTap: onTap,

@@ -91,11 +91,15 @@ class WalletItemCard extends StatelessWidget {
         child: Text(
           subtitle,
           style: Theme.of(context).textTheme.labelMedium,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
         ),
       ),
       bottom: Text(
         title,
         style: Theme.of(context).textTheme.titleMedium,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
       ),
       color: Colors.transparent,
       onTap: onTap,

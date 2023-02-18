@@ -38,12 +38,16 @@ class TransactionCard extends StatelessWidget {
       top: Text(
         currency.format(amount),
         style: Theme.of(context).textTheme.titleMedium,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
       ),
       bottom: Visibility(
         visible: data.descriptions.isNotEmpty,
         child: Text(
           data.descriptions,
           style: Theme.of(context).textTheme.labelMedium,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
         ),
       ),
       color: Colors.transparent,

@@ -77,13 +77,15 @@ class _DataCardState extends State<DataCard> {
                 children: [
                   widget.leading,
                   const SizedBox(width: 8,),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      widget.top,
-                      widget.bottom,
-                    ],
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        widget.top,
+                        widget.bottom,
+                      ],
+                    ),
                   ),
                 ],
               ),
