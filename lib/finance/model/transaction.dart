@@ -27,6 +27,11 @@ enum TransactionType {
         return TransactionType.unknown;
     }
   }
+
+  static List<TransactionType> get types => const [
+    TransactionType.expense,
+    TransactionType.income,
+  ];
 }
 
 class Transaction extends FinanceModel {
