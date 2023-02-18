@@ -112,7 +112,8 @@ class Transaction extends FinanceModel {
   DateTime get paidDate {
     final value = getValue(keyPaidDate, -1);
     if (value < 0) {
-      return DateTime.now().toUtc();
+      final now = DateTime.now();
+      return DateTime(now.year, now.month, now.day).toLocal();
     }
     return DateTime.fromMillisecondsSinceEpoch(value, isUtc: true).toLocal();
   }
@@ -202,14 +203,26 @@ class Transaction extends FinanceModel {
   set isIncluded(bool value) => map[keyIncluded] = value;
 
   /// Last date of this transaction is utility in LOCAL
-  DateTime get utilityEnd => DateTime.fromMillisecondsSinceEpoch(getValue(keyUtilityEnd, paidDate.millisecondsSinceEpoch), isUtc: true).toLocal();
+  DateTime get utilityEnd {
+    final date = getValue(keyUtilityEnd, -1);
+    if (date < 0) {
+      return paidDate.add(const Duration(seconds: 1));
+    }
+    return DateTime.fromMillisecondsSinceEpoch(date).toLocal();
+  }
 
-  set utilityEnd(DateTime value) => map[keyUtilityEnd] = value.millisecondsSinceEpoch;
+  set utilityEnd(DateTime value) => map[keyUtilityEnd] = value.toUtc().millisecondsSinceEpoch;
 
-  /// Days of this transaction is utility
-  int get utilityDays => utilityEnd.difference(paidDate).inDays+1;
+  /// Number of days between [paidDate] and [utilityEnd].
+  ///
+  /// It includes starting of day, therefore, if [paidDate] and [utilityEnd] is
+  /// same day, it is `1`.
+  int get utilityDays => utilityEnd.difference(paidDate).inDays + 1;
 
-  set utilityDays(int value) => map[keyUtilityEnd] = paidDate.add(Duration(days: value-1)).toUtc().millisecondsSinceEpoch;
+  set utilityDays(int value) => map[keyUtilityEnd] = paidDate.add(Duration(
+    days: value-1,
+    seconds: 1,
+  )).toUtc().millisecondsSinceEpoch;
 
   /// [RegExp] for verify [amount] and [altAmount]
   RegExp get regex {
