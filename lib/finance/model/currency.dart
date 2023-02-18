@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:my_api/finance/icon/currency_symbol_icons.dart';
 
 enum Currency {
-  unknown(-1, "?", "uKn", 2, CurrencySymbol.sign),
+  unknown(-1, "¤", "uKn", 2, CurrencySymbol.sign),
   won(0, "￦", "KRW", 0, CurrencySymbol.krw),
   yen(1, "￥", "JPY", 0, CurrencySymbol.jpy),
   dollar(2, "＄", "USD", 2, CurrencySymbol.usd),
