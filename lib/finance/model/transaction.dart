@@ -28,10 +28,14 @@ enum TransactionType {
     }
   }
 
+  /// Return list of valid types
   static List<TransactionType> get types => const [
     TransactionType.expense,
     TransactionType.income,
   ];
+
+  /// Get localization key
+  String get key => "transactionType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
 }
 
 class Transaction extends FinanceModel {
