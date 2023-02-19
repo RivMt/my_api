@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:my_api/core/api/api_core.dart';
-import 'package:my_api/core/api/api_client.dart';
+import 'package:my_api/core/api.dart';
 import 'package:my_api/finance/model/account.dart';
 
 void main() async {

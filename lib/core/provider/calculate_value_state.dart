@@ -1,7 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_api/core/api/api_core.dart';
-import 'package:my_api/core/api/api_client.dart';
+import 'package:my_api/core/api.dart';
 import 'package:my_api/core/log.dart';
 
 class CalculateValueState<T> extends StateNotifier<Decimal> {

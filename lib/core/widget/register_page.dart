@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_api/core/api/api_core.dart';
+import 'package:my_api/core/api.dart';
 import 'package:my_api/core/screen_planner.dart';
 import 'package:my_api/core/model/user.dart';
 
@@ -73,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
     // Request
-    final User user = await ApiCore().register(editing, password);
+    final User user = await ApiClient().register(editing, password);
     // Received
     setState(() {
       progressing = false;

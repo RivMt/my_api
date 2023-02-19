@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_api/core/api/api_core.dart';
+import 'package:my_api/core/api.dart';
 import 'package:my_api/core/screen_planner.dart';
 import 'package:my_api/core/widget/register_page.dart';
 import 'package:my_api/core/log.dart';
@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
 
   /// Try login
   void login() async {
-    final client = ApiCore();
+    final client = ApiClient();
     try {
       final User user = await client.login(email.text, password.text);
       if (user.isValid) {
