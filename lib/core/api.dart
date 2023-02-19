@@ -37,6 +37,14 @@ class ApiClient {
   /// User agent
   static const String userAgent = "MyAPI-Client";
 
+  /// Default header
+  static const Map<String, String> headers = {
+    "Content-Type": "application/json",
+  };
+
+  /// Header key for API key
+  static const String keyApiKey = "X-API-Key";
+
   /// Getter of [_serverType]
   ServerType get serverType => _serverType;
 
@@ -64,6 +72,15 @@ class ApiClient {
 
   /// [User] who currently logged in
   User user = User({});
+
+  /// Private instance for singleton pattern
+  static final ApiClient _instance = ApiClient._();
+
+  /// Private constructor for singleton pattern
+  ApiClient._();
+
+  /// Factory constructor for singleton pattern
+  factory ApiClient() => _instance;
 
   /// Init
   ///
@@ -95,12 +112,14 @@ class ApiClient {
     // Load url from json
     final bool setup = useTest ?? kDebugMode;
     url = setup ? preferences["test"]! : preferences["url"]!;
+    Log.v(_tag, "Trying to connect: $url");
     _serverType = setup ? ServerType.test : ServerType.production;
     // Authenticate
     user = await loadUser();
     if (!user.isValid) {
       Log.e(_tag, "Failed to connect server: $url");
       onLoginRequired();
+      return;
     }
     Log.i(_tag, "Connected: $url");
     return;
@@ -132,11 +151,12 @@ class ApiClient {
   }
 
   /// Send authenticate request using [body]
-  Future<User> auth(Map<String, dynamic> body) async {
+  Future<User> auth(Map<String, dynamic> body, [Map<String, String>? headers]) async {
     // Request
     final response = await _send(
       method: HttpMethod.post,
       link: authPath,
+      headers: headers ?? ApiClient.headers,
       body: body,
     );
 
@@ -163,10 +183,13 @@ class ApiClient {
   });
 
   /// Check user data with [id] and [secret] is valid
-  Future<User> authenticate(String id, String secret) async => auth({
-    User.keyUserId: id,
-    User.keyUserSecret: secret,
-  });
+  Future<User> authenticate(String id, String secret) async {
+    Map<String, String> map = Map.from(headers);
+    map[keyApiKey] = secret;
+    return auth({
+      User.keyUserId: id,
+    }, map);
+  }
 
   /// Register new user
   Future<User> register(User user, String password) async {
@@ -207,9 +230,7 @@ class ApiClient {
     required HttpMethod method,
     required String link,
     Map<String, dynamic>? queries,
-    Map<String, String> headers = const {
-      "Content-Type": "application/json",
-    },
+    Map<String, String> headers = headers,
     Map<String, dynamic>? body,
   }) async {
     // Url
@@ -294,16 +315,23 @@ class ApiClient {
     Map<String, dynamic>? options,
     Map<String, dynamic>? queries,
   }) async {
+    // Check host name is defined
+    if (url == "") {
+      Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $home/$path");
+      return ApiResponse(
+        result: ApiResultCode.failed,
+        data: {},
+      );
+    }
     // Headers
     final Map<String, String> headers = {
       "Content-Type": "application/json",
       "User-Agent": userAgent,
-      "X-API-Key": secret,
+      keyApiKey: secret,
     };
     // Body
     final Map<String, dynamic> body = {
       "user_id": id,
-      "user_secret": secret,
       "data": data,
     };
     // Options
