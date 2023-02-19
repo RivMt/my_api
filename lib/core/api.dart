@@ -327,8 +327,7 @@ class ApiClient {
     CalculationType? calcType,
     String? calcAttribute,
     // Sort Order
-    SortType? sortType,
-    String? sortAttribute,
+    List<Sort>? sorts,
     // Limit
     int? limit,
   }) {
@@ -341,10 +340,10 @@ class ApiClient {
       };
     }
     // Sort Order
-    if (sortType != null && sortAttribute != null) {
+    if (sorts != null && sorts.isNotEmpty) {
       map["order"] = {
-        "type": sortType.name.toUpperCase(),
-        "attr": sortAttribute,
+        "type": List.generate(sorts.length, (index) => sorts[index].type.name.toUpperCase()),
+        "attr": List.generate(sorts.length, (index) => sorts[index].attr),
       };
     }
     // Limits
@@ -565,6 +564,19 @@ enum HttpMethod {
 enum SortType {
   asc,
   desc,
+}
+
+/// Data class which has type of sort and attribute.
+class Sort {
+
+  const Sort(this.attr, this.type);
+
+  /// Type of sort order
+  final SortType type;
+
+  /// Attribute to sort
+  final String attr;
+
 }
 
 /// Types of DB calculation query
