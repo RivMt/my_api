@@ -23,5 +23,6 @@ export 'package:my_api/core/model/preference.dart';
 
 // Provider
 export 'package:my_api/core/provider/model_state.dart';
+export 'package:my_api/core/provider/search_state.dart';
 export 'package:my_api/core/provider/calculate_value_state.dart';
 export 'package:my_api/core/provider/preference_state.dart';

@@ -9,6 +9,7 @@ export 'package:my_api/finance/icon/currency_symbol_icons.dart';
 
 // Model
 export 'package:my_api/finance/model/finance_model.dart';
+export 'package:my_api/finance/model/finance_search_result.dart';
 export 'package:my_api/finance/model/account.dart';
 export 'package:my_api/finance/model/payment.dart';
 export 'package:my_api/finance/model/transaction.dart';

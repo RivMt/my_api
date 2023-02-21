@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:my_api/core/exceptions.dart';
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
+import 'package:my_api/finance.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/payment.dart';
@@ -388,6 +389,7 @@ class ApiClient {
       case Payment:
       case Transaction:
       case Category:
+      case FinanceSearchResult:
         return "finance/v1";
       case Preference:
         return "userdata/v1";
@@ -409,6 +411,8 @@ class ApiClient {
         return "categories";
       case Preference:
         return "preferences";
+      case FinanceSearchResult:
+        return "search";
       default:
         throw UnimplementedError();
     }
@@ -433,6 +437,8 @@ class ApiClient {
         return Category(data);
       case Preference:
         return Preference(data);
+      case FinanceSearchResult:
+        return FinanceSearchResult(data);
       default:
         throw UnimplementedError();
     }
@@ -460,12 +466,13 @@ class ApiClient {
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<List<T>>> read<T>(List<Map<String, dynamic>> data, [Map<String, dynamic>? options]) async {
+  Future<ApiResponse<List<T>>> read<T>(List<Map<String, dynamic>> data, [Map<String, dynamic>? options, Map<String, String>? queries]) async {
     final result = await send(
       method: HttpMethod.post,
       home: home<T>(),
       path: path<T>(),
       data: data,
+      queries: queries,
     );
     return result.converts<T>(converts<T>(result.data));
   }
