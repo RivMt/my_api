@@ -472,6 +472,7 @@ class ApiClient {
       home: home<T>(),
       path: path<T>(),
       data: data,
+      options: options,
       queries: queries,
     );
     return result.converts<T>(converts<T>(result.data));

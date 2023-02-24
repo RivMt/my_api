@@ -63,6 +63,7 @@ class _GroupCardState extends State<GroupCard> {
             ),
             // Widgets
             ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: widget.count,
               itemBuilder: widget.build,
