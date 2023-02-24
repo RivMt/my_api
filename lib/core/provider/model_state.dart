@@ -29,16 +29,18 @@ class ModelsState<T> extends StateNotifier<List<T>> {
   }
 }
 
-class ModelState<T> extends StateNotifier<T?> {
+class ModelState<T> extends StateNotifier<T> {
 
-  ModelState(this.ref) : super(null);
+  ModelState(this.ref, this.unknown) : super(unknown);
 
   final Ref ref;
 
-  /// Clear state
-  void clear() => state = null;
+  final T unknown;
 
-  /// Request [T] items fit to [condition] and filter by [options]
+  /// Clear state
+  void clear() => state = unknown;
+
+  /// Request [T] item fit to [condition] and filter by [options]
   Future<void> request(Map<String, dynamic> condition, [Map<String, dynamic>? options]) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(
@@ -47,7 +49,7 @@ class ModelState<T> extends StateNotifier<T?> {
     );
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to request $condition");
-      state = null;
+      state = unknown;
       return;
     }
     state = response.data[0];
