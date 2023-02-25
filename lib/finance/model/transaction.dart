@@ -117,21 +117,17 @@ class Transaction extends FinanceModel {
 
   set category(int value) => map[keyCategory] = value;
 
-  /// [DateTime] of this transaction paid in LOCAL
+  /// [DateTime] of this transaction paid
   DateTime get paidDate {
     final value = getValue(keyPaidDate, -1);
     if (value < 0) {
-      final now = DateTime.now();
-      return DateTime(now.year, now.month, now.day).toLocal();
+      return DateTime.now();
     }
-    return DateTime.fromMillisecondsSinceEpoch(value, isUtc: true).toLocal();
+    return DateTime.fromMillisecondsSinceEpoch(value);
   }
 
   set paidDate(DateTime date) {
-    map[keyPaidDate] = date.toUtc().millisecondsSinceEpoch;
-    if (type != TransactionType.expense) {
-      calculatedDate = date;
-    }
+    map[keyPaidDate] = date.millisecondsSinceEpoch;
   }
 
   /// PID of [Account] this transaction occurred
@@ -197,10 +193,10 @@ class Transaction extends FinanceModel {
   }
 
   /// [DateTime] of this transaction calculated in LOCAL
-  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0), isUtc: true).toLocal();
+  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0));
 
   set calculatedDate(DateTime date) {
-    map[keyCalculatedDate] = date.toUtc().millisecondsSinceEpoch;
+    map[keyCalculatedDate] = date.millisecondsSinceEpoch;
   }
 
   /// Value of this transaction included in statics
@@ -214,10 +210,10 @@ class Transaction extends FinanceModel {
     if (date < 0) {
       return paidDate.add(const Duration(seconds: 1));
     }
-    return DateTime.fromMillisecondsSinceEpoch(date).toLocal();
+    return DateTime.fromMillisecondsSinceEpoch(date);
   }
 
-  set utilityEnd(DateTime value) => map[keyUtilityEnd] = value.toUtc().millisecondsSinceEpoch;
+  set utilityEnd(DateTime date) => map[keyUtilityEnd] = date.millisecondsSinceEpoch;
 
   /// Number of days between [paidDate] and [utilityEnd].
   ///
@@ -228,7 +224,7 @@ class Transaction extends FinanceModel {
   set utilityDays(int value) => map[keyUtilityEnd] = paidDate.add(Duration(
     days: value-1,
     seconds: 1,
-  )).toUtc().millisecondsSinceEpoch;
+  )).millisecondsSinceEpoch;
 
   /// [RegExp] for verify [amount] and [altAmount]
   RegExp get regex {
