@@ -118,16 +118,12 @@ class Transaction extends FinanceModel {
   set category(int value) => map[keyCategory] = value;
 
   /// [DateTime] of this transaction paid
-  DateTime get paidDate {
-    final value = getValue(keyPaidDate, -1);
-    if (value < 0) {
-      return DateTime.now();
-    }
-    return DateTime.fromMillisecondsSinceEpoch(value);
-  }
+  DateTime get paidDate => getDate(keyPaidDate, DateTime.now());
 
   set paidDate(DateTime date) {
-    map[keyPaidDate] = date.millisecondsSinceEpoch;
+    final days = utilityDays;
+    setDate(keyPaidDate, date);
+    utilityDays = days;
   }
 
   /// PID of [Account] this transaction occurred
@@ -193,11 +189,9 @@ class Transaction extends FinanceModel {
   }
 
   /// [DateTime] of this transaction calculated in LOCAL
-  DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0));
+  DateTime get calculatedDate => getDate(keyCalculatedDate, DateTime.fromMillisecondsSinceEpoch(0));
 
-  set calculatedDate(DateTime date) {
-    map[keyCalculatedDate] = date.millisecondsSinceEpoch;
-  }
+  set calculatedDate(DateTime date) => setDate(keyCalculatedDate, date);
 
   /// Value of this transaction included in statics
   bool get isIncluded => getValue(keyIncluded, true);
@@ -205,15 +199,9 @@ class Transaction extends FinanceModel {
   set isIncluded(bool value) => map[keyIncluded] = value;
 
   /// Last date of this transaction is utility in LOCAL
-  DateTime get utilityEnd {
-    final date = getValue(keyUtilityEnd, -1);
-    if (date < 0) {
-      return paidDate.add(const Duration(seconds: 1));
-    }
-    return DateTime.fromMillisecondsSinceEpoch(date);
-  }
+  DateTime get utilityEnd => getDate(keyUtilityEnd, paidDate.add(const Duration(seconds: 1)));
 
-  set utilityEnd(DateTime date) => map[keyUtilityEnd] = date.millisecondsSinceEpoch;
+  set utilityEnd(DateTime date) => setDate(keyUtilityEnd, date);
 
   /// Number of days between [paidDate] and [utilityEnd].
   ///
@@ -221,10 +209,10 @@ class Transaction extends FinanceModel {
   /// same day, it is `1`.
   int get utilityDays => utilityEnd.difference(paidDate).inDays + 1;
 
-  set utilityDays(int value) => map[keyUtilityEnd] = paidDate.add(Duration(
+  set utilityDays(int value) => setDate(keyUtilityEnd, paidDate.add(Duration(
     days: value-1,
     seconds: 1,
-  )).millisecondsSinceEpoch;
+  )));
 
   /// [RegExp] for verify [amount] and [altAmount]
   RegExp get regex {

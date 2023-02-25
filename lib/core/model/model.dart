@@ -22,5 +22,22 @@ abstract class Model {
     // Return default value
     return defaultValue;
   }
+
+  /// Get date from [key]
+  ///
+  /// [value] is default value when [key] is not exist in [map].
+  DateTime getDate(String key, DateTime value) {
+    if (!map.containsKey(key)) {
+      return value;
+    }
+    final utc = DateTime.fromMillisecondsSinceEpoch(map[key], isUtc: true);
+    return DateTime(utc.year, utc.month, utc.day, utc.hour, utc.minute, utc.second, utc.millisecond, utc.microsecond);
+  }
+
+  /// Set date [value] to [key]
+  void setDate(String key, DateTime value) {
+    final local = value.add(value.timeZoneOffset).toUtc();
+    map[key] = local.millisecondsSinceEpoch;
+  }
 }
 
