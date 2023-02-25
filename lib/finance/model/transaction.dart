@@ -128,10 +128,10 @@ class Transaction extends FinanceModel {
   }
 
   set paidDate(DateTime date) {
-    if (!date.isUtc) {
-      paidDate = date.toUtc();
-    }
     map[keyPaidDate] = date.toUtc().millisecondsSinceEpoch;
+    if (type != TransactionType.expense) {
+      calculatedDate = date;
+    }
   }
 
   /// PID of [Account] this transaction occurred
@@ -200,9 +200,6 @@ class Transaction extends FinanceModel {
   DateTime get calculatedDate => DateTime.fromMillisecondsSinceEpoch(getValue(keyCalculatedDate, 0), isUtc: true).toLocal();
 
   set calculatedDate(DateTime date) {
-    if (!date.isUtc) {
-      calculatedDate = date.toUtc();
-    }
     map[keyCalculatedDate] = date.toUtc().millisecondsSinceEpoch;
   }
 
