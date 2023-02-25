@@ -41,7 +41,7 @@ class CategoryCard extends StatelessWidget {
       top: Text(
         category.name,
         style: Theme.of(context).textTheme.titleMedium,
-        overflow: TextOverflow.fade,
+        overflow: TextOverflow.clip,
         maxLines: 1,
       ),
       bottom: Visibility(
@@ -49,7 +49,7 @@ class CategoryCard extends StatelessWidget {
         child: Text(
           category.descriptions,
           style: Theme.of(context).textTheme.labelMedium,
-          overflow: TextOverflow.fade,
+          overflow: TextOverflow.clip,
           maxLines: 1,
         ),
       ),
@@ -91,7 +91,7 @@ class CategoryIcon extends StatelessWidget {
 
   /// Get color by [type], [included], and [background]
   Color? getColor(TransactionType type, bool included, bool background) {
-    final level = background ? 200 : 500;
+    final level = background ? 100 : 500;
     switch(type) {
       case TransactionType.expense:
         if (included) {

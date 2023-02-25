@@ -38,7 +38,7 @@ class TransactionCard extends StatelessWidget {
       top: Text(
         currency.format(amount),
         style: Theme.of(context).textTheme.titleMedium,
-        overflow: TextOverflow.fade,
+        overflow: TextOverflow.clip,
         maxLines: 1,
       ),
       bottom: Visibility(
@@ -46,7 +46,7 @@ class TransactionCard extends StatelessWidget {
         child: Text(
           data.descriptions,
           style: Theme.of(context).textTheme.labelMedium,
-          overflow: TextOverflow.fade,
+          overflow: TextOverflow.clip,
           maxLines: 1,
         ),
       ),
