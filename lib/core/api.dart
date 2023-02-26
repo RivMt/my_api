@@ -8,9 +8,9 @@ import 'package:http/http.dart' as http;
 import 'package:my_api/core/exceptions.dart';
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
-import 'package:my_api/finance.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
+import 'package:my_api/finance/model/finance_search_result.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/core/model/preference.dart';
 import 'package:my_api/finance/model/transaction.dart';
@@ -30,10 +30,16 @@ const String _tag = "API";
 class ApiClient {
 
   /// Key of user id for [SharedPreferences]
-  static const String keyPreferencesUserId = "api-user-id";
+  static String get keyPreferencesUserId {
+    const tail = kDebugMode ? "-test" : "";
+    return "api-user-id$tail";
+  }
 
   /// Key of user secrets for [SharedPreferences]
-  static const String keyPreferencesUserSecret = "api-user-secret";
+  static String get keyPreferencesUserSecret {
+    const tail = kDebugMode ? "-test" : "";
+    return "api-user-secret$tail";
+  }
 
   /// User agent
   static const String userAgent = "MyAPI-Client";
