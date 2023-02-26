@@ -64,6 +64,11 @@ class Transaction extends FinanceModel {
 
   Transaction(super.map);
 
+  Transaction.init() : super({}) {
+    paidDate = DateTime.now();
+    calculatedDate = paidDate;
+  }
+
   /// Check data is valid
   bool get isValid {
     // PID

@@ -36,7 +36,7 @@ abstract class Model {
 
   /// Set date [value] to [key]
   void setDate(String key, DateTime value) {
-    final local = value.add(value.timeZoneOffset).toUtc();
+    final local = DateTime(value.year, value.month, value.day).add(value.timeZoneOffset).toUtc();
     map[key] = local.millisecondsSinceEpoch;
   }
 }

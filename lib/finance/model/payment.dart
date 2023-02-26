@@ -37,10 +37,15 @@ class Payment extends FinanceModel {
   static const int payDayMax = 30;
 
   /// Unknown payment
-  static final Payment unknown = Payment({});
+  static final Payment unknown = Payment({
+    keyCurrency: Currency.unknown.value,
+  });
 
   /// No payment
-  static final Payment none = Payment({FinanceModel.keyPid: 0});
+  static final Payment none = Payment({
+    FinanceModel.keyPid: 0,
+    keyCurrency: Currency.unknown.value,
+  });
 
   Payment(super.map);
 
@@ -146,6 +151,10 @@ class Payment extends FinanceModel {
   /// This method calculates [DateTime] in LOCAL time. If you want UTC time,
   /// you must call `toUtc` returned value.
   DateTime getCalculatedDate(DateTime paidDate) {
+    // Check is credit
+    if (!isCredit) {
+      return paidDate;
+    }
     // Month
     late int delta;
     if (payBegin.month == payEnd.month) {
