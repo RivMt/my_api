@@ -59,6 +59,9 @@ class Transaction extends FinanceModel {
   /// Maximum digits of decimal part of [amount]
   static const int maxDecimalPartDigits = 2;
 
+  /// Default [DateTime] of [calculatedDate]
+  static final DateTime defaultCalculatedDate = DateTime(1970, 1, 1, 0, 0, 0, 0, 0);
+
   Transaction(super.map);
 
   /// Check data is valid
@@ -189,7 +192,7 @@ class Transaction extends FinanceModel {
   }
 
   /// [DateTime] of this transaction calculated in LOCAL
-  DateTime get calculatedDate => getDate(keyCalculatedDate, DateTime.fromMillisecondsSinceEpoch(0));
+  DateTime get calculatedDate => getDate(keyCalculatedDate, defaultCalculatedDate);
 
   set calculatedDate(DateTime date) => setDate(keyCalculatedDate, date);
 
