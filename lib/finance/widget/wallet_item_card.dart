@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_api/core.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/payment.dart';
@@ -52,6 +53,7 @@ class WalletItemCard extends StatelessWidget {
     required this.icon,
     this.selected = false,
     this.isUnknown = false,
+    this.isDeleted = false,
     this.unknownMessage,
     this.onTap,
     this.onDoubleTap,
@@ -71,6 +73,8 @@ class WalletItemCard extends StatelessWidget {
 
   final String? unknownMessage;
 
+  final bool isDeleted;
+
   final Function()? onTap, onDoubleTap, onLongPress;
 
   final Function(bool)? onHover;
@@ -82,22 +86,26 @@ class WalletItemCard extends StatelessWidget {
       unknownMessage: unknownMessage,
       leading: WalletItemIcon(
         icon: icon,
-        foreground: foreground,
-        background: background,
+        foreground: isDeleted ? AppTheme.disabledForeground : foreground,
+        background: isDeleted ? AppTheme.disabledBackground : background,
         selected: selected,
       ),
       top: Visibility(
         visible: subtitle.isNotEmpty,
         child: Text(
           subtitle,
-          style: Theme.of(context).textTheme.labelMedium,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+            fontStyle: isDeleted ? FontStyle.italic : null,
+          ),
           overflow: TextOverflow.clip,
           maxLines: 1,
         ),
       ),
       bottom: Text(
         title,
-        style: Theme.of(context).textTheme.titleMedium,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontStyle: isDeleted ? FontStyle.italic : null,
+        ),
         overflow: TextOverflow.clip,
         maxLines: 1,
       ),
@@ -155,6 +163,7 @@ class AccountCard extends StatelessWidget {
       icon: data.icon.icon,
       selected: selected,
       isUnknown: data == Account.unknown,
+      isDeleted: data.deleted,
       unknownMessage: unknownMessage,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
@@ -198,6 +207,7 @@ class PaymentCard extends StatelessWidget {
       icon: data.icon.icon,
       selected: selected,
       isUnknown: data == Payment.unknown,
+      isDeleted: data.deleted,
       unknownMessage: unknownMessage,
       onTap: onTap,
       onDoubleTap: onDoubleTap,

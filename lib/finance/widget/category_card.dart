@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_api/core.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/transaction.dart';
@@ -68,6 +69,7 @@ class CategoryIcon extends StatelessWidget {
     required this.type,
     this.icon = Icons.circle_outlined,
     this.included = true,
+    this.isDeleted = false,
   });
 
   /// Icon
@@ -79,13 +81,22 @@ class CategoryIcon extends StatelessWidget {
   /// Included
   final bool included;
 
+  /// Deleted
+  final bool isDeleted;
+
   /// Icon color
   Color? get foreground {
+    if (isDeleted) {
+      return AppTheme.disabledForeground;
+    }
     return getColor(type, included, false);
   }
 
   /// Background color
   Color? get background {
+    if (isDeleted) {
+      return AppTheme.disabledBackground;
+    }
     return getColor(type, included, true);
   }
 

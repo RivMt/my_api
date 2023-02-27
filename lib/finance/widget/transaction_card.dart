@@ -78,6 +78,7 @@ class TransactionIcon extends StatelessWidget {
       type: data.type,
       icon: category.icon.icon,
       included: data.isIncluded,
+      isDeleted: data.deleted,
     );
   }
 

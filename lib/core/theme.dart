@@ -65,6 +65,12 @@ class AppTheme {
   /// Secondary text color
   static late Color subtext;
 
+  /// Disabled foreground color
+  static late Color disabledForeground;
+
+  /// Disabled background color
+  static late Color disabledBackground;
+
   /// Light theme
   static ThemeData light(Color primary) {
     AppTheme.primary = primary;
@@ -78,6 +84,9 @@ class AppTheme {
     frontBackground = Colors.grey[200] ?? Colors.white;
     middleBackground = Colors.grey[100] ?? Colors.white;
     rearBackground = Colors.white;
+    // Disabled
+    disabledForeground = Colors.grey[500] ?? Colors.black;
+    disabledBackground = Colors.grey[800] ?? Colors.black;
     // Text
     text = Colors.black;
     subtext = Colors.grey[900] ?? Colors.black;
@@ -98,6 +107,9 @@ class AppTheme {
     frontBackground = Colors.grey[800] ?? Colors.grey;
     middleBackground = Colors.grey[850] ?? Colors.grey;
     rearBackground = Colors.grey[900] ?? Colors.grey;
+    // Disabled
+    disabledForeground = Colors.grey[800] ?? Colors.black;
+    disabledBackground = Colors.grey[500] ?? Colors.black;
     // Text
     text = Colors.white;
     subtext = Colors.grey[400] ?? Colors.white;
