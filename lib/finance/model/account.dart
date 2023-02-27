@@ -6,12 +6,12 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
+import 'package:my_api/finance/model/wallet_item.dart';
 
-class Account extends FinanceModel {
+class Account extends WalletItem {
 
   static const String keyViewers = "viewers";
   static const String keyIcon = "icon";
-  static const String keyPriority = "priority";
   static const String keyLimitation = "limitation";
   static const String keyCurrency = "currency";
   static const String keyBalance = "balance";
@@ -64,13 +64,6 @@ class Account extends FinanceModel {
   AccountSymbol get icon => AccountSymbol.fromId(getValue(keyIcon, AccountSymbol.account.id));
 
   set icon(AccountSymbol icon) => map[keyIcon] = icon.id;
-
-  /// Priority
-  ///
-  /// Default value is `0`
-  int get priority => getValue(keyPriority, 0);
-
-  set priority(int value) => map[keyPriority] = value;
 
   /// Limitation of this account
   Decimal get limitation => Decimal.parse(getValue(keyLimitation, "0"));
