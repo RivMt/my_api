@@ -2,22 +2,16 @@ library my_api;
 
 import 'dart:math';
 
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:my_api/core/model/model.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
 
 class Payment extends WalletItem {
 
-  static const String keyViewers = "viewers";
   static const String keyIcon = "icon";
-  static const String keyLimitation = "limitation";
   static const String keyIsCredit = "is_credit";
-  static const String keyCurrency = "currency";
-  static const String keySerialNumber = "serial_number";
-  static const String keyForeground = "foreground";
-  static const String keyBackground = "background";
   static const String keyPayBegin = "pay_begin";
   static const String keyPayEnd = "pay_end";
   static const String keyPayDate = "pay_date";
@@ -38,20 +32,20 @@ class Payment extends WalletItem {
 
   /// Unknown payment
   static final Payment unknown = Payment({
-    keyCurrency: Currency.unknown.value,
+    WalletItem.keyCurrency: Currency.unknown.value,
   });
 
   /// No payment
   static final Payment none = Payment({
-    FinanceModel.keyPid: 0,
-    keyCurrency: Currency.unknown.value,
+    Model.keyPid: 0,
+    WalletItem.keyCurrency: Currency.unknown.value,
   });
 
   Payment(super.map);
 
   bool get isValid {
     // Pid
-    if (map.containsKey(FinanceModel.keyPid) && pid < 0) {
+    if (map.containsKey(Model.keyPid) && pid < 0) {
       return false;
     }
     // Description
@@ -80,45 +74,15 @@ class Payment extends WalletItem {
     return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
   }
 
-  /// List of viewers id
-  List<String> get viewers => getValue(keyViewers, []);
-
-  set viewers(List<String> list) => map[keyViewers] = list;
-
-  /// Index of icon
-  PaymentSymbol get icon => PaymentSymbol.fromId(getValue(keyIcon, PaymentSymbol.card.id));
-
-  set icon(PaymentSymbol icon) => map[keyIcon] = icon.id;
-
-  /// Limitation of this account
-  Decimal get limitation => Decimal.parse(getValue(keyLimitation, "0"));
-
-  set limitation(Decimal value) => map[keyLimitation] = value.toString();
-
   /// Is this account handled as cash or not
   bool get isCredit => getValue(keyIsCredit, false);
 
   set isCredit(bool value) => map[keyIsCredit] = value;
 
-  /// Currency of this payment
-  Currency get currency => Currency.fromValue(getValue(keyCurrency, Currency.unknown.value));
+  /// Index of icon
+  PaymentSymbol get icon => PaymentSymbol.fromId(getValue(keyIcon, PaymentSymbol.card.id));
 
-  set currency(Currency currency) => map[keyCurrency] = currency.value;
-
-  /// Serial number
-  String get serialNumber => getValue(keySerialNumber, "");
-
-  set serialNumber(String value) => map[keySerialNumber] = value;
-
-  /// Foreground color
-  Color get foreground => Color(getValue(keyForeground, Colors.white.value));
-
-  set foreground(Color color) => map[keyForeground] = color.value;
-
-  /// Background color
-  Color get background => Color(getValue(keyBackground, Colors.black.value));
-
-  set background(Color color) => map[keyBackground] = color.value;
+  set icon(PaymentSymbol icon) => map[keyIcon] = icon.id;
 
   /// Beginning day of range when this payment paid
   PaymentRangePoint get payBegin => PaymentRangePoint.fromCode(getValue(keyPayBegin, PaymentRangePoint.defaultBegin.code));

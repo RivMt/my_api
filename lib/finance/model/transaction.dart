@@ -3,40 +3,9 @@ library my_api;
 import 'dart:math';
 
 import 'package:decimal/decimal.dart';
+import 'package:my_api/core/model/model.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
-
-enum TransactionType {
-  unknown(-1),
-  expense(0),
-  income(1);
-
-  const TransactionType(this.code);
-
-  /// [int] value of [TransactionType]
-  final int code;
-
-  /// Find valid [TransactionType] object by [code]
-  factory TransactionType.fromCode(int code) {
-    switch(code) {
-      case 0:
-        return TransactionType.expense;
-      case 1:
-        return TransactionType.income;
-      default:
-        return TransactionType.unknown;
-    }
-  }
-
-  /// Return list of valid types
-  static List<TransactionType> get types => const [
-    TransactionType.expense,
-    TransactionType.income,
-  ];
-
-  /// Get localization key
-  String get key => "transactionType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
-}
 
 class Transaction extends FinanceModel {
 
@@ -72,7 +41,7 @@ class Transaction extends FinanceModel {
   /// Check data is valid
   bool get isValid {
     // PID
-    if (map.containsKey(FinanceModel.keyPid) && pid <= 0) {
+    if (map.containsKey(Model.keyPid) && pid <= 0) {
       return false;
     }
     // Category
@@ -144,10 +113,11 @@ class Transaction extends FinanceModel {
 
   set paymentId(int pid) => map[keyPaymentID] = pid;
 
-  /// Currency of this transaction
-  Currency get currency => Currency.fromValue(getValue(keyCurrency, Currency.unknown.value));
+  /// ID of currency
+  /// TODO: Change default value to unknown
+  Currency get currency => getCurrency(keyCurrency, Currency.won);
 
-  set currency(Currency currency) => map[keyCurrency] = currency.value;
+  set currency(Currency currency) => setCurrency(keyCurrency, currency);
 
   /// Amount of this transaction
   Decimal get amount => Decimal.parse(getValue(keyAmount, "0"));
@@ -226,4 +196,37 @@ class Transaction extends FinanceModel {
   RegExp get regex {
     return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
   }
+}
+
+
+enum TransactionType {
+  unknown(-1),
+  expense(0),
+  income(1);
+
+  const TransactionType(this.code);
+
+  /// [int] value of [TransactionType]
+  final int code;
+
+  /// Find valid [TransactionType] object by [code]
+  factory TransactionType.fromCode(int code) {
+    switch(code) {
+      case 0:
+        return TransactionType.expense;
+      case 1:
+        return TransactionType.income;
+      default:
+        return TransactionType.unknown;
+    }
+  }
+
+  /// Return list of valid types
+  static List<TransactionType> get types => const [
+    TransactionType.expense,
+    TransactionType.income,
+  ];
+
+  /// Get localization key
+  String get key => "transactionType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
 }

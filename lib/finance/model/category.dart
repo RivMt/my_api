@@ -1,6 +1,7 @@
 library my_api;
 
 import 'package:flutter/material.dart';
+import 'package:my_api/core/model/model.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/transaction.dart';
 
@@ -12,7 +13,7 @@ class Category extends FinanceModel {
   static const String keyName = "name";
 
   static final Category unknown = Category({
-    FinanceModel.keyPid: -1,
+    Model.keyPid: -1,
     keyType: TransactionType.expense.code,
     keyIncluded: true,
     keyIcon: -1,
@@ -24,7 +25,7 @@ class Category extends FinanceModel {
   /// Is this valid or not
   bool get isValid {
     // Pid
-    if (map.containsKey(FinanceModel.keyPid) && pid < 0) {
+    if (map.containsKey(Model.keyPid) && pid < 0) {
       return false;
     }
     // Type
@@ -136,7 +137,8 @@ enum CategorySymbol {
   fitness(71, Icons.fitness_center_outlined),
   business(72, Icons.business_center_outlined),
   checkroom(73, Icons.checkroom_outlined),
-  upload(74, Icons.upload_outlined);
+  upload(74, Icons.upload_outlined),
+  food(75, Icons.restaurant_outlined);
 
   const CategorySymbol(this.id, this.icon);
 

@@ -1,14 +1,9 @@
 import 'package:my_api/core/model/model.dart';
+import 'package:my_api/finance/model/currency.dart';
 
+/// Superclass of all Finance API related models.
 class FinanceModel extends Model {
 
-  static const String keyId = "id";
-  static const String keyPid = "pid";
-  static const String keyLastUsed = "last_used";
-  static const String keyOwner = "owner_id";
-  static const String keyEditors = "editors_id";
-  static const String keyDescriptions = "descriptions";
-  static const String keyDeleted = "deleted";
 
   /// Regular expression for check [Decimal] number
   ///
@@ -29,51 +24,19 @@ class FinanceModel extends Model {
   }
 
   /// Create object using [map]
-  FinanceModel(super.map);
+  FinanceModel([super.map]);
 
-  /// ID (Read-only)
-  int get id => getValue(keyId, -1);
-
-  /// PID (Read-only)
-  int get pid => getValue(keyPid, -1);
-
-  /// [DateTime] of lastly used
-  DateTime get lastUsed => DateTime.fromMillisecondsSinceEpoch(getValue(keyLastUsed, 0));
-
-  set lastUsed(DateTime dateTime) => map[keyLastUsed] = dateTime.millisecondsSinceEpoch;
-
-  /// UID of owner
-  String get owner => getValue(keyOwner, "");
-
-  set owner(String id) => throw UnimplementedError();
-
-  /// List of editor UID
-  List<String> get editors => getValue(keyEditors, []);
-
-  set editors(List<String> list) => map[keyEditors] = list;
-
-  /// Descriptions of this object
-  String get descriptions => getValue(keyDescriptions, "");
-
-  set descriptions(String desc) => map[keyDescriptions] = desc;
-
-  /// Is this object deleted or not
-  bool get deleted => getValue(keyDeleted, false);
-
-  set deleted(bool value) => map[keyDeleted] = value;
-
-  /// Check two models' [pid] is equal or not
-  @override
-  bool operator ==(Object other) {
-    if (other is FinanceModel) {
-      return pid == other.pid;
+  /// Get [Currency] from [key]
+  Currency getCurrency(String key, Currency value) {
+    if (!map.containsKey(key)) {
+      return value;
     }
-    return super==(other);
+    assert(map[key] is int);
+    return Currency.fromValue(map[key]);
   }
 
-  /// [pid] is similar kind of hash code
-  @override
-  int get hashCode {
-    return pid;
+  /// Set [Currency] to [key]
+  void setCurrency(String key, Currency value) {
+    map[key] = value.value;
   }
 }
