@@ -20,7 +20,9 @@ export 'package:my_api/core/widget/no_glow_scroll_behavior.dart';
 
 // Model
 export 'package:my_api/core/model/model.dart';
+export 'package:my_api/core/model/model_keys.dart';
 export 'package:my_api/core/model/preference.dart';
+export 'package:my_api/core/model/user.dart';
 
 // Provider
 export 'package:my_api/core/provider/model_state.dart';

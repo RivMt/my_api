@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/exceptions.dart';
 import 'package:my_api/core/log.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
@@ -175,7 +176,7 @@ class ApiClient {
 
     // Check body is not valid
     if (!user.isValid) {
-      throw InvalidModelException(User.keyUserSecret);
+      throw InvalidModelException(ModelKeys.keyUserSecret);
     }
 
     // Valid
@@ -185,8 +186,8 @@ class ApiClient {
 
   /// Request [secret] using [email] and [password]
   Future<User> login(String email, String password) async => auth({
-    User.keyEmail: email,
-    User.keyPassword: password,
+    ModelKeys.keyEmail: email,
+    ModelKeys.keyPassword: password,
   });
 
   /// Check user data with [id] and [secret] is valid
@@ -194,14 +195,14 @@ class ApiClient {
     Map<String, String> map = Map.from(headers);
     map[keyApiKey] = secret;
     return auth({
-      User.keyUserId: id,
+      ModelKeys.keyUserId: id,
     }, map);
   }
 
   /// Register new user
   Future<User> register(User user, String password) async {
     final map = user.map;
-    map[User.keyPassword] = password;
+    map[ModelKeys.keyPassword] = password;
     final response = await _send(
       method: HttpMethod.put,
       link: authPath,
@@ -548,7 +549,7 @@ class ApiClient {
     }
     // If not exists, send request to API server
     final response = await read<Preference>([{
-      Preference.keyKey: key,
+      ModelKeys.keyKey: key,
     }]);
     if (response.result == ApiResultCode.success && response.data.length == 1) {
       final value = response.data[0];

@@ -2,7 +2,7 @@ import 'package:my_api/core/model/model.dart';
 import 'package:my_api/finance/model/currency.dart';
 
 /// Superclass of all Finance API related models.
-class FinanceModel extends Model {
+abstract class FinanceModel extends Model {
 
 
   /// Regular expression for check [Decimal] number

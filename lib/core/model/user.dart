@@ -1,16 +1,7 @@
 import 'package:my_api/core/model/model.dart';
+import 'package:my_api/core/model/model_keys.dart';
 
 class User extends Model {
-
-  static const String keyUserId = "user_id";
-  static const String keyEmail = "email";
-  static const String keyFirstName = "name_first";
-  static const String keyLastName = "name_second";
-  static const String keyBirthday = "birthday";
-  static const String keyGender = "gender";
-  static const String keyValidation = "validation";
-  static const String keyUserSecret = "user_secret";
-  static const String keyPassword = "user_password";
 
   static const int minPasswordLength = 8;
 
@@ -31,38 +22,38 @@ class User extends Model {
   }
 
   /// Unique identification code (Read-only)
-  String get userId => getValue(keyUserId, "");
+  String get userId => getValue(ModelKeys.keyUserId, "");
 
   /// Email
-  String get email => getValue(keyEmail, "");
+  String get email => getValue(ModelKeys.keyEmail, "");
 
-  set email(String value) => map[keyEmail] = value;
+  set email(String value) => map[ModelKeys.keyEmail] = value;
 
   /// First name
-  String get firstName => getValue(keyFirstName, "");
+  String get firstName => getValue(ModelKeys.keyFirstName, "");
 
-  set firstName(String name) => map[keyFirstName] = name;
+  set firstName(String name) => map[ModelKeys.keyFirstName] = name;
 
   /// Last name
-  String get lastName => getValue(keyLastName, "");
+  String get lastName => getValue(ModelKeys.keyLastName, "");
 
-  set lastName(String name) => map[keyLastName] = name;
+  set lastName(String name) => map[ModelKeys.keyLastName] = name;
 
   /// Birthday
-  DateTime get birthday => DateTime.fromMillisecondsSinceEpoch(getValue(keyBirthday, 0));
+  DateTime get birthday => DateTime.fromMillisecondsSinceEpoch(getValue(ModelKeys.keyBirthday, 0));
 
-  set birthday(DateTime date) => map[keyBirthday] = date.millisecondsSinceEpoch;
+  set birthday(DateTime date) => map[ModelKeys.keyBirthday] = date.millisecondsSinceEpoch;
 
   /// Gender
-  UserGender get gender => UserGender.fromName(getValue(keyGender, ""));
+  UserGender get gender => UserGender.fromName(getValue(ModelKeys.keyGender, ""));
 
-  set gender(UserGender gender) => map[keyGender] = gender.name;
+  set gender(UserGender gender) => map[ModelKeys.keyGender] = gender.name;
 
   /// Validation (Read-only)
-  DateTime get validation => DateTime.fromMillisecondsSinceEpoch(getValue(keyValidation, 0));
+  DateTime get validation => DateTime.fromMillisecondsSinceEpoch(getValue(ModelKeys.keyValidation, 0));
 
   /// User secret
-  String get userSecret => getValue(keyUserSecret, "");
+  String get userSecret => getValue(ModelKeys.keyUserSecret, "");
 
   /// Valid
   bool get isValid => (userId != "" && userSecret != "");

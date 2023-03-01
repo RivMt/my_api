@@ -1,15 +1,8 @@
 import 'package:decimal/decimal.dart';
 import 'package:my_api/core.dart';
+import 'package:my_api/core/model/model_keys.dart';
 
 class Preference extends Model {
-
-  static const String keyOwnerId = "owner_id";
-
-  static const String keySection = "section";
-
-  static const String keyKey = "key";
-
-  static const String keyValue = "value";
 
   static final Preference unknown = Preference({});
 
@@ -104,22 +97,22 @@ class Preference extends Model {
   }
 
   /// Section of this preference located
-  String get section => getValue(keySection, "");
+  String get section => getValue(ModelKeys.keySection, "");
 
-  set section(String value) => map[keySection] = value;
+  set section(String value) => map[ModelKeys.keySection] = value;
 
   /// Key of preference
-  String get key => getValue(keyKey, "");
+  String get key => getValue(ModelKeys.keyKey, "");
 
-  set key(String key) => map[keyKey] = key;
+  set key(String key) => map[ModelKeys.keyKey] = key;
 
   /// Value of preference
-  dynamic get value => decode(getValue(keyValue, ""));
+  dynamic get value => decode(getValue(ModelKeys.keyValue, ""));
 
-  set value(dynamic value) => map[keyValue] = encode(value);
+  set value(dynamic value) => map[ModelKeys.keyValue] = encode(value);
 
   /// Raw value of preference
-  String get rawValue => getValue(keyValue, "");
+  String get rawValue => getValue(ModelKeys.keyValue, "");
 
   @override
   String toString() => "(Pref) $key = $rawValue";

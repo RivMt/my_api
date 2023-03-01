@@ -2,17 +2,10 @@ library my_api;
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:my_api/core/model/model_keys.dart';
 
+/// Superclass of all API models.
 abstract class Model {
-
-  static const String keyId = "id";
-  static const String keyPid = "pid";
-  static const String keyLastUsed = "last_used";
-  static const String keyOwner = "owner_id";
-  static const String keyEditors = "editors_id";
-  static const String keyViewers = "viewers_id";
-  static const String keyDescriptions = "descriptions";
-  static const String keyDeleted = "deleted";
 
   /// Raw data of this object
   Map<String, dynamic> map = {};
@@ -133,42 +126,42 @@ abstract class Model {
   }
 
   /// ID (Read-only)
-  int get id => getValue(keyId, -1);
+  int get id => getValue(ModelKeys.keyId, -1);
 
   /// PID (Read-only)
-  int get pid => getValue(keyPid, -1);
+  int get pid => getValue(ModelKeys.keyPid, -1);
 
   /// [DateTime] of lastly used (Read-only)
   ///
   /// There is no problem when edit it manually, however, server will be update
   /// this when request update. Therefore, it is useless editing [lastUsed]
   /// property.
-  DateTime get lastUsed => getDateTime(keyLastUsed, DateTime.fromMillisecondsSinceEpoch(0));
+  DateTime get lastUsed => getDateTime(ModelKeys.keyLastUsed, DateTime.fromMillisecondsSinceEpoch(0));
 
   /// UID of owner
-  String get owner => getValue(keyOwner, "");
+  String get owner => getValue(ModelKeys.keyOwner, "");
 
   set owner(String id) => throw UnimplementedError();
 
   /// List of editor UID
-  List<String> get editors => getList(keyEditors, []);
+  List<String> get editors => getList(ModelKeys.keyEditors, []);
 
-  set editors(List<String> list) => setList(keyEditors, list);
+  set editors(List<String> list) => setList(ModelKeys.keyEditors, list);
 
   /// List of viewers UID
-  List<String> get viewers => getList(keyViewers, []);
+  List<String> get viewers => getList(ModelKeys.keyViewers, []);
 
-  set viewers(List<String> list) => setList(keyViewers, list);
+  set viewers(List<String> list) => setList(ModelKeys.keyViewers, list);
 
   /// Descriptions of this object
-  String get descriptions => getValue(keyDescriptions, "");
+  String get descriptions => getValue(ModelKeys.keyDescriptions, "");
 
-  set descriptions(String desc) => map[keyDescriptions] = desc;
+  set descriptions(String desc) => map[ModelKeys.keyDescriptions] = desc;
 
   /// Is this object deleted or not
-  bool get deleted => getValue(keyDeleted, false);
+  bool get deleted => getValue(ModelKeys.keyDeleted, false);
 
-  set deleted(bool value) => map[keyDeleted] = value;
+  set deleted(bool value) => map[ModelKeys.keyDeleted] = value;
 
   @override
   String toString() => map.toString();

@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/log.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference.dart';
 
 final preferenceProvider = StateNotifierProvider<PreferenceState, Map<String, Preference>>((ref) {
@@ -52,7 +53,7 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
   Future delete(String key) async {
     // Try from server first
     final response = await ApiClient().delete([{
-      Preference.keyKey: key,
+      ModelKeys.keyKey: key,
     }]);
     if (response.result != ApiResultCode.success || response.data.length != 1) {
       return;
@@ -72,7 +73,7 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
     final List<Map<String, dynamic>> condition = [];
     for (String key in keys) {
       condition.add({
-        Preference.keyKey: key,
+        ModelKeys.keyKey: key,
       });
     }
     // Request

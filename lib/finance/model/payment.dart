@@ -3,18 +3,12 @@ library my_api;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:my_api/core/model/model.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
 
 class Payment extends WalletItem {
-
-  static const String keyIcon = "icon";
-  static const String keyIsCredit = "is_credit";
-  static const String keyPayBegin = "pay_begin";
-  static const String keyPayEnd = "pay_end";
-  static const String keyPayDate = "pay_date";
 
   /// Maximum digits of integer part
   static const int maxIntegerPartDigits = 30;
@@ -32,20 +26,20 @@ class Payment extends WalletItem {
 
   /// Unknown payment
   static final Payment unknown = Payment({
-    WalletItem.keyCurrency: Currency.unknown.value,
+    ModelKeys.keyCurrency: Currency.unknown.value,
   });
 
   /// No payment
   static final Payment none = Payment({
-    Model.keyPid: 0,
-    WalletItem.keyCurrency: Currency.unknown.value,
+    ModelKeys.keyPid: 0,
+    ModelKeys.keyCurrency: Currency.unknown.value,
   });
 
   Payment(super.map);
 
   bool get isValid {
     // Pid
-    if (map.containsKey(Model.keyPid) && pid < 0) {
+    if (map.containsKey(ModelKeys.keyPid) && pid < 0) {
       return false;
     }
     // Description
@@ -75,32 +69,32 @@ class Payment extends WalletItem {
   }
 
   /// Is this account handled as cash or not
-  bool get isCredit => getValue(keyIsCredit, false);
+  bool get isCredit => getValue(ModelKeys.keyIsCredit, false);
 
-  set isCredit(bool value) => map[keyIsCredit] = value;
+  set isCredit(bool value) => map[ModelKeys.keyIsCredit] = value;
 
   /// Index of icon
-  PaymentSymbol get icon => PaymentSymbol.fromId(getValue(keyIcon, PaymentSymbol.card.id));
+  PaymentSymbol get icon => PaymentSymbol.fromId(getValue(ModelKeys.keyIcon, PaymentSymbol.card.id));
 
-  set icon(PaymentSymbol icon) => map[keyIcon] = icon.id;
+  set icon(PaymentSymbol icon) => map[ModelKeys.keyIcon] = icon.id;
 
   /// Beginning day of range when this payment paid
-  PaymentRangePoint get payBegin => PaymentRangePoint.fromCode(getValue(keyPayBegin, PaymentRangePoint.defaultBegin.code));
+  PaymentRangePoint get payBegin => PaymentRangePoint.fromCode(getValue(ModelKeys.keyPayBegin, PaymentRangePoint.defaultBegin.code));
 
-  set payBegin(PaymentRangePoint point) => map[keyPayBegin] = point.code;
+  set payBegin(PaymentRangePoint point) => map[ModelKeys.keyPayBegin] = point.code;
 
   /// End day of range when this payment paid
-  PaymentRangePoint get payEnd => PaymentRangePoint.fromCode(getValue(keyPayEnd, PaymentRangePoint.defaultEnd.code));
+  PaymentRangePoint get payEnd => PaymentRangePoint.fromCode(getValue(ModelKeys.keyPayEnd, PaymentRangePoint.defaultEnd.code));
 
-  set payEnd(PaymentRangePoint point) => map[keyPayEnd] = point.code;
+  set payEnd(PaymentRangePoint point) => map[ModelKeys.keyPayEnd] = point.code;
 
   /// Date of this payment paid on current month
-  int get payDate => getValue(keyPayDate, 14);
+  int get payDate => getValue(ModelKeys.keyPayDate, 14);
 
   set payDate(int value) {
     final list = [payDayMin, value, payDayMax];
     list.sort();
-    map[keyPayDate] = list[1];
+    map[ModelKeys.keyPayDate] = list[1];
   }
 
   /// Get date which transaction will be calculated from [paidDate]

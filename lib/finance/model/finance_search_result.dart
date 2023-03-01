@@ -1,7 +1,8 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:my_api/core.dart';
+import 'package:my_api/core/exceptions.dart';
 import 'package:my_api/core/model/model.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
@@ -10,21 +11,7 @@ import 'package:my_api/finance/model/transaction.dart';
 
 class FinanceSearchResult extends Model {
 
-  static const String keyGroup = "grp";
-  static const String keyOwner = "owner_id";
-  static const String keyEditors = "editors_id";
-  static const String keyViewers = "viewers_id";
-  static const String keyPid = "pid";
-  static const String keyIcon = "icon";
-  static const String keyForeground = "foreground";
-  static const String keyBackground = "background";
-  static const String keyMainText = "main_text";
-  static const String keySubText = "sub_text";
-  static const String keyType = "type";
-  static const String keyCurrency = "currency";
-  static const String keyTags = "tags";
-
-  FinanceSearchResult(super.map);
+  FinanceSearchResult([super.map]);
 
   FinanceModel convert() {
     switch(group) {
@@ -44,11 +31,11 @@ class FinanceSearchResult extends Model {
         data.descriptions = subText;
         return data;
     }
-    throw InvalidModelException(keyGroup);
+    throw InvalidModelException(ModelKeys.keyGroup);
   }
 
   dynamic get group {
-    final value = getValue(keyGroup, "");
+    final value = getValue(ModelKeys.keyGroup, "");
     switch(value) {
       case "accounts":
         return Account;
@@ -61,40 +48,28 @@ class FinanceSearchResult extends Model {
     }
   }
 
-  /// Owner ID of this data
-  String get owner => getValue(keyOwner, "");
-
-  /// List of editors ID
-  List<String> get editors => (getValue(keyEditors, "") as String).split(" ");
-
-  /// List of viewers ID
-  List<String> get viewers => (getValue(keyViewers, "") as String).split(" ");
-
-  /// Pid of this data
-  int get pid => getValue(keyPid, -1);
-
   /// Icon index
-  int get icon => getValue(keyIcon, 0);
+  int get icon => getValue(ModelKeys.keyIcon, 0);
 
   /// Foreground [Color]
-  Color get foreground => Color(getValue(keyForeground, Colors.white.value));
+  Color get foreground => Color(getValue(ModelKeys.keyForeground, Colors.white.value));
 
   /// Background [Color]
-  Color get background => Color(getValue(keyBackground, Colors.black.value));
+  Color get background => Color(getValue(ModelKeys.keyBackground, Colors.black.value));
 
   /// Main text
-  String get mainText => getValue(keyMainText, "");
+  String get mainText => getValue(ModelKeys.keyMainText, "");
 
   /// Sub text
-  String get subText => getValue(keySubText, "");
+  String get subText => getValue(ModelKeys.keySubText, "");
 
   /// Type
-  int get type => getValue(keyType, 0);
+  int get type => getValue(ModelKeys.keyType, 0);
 
   /// Currency
-  Currency get currency => Currency.fromValue(getValue(keyCurrency, -1));
+  Currency get currency => Currency.fromValue(getValue(ModelKeys.keyCurrency, -1));
 
   /// Tag of this data
-  String get tags => getValue(keyTags, "");
+  String get tags => getValue(ModelKeys.keyTags, "");
 
 }

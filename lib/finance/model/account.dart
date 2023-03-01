@@ -4,16 +4,12 @@ import 'dart:math';
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:my_api/core/model/model.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
 
 class Account extends WalletItem {
-
-  static const String keyIcon = "icon";
-  static const String keyBalance = "balance";
-  static const String keyIsCash = "is_cash";
 
   /// Maximum digits of integer part
   static const int maxIntegerPartDigits = 30;
@@ -23,15 +19,16 @@ class Account extends WalletItem {
 
   /// Unknown account
   static final Account unknown = Account({
-    Model.keyPid: -1,
-    Model.keyDescriptions: "Unknown",
+    ModelKeys.keyPid: -1,
+    ModelKeys.keyDescriptions: "Unknown",
   });
 
   Account([super.map]);
 
+  /// Value of this model is valid or not
   bool get isValid {
     // Pid
-    if (map.containsKey(Model.keyPid) && pid < 0) {
+    if (map.containsKey(ModelKeys.keyPid) && pid < 0) {
       return false;
     }
     // Description
@@ -52,19 +49,19 @@ class Account extends WalletItem {
   }
 
   /// Index of icon
-  AccountSymbol get icon => AccountSymbol.fromId(getValue(keyIcon, AccountSymbol.account.id));
+  AccountSymbol get icon => AccountSymbol.fromId(getValue(ModelKeys.keyIcon, AccountSymbol.account.id));
 
-  set icon(AccountSymbol icon) => map[keyIcon] = icon.id;
+  set icon(AccountSymbol icon) => map[ModelKeys.keyIcon] = icon.id;
 
   /// Balance of this account
-  Decimal get balance => Decimal.parse(getValue(keyBalance, "0"));
+  Decimal get balance => Decimal.parse(getValue(ModelKeys.keyBalance, "0"));
 
-  set balance(Decimal value) => map[keyBalance] = value.toString();
+  set balance(Decimal value) => map[ModelKeys.keyBalance] = value.toString();
 
   /// Is this account handled as cash or not
-  bool get isCash => getValue(keyIsCash, true);
+  bool get isCash => getValue(ModelKeys.keyIsCash, true);
 
-  set isCash(bool value) => map[keyIsCash] = value;
+  set isCash(bool value) => map[ModelKeys.keyIsCash] = value;
 
 }
 

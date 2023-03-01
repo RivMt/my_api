@@ -3,24 +3,11 @@ library my_api;
 import 'dart:math';
 
 import 'package:decimal/decimal.dart';
-import 'package:my_api/core/model/model.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 
 class Transaction extends FinanceModel {
-
-  static const String keyType = "type";
-  static const String keyCategory = "category";
-  static const String keyPaidDate = "paid_date";
-  static const String keyAccountID = "account_id";
-  static const String keyPaymentID = "payment_id";
-  static const String keyCurrency = "currency";
-  static const String keyAmount = "amount";
-  static const String keyAltCurrency = "alt_currency";
-  static const String keyAltAmount = "alt_amount";
-  static const String keyCalculatedDate = "calculated_date";
-  static const String keyIncluded = "included";
-  static const String keyUtilityEnd = "utility_end";
 
   /// Maximum digits of integer part of [amount]
   static const int maxIntegerPartDigits = 20;
@@ -41,7 +28,7 @@ class Transaction extends FinanceModel {
   /// Check data is valid
   bool get isValid {
     // PID
-    if (map.containsKey(Model.keyPid) && pid <= 0) {
+    if (map.containsKey(ModelKeys.keyPid) && pid <= 0) {
       return false;
     }
     // Category
@@ -83,46 +70,46 @@ class Transaction extends FinanceModel {
   /// Type
   ///
   /// Default value is [TransactionType.expense]
-  TransactionType get type => TransactionType.fromCode(getValue(keyType, 0));
+  TransactionType get type => TransactionType.fromCode(getValue(ModelKeys.keyType, 0));
 
-  set type(TransactionType value) => map[keyType] = value.code;
+  set type(TransactionType value) => map[ModelKeys.keyType] = value.code;
 
   /// Category
   ///
   /// Default value is `0`
-  int get category => getValue(keyCategory, 0);
+  int get category => getValue(ModelKeys.keyCategory, 0);
 
-  set category(int value) => map[keyCategory] = value;
+  set category(int value) => map[ModelKeys.keyCategory] = value;
 
   /// [DateTime] of this transaction paid
-  DateTime get paidDate => getDate(keyPaidDate, DateTime.now());
+  DateTime get paidDate => getDate(ModelKeys.keyPaidDate, DateTime.now());
 
   set paidDate(DateTime date) {
     final days = utilityDays;
-    setDate(keyPaidDate, date);
+    setDate(ModelKeys.keyPaidDate, date);
     utilityDays = days;
   }
 
   /// PID of [Account] this transaction occurred
-  int get accountId => getValue(keyAccountID, 0);
+  int get accountId => getValue(ModelKeys.keyAccountID, 0);
 
-  set accountId(int pid) => map[keyAccountID] = pid;
+  set accountId(int pid) => map[ModelKeys.keyAccountID] = pid;
 
   /// PID of [Payment] this transaction handled
-  int get paymentId => getValue(keyPaymentID, 0);
+  int get paymentId => getValue(ModelKeys.keyPaymentID, 0);
 
-  set paymentId(int pid) => map[keyPaymentID] = pid;
+  set paymentId(int pid) => map[ModelKeys.keyPaymentID] = pid;
 
   /// ID of currency
   /// TODO: Change default value to unknown
-  Currency get currency => getCurrency(keyCurrency, Currency.won);
+  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.won);
 
-  set currency(Currency currency) => setCurrency(keyCurrency, currency);
+  set currency(Currency currency) => setCurrency(ModelKeys.keyCurrency, currency);
 
   /// Amount of this transaction
-  Decimal get amount => Decimal.parse(getValue(keyAmount, "0"));
+  Decimal get amount => Decimal.parse(getValue(ModelKeys.keyAmount, "0"));
 
-  set amount(Decimal value) => map[keyAmount] = value.toString();
+  set amount(Decimal value) => map[ModelKeys.keyAmount] = value.toString();
 
   /// Alternative currency of this transaction
   ///
@@ -130,7 +117,7 @@ class Transaction extends FinanceModel {
   /// is paid by Euro, and money withdrew (or will withdraw) from Dollar
   /// account, [altCurrency] is Euro, and [currency] is Dollar.
   Currency? get altCurrency {
-    final value = getValue(keyAltCurrency, null);
+    final value = getValue(ModelKeys.keyAltCurrency, null);
     if (value == null) {
       return null;
     }
@@ -139,9 +126,9 @@ class Transaction extends FinanceModel {
 
   set altCurrency(Currency? currency) {
     if (currency != null) {
-      map[keyAltCurrency] = currency.value;
+      map[ModelKeys.keyAltCurrency] = currency.value;
     } else {
-      map[keyAltCurrency] = null;
+      map[ModelKeys.keyAltCurrency] = null;
     }
   }
 
@@ -151,7 +138,7 @@ class Transaction extends FinanceModel {
   /// is paid by 5 euros, and money withdrew (or will withdraw) from 2 dollars
   /// account, [altAmount] is `5`, and [amount] is `2`.
   Decimal? get altAmount {
-    final value = getValue(keyAltAmount, null);
+    final value = getValue(ModelKeys.keyAltAmount, null);
     if (value == null) {
       return null;
     }
@@ -160,26 +147,26 @@ class Transaction extends FinanceModel {
 
   set altAmount(Decimal? value) {
     if (value != null) {
-      map[keyAltAmount] = value.toString();
+      map[ModelKeys.keyAltAmount] = value.toString();
     } else {
-      map[keyAltAmount] = null;
+      map[ModelKeys.keyAltAmount] = null;
     }
   }
 
   /// [DateTime] of this transaction calculated in LOCAL
-  DateTime get calculatedDate => getDate(keyCalculatedDate, defaultCalculatedDate);
+  DateTime get calculatedDate => getDate(ModelKeys.keyCalculatedDate, defaultCalculatedDate);
 
-  set calculatedDate(DateTime date) => setDate(keyCalculatedDate, date);
+  set calculatedDate(DateTime date) => setDate(ModelKeys.keyCalculatedDate, date);
 
   /// Value of this transaction included in statics
-  bool get isIncluded => getValue(keyIncluded, true);
+  bool get isIncluded => getValue(ModelKeys.keyIncluded, true);
 
-  set isIncluded(bool value) => map[keyIncluded] = value;
+  set isIncluded(bool value) => map[ModelKeys.keyIncluded] = value;
 
   /// Last date of this transaction is utility in LOCAL
-  DateTime get utilityEnd => getDate(keyUtilityEnd, paidDate.add(const Duration(seconds: 1)));
+  DateTime get utilityEnd => getDate(ModelKeys.keyUtilityEnd, paidDate.add(const Duration(seconds: 1)));
 
-  set utilityEnd(DateTime date) => setDate(keyUtilityEnd, date);
+  set utilityEnd(DateTime date) => setDate(ModelKeys.keyUtilityEnd, date);
 
   /// Number of days between [paidDate] and [utilityEnd].
   ///
@@ -187,7 +174,7 @@ class Transaction extends FinanceModel {
   /// same day, it is `1`.
   int get utilityDays => utilityEnd.difference(paidDate).inDays + 1;
 
-  set utilityDays(int value) => setDate(keyUtilityEnd, paidDate.add(Duration(
+  set utilityDays(int value) => setDate(ModelKeys.keyUtilityEnd, paidDate.add(Duration(
     days: value-1,
     seconds: 1,
   )));

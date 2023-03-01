@@ -1,23 +1,18 @@
 library my_api;
 
 import 'package:flutter/material.dart';
-import 'package:my_api/core/model/model.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/transaction.dart';
 
 class Category extends FinanceModel {
 
-  static const String keyType = "type";
-  static const String keyIncluded = "included";
-  static const String keyIcon = "icon";
-  static const String keyName = "name";
-
   static final Category unknown = Category({
-    Model.keyPid: -1,
-    keyType: TransactionType.expense.code,
-    keyIncluded: true,
-    keyIcon: -1,
-    keyName: "unknown",
+    ModelKeys.keyPid: -1,
+    ModelKeys.keyType: TransactionType.expense.code,
+    ModelKeys.keyIncluded: true,
+    ModelKeys.keyIcon: -1,
+    ModelKeys.keyName: "unknown",
   });
 
   Category(super.map);
@@ -25,7 +20,7 @@ class Category extends FinanceModel {
   /// Is this valid or not
   bool get isValid {
     // Pid
-    if (map.containsKey(Model.keyPid) && pid < 0) {
+    if (map.containsKey(ModelKeys.keyPid) && pid < 0) {
       return false;
     }
     // Type
@@ -38,26 +33,26 @@ class Category extends FinanceModel {
   /// Type
   ///
   /// Default value is [TransactionType.expense]
-  TransactionType get type => TransactionType.fromCode(getValue(keyType, 0));
+  TransactionType get type => TransactionType.fromCode(getValue(ModelKeys.keyType, 0));
 
-  set type(TransactionType value) => map[keyType] = value.code;
+  set type(TransactionType value) => map[ModelKeys.keyType] = value.code;
 
   /// Included
   ///
   /// Default value is `true`
-  bool get isIncluded => getValue(keyIncluded, true);
+  bool get isIncluded => getValue(ModelKeys.keyIncluded, true);
 
-  set isIncluded(bool value) => map[keyIncluded] = value;
+  set isIncluded(bool value) => map[ModelKeys.keyIncluded] = value;
 
   /// Icon
-  CategorySymbol get icon => CategorySymbol.fromId(getValue(keyIcon, CategorySymbol.unknown.id));
+  CategorySymbol get icon => CategorySymbol.fromId(getValue(ModelKeys.keyIcon, CategorySymbol.unknown.id));
 
-  set icon(CategorySymbol icon) => map[keyIcon] = icon.id;
+  set icon(CategorySymbol icon) => map[ModelKeys.keyIcon] = icon.id;
 
   /// Name
-  String get name => getValue(keyName, "");
+  String get name => getValue(ModelKeys.keyName, "");
 
-  set name(String value) => map[keyName] = value;
+  set name(String value) => map[ModelKeys.keyName] = value;
 
 }
 
