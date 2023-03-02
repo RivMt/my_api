@@ -55,20 +55,17 @@ class PreferenceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(_defaultPadding),
-      child: ListTile(
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        subtitle: Text(
-          subtitle,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        trailing: trailing,
-        onTap: onTap,
+    return ListTile(
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
+      subtitle: Text(
+        subtitle,
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+      trailing: trailing,
+      onTap: onTap,
     );
   }
 

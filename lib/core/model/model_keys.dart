@@ -52,8 +52,5 @@ abstract class ModelKeys {
   static const String keyUtilityEnd = "utility_end";
   static const String keyName = "name";
 
-  static const String keyGroup = "grp";
-  static const String keyMainText = "main_text";
-  static const String keySubText = "sub_text";
-  static const String keyTags = "tags";
+  static const String keyTable = "table";
 }

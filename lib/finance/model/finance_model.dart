@@ -1,6 +1,13 @@
 import 'package:my_api/core/model/model.dart';
 import 'package:my_api/finance/model/currency.dart';
 
+enum FinanceModelType {
+  account,
+  payment,
+  transaction,
+  category,
+}
+
 /// Superclass of all Finance API related models.
 abstract class FinanceModel extends Model {
 
