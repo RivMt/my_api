@@ -47,7 +47,7 @@ class ModelState<T> extends StateNotifier<T> {
       [condition],
       options,
     );
-    if (response.result != ApiResultCode.success) {
+    if (response.result != ApiResultCode.success || response.data.isEmpty) {
       Log.e(_tag, "Failed to request $condition");
       state = unknown;
       return;

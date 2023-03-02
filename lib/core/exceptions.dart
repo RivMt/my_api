@@ -4,6 +4,9 @@ class InvalidModelException implements Exception {
 
   InvalidModelException(this.key);
 
+  @override
+  String toString() => "$key is not valid";
+
 }
 
 /// Exception for api request failed

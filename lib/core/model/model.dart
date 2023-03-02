@@ -7,6 +7,9 @@ import 'package:my_api/core/model/model_keys.dart';
 /// Superclass of all API models.
 abstract class Model {
 
+  /// Maximum date
+  static final DateTime maxDate = DateTime(2100, 12, 31);
+
   /// Raw data of this object
   Map<String, dynamic> map = {};
 
