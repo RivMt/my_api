@@ -10,6 +10,9 @@ abstract class Model {
   /// Maximum date
   static final DateTime maxDate = DateTime(2100, 12, 31);
 
+  /// Minimum date
+  static final DateTime minDate = DateTime(1970, 1, 1);
+
   /// Raw data of this object
   Map<String, dynamic> map = {};
 

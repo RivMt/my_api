@@ -18,9 +18,9 @@ class Transaction extends FinanceModel {
   /// Default [DateTime] of [calculatedDate]
   static final DateTime defaultCalculatedDate = DateTime(1970, 1, 1, 0, 0, 0, 0, 0);
 
-  Transaction(super.map);
+  Transaction([super.map]);
 
-  Transaction.init() : super({}) {
+  Transaction.init() : super() {
     paidDate = DateTime.now();
     calculatedDate = paidDate;
   }

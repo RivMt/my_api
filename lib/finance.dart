@@ -14,5 +14,6 @@ export 'package:my_api/finance/model/wallet_item.dart';
 export 'package:my_api/finance/model/account.dart';
 export 'package:my_api/finance/model/payment.dart';
 export 'package:my_api/finance/model/transaction.dart';
+export 'package:my_api/finance/model/transaction_raw.dart';
 export 'package:my_api/finance/model/category.dart';
 export 'package:my_api/finance/model/currency.dart';

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
 
-
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:http/http.dart' as http;
@@ -15,6 +14,7 @@ import 'package:my_api/finance/model/finance_search_result.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/core/model/preference.dart';
 import 'package:my_api/finance/model/transaction.dart';
+import 'package:my_api/finance/model/transaction_raw.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String _tag = "API";
@@ -396,6 +396,7 @@ class ApiClient {
       case Account:
       case Payment:
       case Transaction:
+      case RawTransaction:
       case Category:
       case FinanceSearchResult:
         return "finance/v1";
@@ -421,6 +422,8 @@ class ApiClient {
         return "preferences";
       case FinanceSearchResult:
         return "search";
+      case RawTransaction:
+        return "raw";
       default:
         throw UnimplementedError();
     }
@@ -447,6 +450,8 @@ class ApiClient {
         return Preference(data);
       case FinanceSearchResult:
         return FinanceSearchResult(data);
+      case RawTransaction:
+        return RawTransaction(data);
       default:
         throw UnimplementedError();
     }
