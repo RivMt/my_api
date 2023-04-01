@@ -262,41 +262,46 @@ class ApiClient {
     final String url = sb.toString();
     // Send request
     late http.Response response;
-    switch(method) {
-      case HttpMethod.get:
-        response = await http.get(
-          Uri.parse(url),
-          headers: headers,
-        );
-        break;
-      case HttpMethod.post:
-        response = await http.post(
-          Uri.parse(url),
-          headers: headers,
-          body: json.encode(body),
-        );
-        break;
-      case HttpMethod.put:
-        response = await http.put(
-          Uri.parse(url),
-          headers: headers,
-          body: json.encode(body),
-        );
-        break;
-      case HttpMethod.patch:
-        response = await http.patch(
-          Uri.parse(url),
-          headers: headers,
-          body: json.encode(body),
-        );
-        break;
-      case HttpMethod.delete:
-        response = await http.delete(
-          Uri.parse(url),
-          headers: headers,
-          body: json.encode(body),
-        );
-        break;
+    try {
+      switch (method) {
+        case HttpMethod.get:
+          response = await http.get(
+            Uri.parse(url),
+            headers: headers,
+          );
+          break;
+        case HttpMethod.post:
+          response = await http.post(
+            Uri.parse(url),
+            headers: headers,
+            body: json.encode(body),
+          );
+          break;
+        case HttpMethod.put:
+          response = await http.put(
+            Uri.parse(url),
+            headers: headers,
+            body: json.encode(body),
+          );
+          break;
+        case HttpMethod.patch:
+          response = await http.patch(
+            Uri.parse(url),
+            headers: headers,
+            body: json.encode(body),
+          );
+          break;
+        case HttpMethod.delete:
+          response = await http.delete(
+            Uri.parse(url),
+            headers: headers,
+            body: json.encode(body),
+          );
+          break;
+      }
+    } on SocketException catch(e, s) {
+      Log.e(_tag, "Connection failed to $url", e, s);
+      return ApiResponse.failed({});
     }
     // Check response
     if (response.statusCode != 200) {
@@ -654,6 +659,10 @@ class ApiResponse<T> {
     required this.result,
     required this.data,
   });
+
+  ApiResponse.failed(this.data, [
+    this.result = ApiResultCode.failed,
+  ]);
 
   /// Covert item in [data] and return new [ApiResponse]
   ApiResponse<E> convert<E>(E data) => ApiResponse<E>(
