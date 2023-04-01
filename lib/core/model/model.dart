@@ -17,7 +17,11 @@ abstract class Model {
   Map<String, dynamic> map = {};
 
   /// Constructor
-  Model([this.map = const {}]);
+  Model([Map<String, dynamic>? map]) {
+    if (map != null) {
+      this.map = map;
+    }
+  }
 
   /// Get value of [map] using [key]
   ///
