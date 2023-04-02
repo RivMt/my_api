@@ -27,6 +27,14 @@ class Category extends FinanceModel {
     if (type == TransactionType.unknown) {
       return false;
     }
+    // Name
+    if (name.isEmpty) {
+      return false;
+    }
+    // Icon
+    if (icon == CategorySymbol.unknown) {
+      return false;
+    }
     return true;
   }
 
