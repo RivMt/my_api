@@ -483,5 +483,4 @@ class AppTheme {
       ),
     );
   }
-
 }
