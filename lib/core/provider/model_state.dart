@@ -19,6 +19,7 @@ class ModelsState<T> extends StateNotifier<List<T>> {
     final ApiResponse<List<T>> response = await client.read<T>(
       condition,
       options,
+      queries
     );
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to request $condition");

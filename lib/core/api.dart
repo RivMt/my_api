@@ -248,16 +248,11 @@ class ApiClient {
     sb.write(link);
     if (queries != null && queries.isNotEmpty) {
       sb.write("?");
-      bool first = true;
+      final List args = [];
       for(String key in queries.keys) {
-        if (!first) {
-          sb.write("&");
-          first = false;
-        }
-        sb.write(key);
-        sb.write("=");
-        sb.write(queries[key]);
+        args.add("$key=${queries[key]}");
       }
+      sb.write(args.join("&"));
     }
     final String url = sb.toString();
     // Send request
@@ -484,7 +479,7 @@ class ApiClient {
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<List<T>>> read<T>(List<Map<String, dynamic>> data, [Map<String, dynamic>? options, Map<String, String>? queries]) async {
+  Future<ApiResponse<List<T>>> read<T>(List<Map<String, dynamic>> data, [Map<String, dynamic>? options, Map<String, dynamic>? queries]) async {
     final result = await send(
       method: HttpMethod.post,
       home: home<T>(),
