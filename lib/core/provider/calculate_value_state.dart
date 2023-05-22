@@ -28,7 +28,7 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
   void clear() => state = Decimal.zero;
 
   /// Request [T] items fit to [conditions] and filter by [options]
-  void request() async {
+  Future<void> request() async {
     final client = ApiClient();
     final ApiResponse<Decimal> response = await client.calculate<T>(conditions, type, attribute, queries);
     if (response.result != ApiResultCode.success) {
