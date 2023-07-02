@@ -48,6 +48,7 @@ class ApiClient {
   /// Default header
   static const Map<String, String> headers = {
     "Content-Type": "application/json",
+    "User-Agent": userAgent,
   };
 
   /// Header key for API key
