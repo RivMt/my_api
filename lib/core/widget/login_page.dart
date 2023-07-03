@@ -6,6 +6,9 @@ import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
 
 class LoginPage extends StatefulWidget {
+
+  static const String route = "/login";
+
   const LoginPage({super.key});
 
   @override
@@ -116,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 8,),
               TextButton(
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage())),
+                onPressed: () => Navigator.pushNamed(context, RegisterPage.route),
                 child: const Text('Register'),
               ),
             ],
