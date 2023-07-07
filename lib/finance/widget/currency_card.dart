@@ -1,7 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:my_api/core/theme.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/model/currency.dart';
 
@@ -32,7 +31,6 @@ class CurrencyCard extends StatelessWidget {
       leading: CurrencyIcon(
         icon: data.icon,
         selected: selected,
-        foreground: AppTheme.text,
         background: useIconBackground
             ? Theme.of(context).primaryColor
             : Colors.transparent,
@@ -63,13 +61,12 @@ class CurrencyIcon extends StatelessWidget {
 
   const CurrencyIcon({
     super.key,
-    required this.foreground,
     required this.background,
     required this.icon,
     this.selected = false,
   });
 
-  final Color foreground, background;
+  final Color background;
 
   final IconData icon;
 
@@ -79,7 +76,7 @@ class CurrencyIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Badge(
       isLabelVisible: selected,
-      backgroundColor: foreground,
+      backgroundColor: Theme.of(context).primaryColor,
       child: Container(
         width: 32,
         height: 32,
@@ -91,7 +88,6 @@ class CurrencyIcon extends StatelessWidget {
         ),
         child: Icon(
           icon,
-          color: foreground,
         ),
       ),
     );
