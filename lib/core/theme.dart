@@ -481,6 +481,19 @@ class AppTheme {
       dividerTheme: DividerThemeData(
         color: rearForeground,
       ),
+      // TabBar
+      tabBarTheme: TabBarTheme(
+        indicatorColor: primary,
+        dividerColor: primary,
+        labelStyle: TextStyle(
+          color: text,
+          fontSize: sizeTitleMedium,
+        ),
+        unselectedLabelStyle: TextStyle(
+          color: subtext,
+          fontSize: sizeTitleMedium,
+        ),
+      ),
     );
   }
 }

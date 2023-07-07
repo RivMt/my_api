@@ -4,6 +4,9 @@ import 'package:my_api/core/screen_planner.dart';
 import 'package:my_api/core/model/user.dart';
 
 class RegisterPage extends StatefulWidget {
+
+  static const String route = "/register";
+
   const RegisterPage({super.key});
 
   @override
