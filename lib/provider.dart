@@ -1,0 +1,1 @@
+export 'package:my_api/core/provider/provider.dart';

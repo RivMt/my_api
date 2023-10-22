@@ -55,4 +55,7 @@ class ModelState<T> extends StateNotifier<T> {
     }
     state = response.data[0];
   }
+
+  /// Set [state] directly
+  void set(T value) => state = value;
 }

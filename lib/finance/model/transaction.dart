@@ -179,6 +179,11 @@ class Transaction extends FinanceModel {
     seconds: 1,
   )));
 
+  /// ID of folder
+  int get folderId => getValue(ModelKeys.keyFolder, 0);
+
+  set folderId(int value) => map[ModelKeys.keyFolder] = value;
+
   /// [RegExp] for verify [amount] and [altAmount]
   RegExp get regex {
     return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
