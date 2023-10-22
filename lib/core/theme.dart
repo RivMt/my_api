@@ -221,6 +221,11 @@ class AppTheme {
     );
     // ThemeData
     return ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primary,
+        brightness: isDarkMode ? Brightness.dark : Brightness.light,
+      ),
+      useMaterial3: true,
       brightness: isDarkMode ? Brightness.dark : Brightness.light,
       // Color
       primaryColor: primary,
@@ -484,7 +489,6 @@ class AppTheme {
       // TabBar
       tabBarTheme: TabBarTheme(
         indicatorColor: primary,
-        dividerColor: primary,
         labelStyle: TextStyle(
           color: text,
           fontSize: sizeTitleMedium,
