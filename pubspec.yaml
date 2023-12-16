@@ -16,6 +16,7 @@ dependencies:
   decimal:
   hooks_riverpod:
   easy_localization:
+  fl_chart:
 
 dev_dependencies:
   test:

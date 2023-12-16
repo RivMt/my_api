@@ -72,6 +72,13 @@ class CategoryIcon extends StatelessWidget {
     this.isDeleted = false,
   });
 
+  CategoryIcon.fromCategory(Category category, {super.key})
+      : type = category.type,
+        icon = category.icon.icon,
+        included = category.isIncluded,
+        isDeleted = category.deleted;
+
+
   /// Icon
   final IconData icon;
 
