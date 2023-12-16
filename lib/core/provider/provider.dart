@@ -1,29 +1,21 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/model/model_keys.dart';
+import 'package:my_api/core/model/preference.dart';
 import 'package:my_api/core/provider/model_state.dart';
+import 'package:my_api/core/provider/preference_state.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/finance/model/transaction.dart';
 
-final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
-  return ModelsState<Account>(ref);
+final preferences = StateNotifierProvider<PreferenceState, Map<String, Preference>>((ref) {
+  return PreferenceState(ref);
 });
 
-final filteredAccounts = Provider<List<Account>>((ref) {
-  final min = ref.watch(minPriorityFilter);
-  final max = ref.watch(maxPriorityFilter);
-  final sort = ref.watch(sortFilter);
-  final list = ref.watch(accounts);
-  List<Account> result = list
-      .where((account) => (account.priority >= min && account.priority <= max)).toList();
-  if (Account.unknown.map.containsKey(sort)) {
-    result.sort((a1, a2) =>
-        (a1.map[sort] as Comparable).compareTo(a2.map[sort]));
-  }
-  return result;
+final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
+  return ModelsState<Account>(ref);
 });
 
 void refreshAccounts(WidgetRef ref) {
@@ -44,20 +36,6 @@ final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref
   return ModelsState<Payment>(ref);
 });
 
-final filteredPayments = Provider<List<Payment>>((ref) {
-  final min = ref.watch(minPriorityFilter);
-  final max = ref.watch(maxPriorityFilter);
-  final sort = ref.watch(sortFilter);
-  final list = ref.watch(payments);
-  List<Payment> result = list
-      .where((payment) => (payment.priority >= min && payment.priority <= max)).toList();
-  if ( Payment.unknown.map.containsKey(sort)) {
-    result.sort((a1, a2) =>
-        (a1.map[sort] as Comparable).compareTo(a2.map[sort]));
-  }
-  return result;
-});
-
 void refreshPayments(WidgetRef ref) {
   ref.read(payments.notifier).request(
     [{
@@ -76,21 +54,19 @@ final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transa
   return ModelsState<Transaction>(ref);
 });
 
+void refreshTransactions(WidgetRef ref, {int? accountId, int? paymentId}) async {
+  Map<String, dynamic> map = {};
+  if (accountId != null) map[ModelKeys.keyAccountID] = accountId;
+  if (paymentId != null) map[ModelKeys.keyPaymentID] = paymentId;
+  ref.read(transactions.notifier).request([map], ApiClient.buildOptions(
+    sorts: [
+      const Sort(ModelKeys.keyPaidDate, SortType.desc),
+    ],
+  ));
+}
+
 final categories = StateNotifierProvider<ModelsState<Category>, List<Category>>((ref) {
   return ModelsState<Category>(ref);
-});
-
-final filteredCategories = Provider<List<Category>>((ref) {
-  final type = ref.watch(transactionTypeFilter);
-  final isIncluded = ref.watch(transactionIncludedFilter);
-  List<Category> list = ref.watch(categories);
-  if (type != TransactionType.unknown) {
-    list = list.where((category) => category.type == type).toList();
-  }
-  if (isIncluded != null) {
-    list = list.where((category) => category.isIncluded == isIncluded).toList();
-  }
-  return list;
 });
 
 void refreshCategories(WidgetRef ref) {

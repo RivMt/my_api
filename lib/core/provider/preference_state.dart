@@ -4,10 +4,6 @@ import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference.dart';
 
-final preferenceProvider = StateNotifierProvider<PreferenceState, Map<String, Preference>>((ref) {
-  return PreferenceState(ref);
-});
-
 const String _tag = "Prefs";
 
 class PreferenceState extends StateNotifier<Map<String, Preference>> {
