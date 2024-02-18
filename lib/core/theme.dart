@@ -59,11 +59,11 @@ class AppTheme {
   /// Background color located at bottom of screen depth
   static late Color rearBackground;
 
-  /// Primary text color
-  static late Color text;
+  /// Primary content color
+  static late Color contentPrimary;
 
-  /// Secondary text color
-  static late Color subtext;
+  /// Secondary content color
+  static late Color contentSecondary;
 
   /// Disabled foreground color
   static late Color disabledForeground;
@@ -88,8 +88,8 @@ class AppTheme {
     disabledForeground = Colors.grey[500] ?? Colors.black;
     disabledBackground = Colors.grey[800] ?? Colors.black;
     // Text
-    text = Colors.black;
-    subtext = Colors.grey[900] ?? Colors.black;
+    contentPrimary = Colors.black;
+    contentSecondary = Colors.grey[900] ?? Colors.black;
     // Return
     return _theme;
   }
@@ -111,8 +111,8 @@ class AppTheme {
     disabledForeground = Colors.grey[800] ?? Colors.black;
     disabledBackground = Colors.grey[500] ?? Colors.black;
     // Text
-    text = Colors.white;
-    subtext = Colors.grey[400] ?? Colors.white;
+    contentPrimary = Colors.white;
+    contentSecondary = Colors.grey[400] ?? Colors.white;
     // Return
     return _theme;
   }
@@ -142,35 +142,35 @@ class AppTheme {
       filled: true,
       // Text
       labelStyle: TextStyle(
-        color: subtext,
+        color: contentSecondary,
         fontSize: sizeLabelSmall,
         fontWeight: FontWeight.normal,
         letterSpacing: 0.25,
       ),
       hintStyle: TextStyle(
-        color: subtext,
+        color: contentSecondary,
         fontSize: sizeBodyMedium,
         fontWeight: FontWeight.normal,
         letterSpacing: 0.25,
       ),
       helperMaxLines: 2,
       helperStyle: TextStyle(
-        color: subtext,
+        color: contentSecondary,
         fontSize: sizeBodySmall,
         fontWeight: FontWeight.w300,
         letterSpacing: 0.25,
       ),
       // Prefix and suffix
-      prefixIconColor: subtext,
+      prefixIconColor: contentSecondary,
       prefixStyle: TextStyle(
-        color: subtext,
+        color: contentSecondary,
         fontSize: sizeLabelLarge,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.15,
       ),
-      suffixIconColor: subtext,
+      suffixIconColor: contentSecondary,
       suffixStyle: TextStyle(
-        color: subtext,
+        color: contentSecondary,
         fontSize: sizeLabelLarge,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.15,
@@ -242,7 +242,7 @@ class AppTheme {
           color: primary,
         ),
         titleTextStyle: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeTitleLarge,
         ),
       ),
@@ -258,26 +258,26 @@ class AppTheme {
       textTheme: TextTheme(
         // Display
         displayLarge: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeDisplayLarge,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.2,
         ),
         // Title
         titleLarge: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeTitleLarge,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.15,
         ),
         titleMedium: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
         ),
         titleSmall: TextStyle(
-          color: subtext,
+          color: contentSecondary,
           fontSize: sizeTitleSmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.15,
@@ -285,32 +285,32 @@ class AppTheme {
         ),
         // Body
         bodyMedium: TextStyle(
-          color: subtext,
+          color: contentSecondary,
           fontSize: sizeBodyMedium,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         bodySmall: TextStyle(
-          color: subtext,
+          color: contentSecondary,
           fontSize: sizeBodySmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         // Label
         labelLarge: TextStyle(
-          color: subtext,
+          color: contentSecondary,
           fontSize: sizeLabelLarge,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         labelMedium: TextStyle(
-          color: subtext,
+          color: contentSecondary,
           fontSize: sizeLabelMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.25,
         ),
         labelSmall: TextStyle(
-          color: subtext,
+          color: contentSecondary,
           fontSize: sizeLabelSmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
@@ -322,6 +322,7 @@ class AppTheme {
       // Card
       cardTheme: CardTheme(
         color: rearBackground,
+        surfaceTintColor: primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -332,7 +333,7 @@ class AppTheme {
       // Buttons
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-          iconColor: MaterialStateProperty.all(text),
+          iconColor: MaterialStateProperty.all(contentPrimary),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -345,7 +346,7 @@ class AppTheme {
             if (states.contains(MaterialState.disabled)) {
               color = rearForeground;
             } else {
-              color = text;
+              color = contentPrimary;
             }
             return TextStyle(
               color: color,
@@ -413,13 +414,13 @@ class AppTheme {
           borderRadius: BorderRadius.circular(16),
         ),
         titleTextStyle: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
         ),
         contentTextStyle: TextStyle(
-          color: subtext,
+          color: contentSecondary,
           fontSize: sizeBodyMedium,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
@@ -427,8 +428,8 @@ class AppTheme {
       ),
       // ListTile
       listTileTheme: ListTileThemeData(
-        iconColor: text,
-        textColor: text,
+        iconColor: contentPrimary,
+        textColor: contentPrimary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -436,7 +437,7 @@ class AppTheme {
       // Dropdown
       dropdownMenuTheme: DropdownMenuThemeData(
         textStyle: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
@@ -469,12 +470,12 @@ class AppTheme {
         disabledColor: rearBackground,
         selectedColor: primary,
         labelStyle: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeBodyMedium,
         ),
         secondarySelectedColor: primary,
         secondaryLabelStyle: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeBodyMedium,
         ),
         shadowColor: Colors.transparent,
@@ -490,11 +491,11 @@ class AppTheme {
       tabBarTheme: TabBarTheme(
         indicatorColor: primary,
         labelStyle: TextStyle(
-          color: text,
+          color: contentPrimary,
           fontSize: sizeTitleMedium,
         ),
         unselectedLabelStyle: TextStyle(
-          color: subtext,
+          color: contentSecondary,
           fontSize: sizeTitleMedium,
         ),
       ),

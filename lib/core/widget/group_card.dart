@@ -28,13 +28,14 @@ class GroupCard extends StatefulWidget {
   final Widget? Function(BuildContext, int) build;
 
   @override
-  _GroupCardState createState() => _GroupCardState();
+  State createState() => _GroupCardState();
 }
 
 class _GroupCardState extends State<GroupCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
