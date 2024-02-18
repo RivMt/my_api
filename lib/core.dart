@@ -36,3 +36,6 @@ export 'package:my_api/core/provider/statistics_state.dart';
 
 // Utils
 export 'package:my_api/core/data_frame.dart';
+
+// Navigator
+export 'package:my_api/core/navigator.dart';
