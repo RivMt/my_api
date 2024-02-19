@@ -33,34 +33,36 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
   /// storage. It only save [pref] to local storage when request succeed.
   ///
   /// This process is required to idealize local and server.
-  Future set(Preference pref) async {
+  Future<bool> set(Preference pref) async {
     // Save in server first
     final response = await ApiClient().create<Preference>([pref.map]);
     if (response.result != ApiResultCode.success || response.data.length != 1) {
       // If failed, return failed response
-      return;
+      return false;
     }
     // After success, apply to state
     state[pref.key] = pref;
-    request();
+    sync();
+    return true;
   }
 
   /// Delete preference as [key]
-  Future delete(String key) async {
+  Future<bool> delete(String key) async {
     // Try from server first
     final response = await ApiClient().delete([{
       ModelKeys.keyKey: key,
     }]);
     if (response.result != ApiResultCode.success || response.data.length != 1) {
-      return;
+      return false;
     }
     // After success, remove from state
     state.remove(key);
-    request();
+    sync();
+    return true;
   }
 
   /// Request [Preference]s filtered by [keys]
-  Future request([Map<String, dynamic>? settings]) async {
+  Future<bool> sync([Map<String, dynamic>? settings]) async {
     // Apply keys
     if (settings != null) {
       setDefaults(settings);
@@ -78,12 +80,13 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to request $condition");
       clear();
-      return;
+      return false;
     }
     // Apply
     for(Preference pref in response.data) {
       Log.i(_tag, "Request completed: $pref");
       state[pref.key] = pref;
     }
+    return true;
   }
 }

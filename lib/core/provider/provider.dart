@@ -14,6 +14,18 @@ final preferences = StateNotifierProvider<PreferenceState, Map<String, Preferenc
   return PreferenceState(ref);
 });
 
+void syncPreferences(WidgetRef ref, [Map<String, dynamic>? init]) {
+  ref.read(preferences.notifier).sync(init);
+}
+
+Future<bool> setPreference(WidgetRef ref, Preference pref) async {
+  return await ref.read(preferences.notifier).set(pref);
+}
+
+Future<bool> deletePreference(WidgetRef ref, String key) async {
+  return await ref.read(preferences.notifier).delete(key);
+}
+
 final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
   return ModelsState<Account>(ref);
 });
