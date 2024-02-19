@@ -5,7 +5,7 @@ class User extends Model {
 
   static const int minPasswordLength = 8;
 
-  User(super.map);
+  User([super.map]);
 
   /// Check password validation
   static bool checkPassword(String password) {
