@@ -56,4 +56,6 @@ abstract class ModelKeys {
   static const String keyAccountName = "account_name";
   static const String keyPaymentName = "payment_name";
   static const String keyCategoryName = "category_name";
+
+  static const String keyFolder = "folder";
 }
