@@ -14,6 +14,8 @@ class ModelsState<T> extends StateNotifier<List<T>> {
   void clear() => state = [];
 
   /// Request [T] items fit to [condition] and filter by [options]
+  ///
+  /// This method overrides [state]
   Future<void> request(List<Map<String, dynamic>> condition, [Map<String, dynamic>? options, Map<String, dynamic>? queries]) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(
@@ -27,6 +29,32 @@ class ModelsState<T> extends StateNotifier<List<T>> {
       return;
     }
     state = response.data;
+  }
+
+  /// Get [T] items fit to [condition] and filter by [options]
+  ///
+  /// This method append/update data to [state]
+  Future<void> fetch(List<Map<String, dynamic>> condition, [Map<String, dynamic>? options, Map<String, dynamic>? queries]) async {
+    final client = ApiClient();
+    final ApiResponse<List<T>> response = await client.read<T>(
+        condition,
+        options,
+        queries
+    );
+    if (response.result != ApiResultCode.success) {
+      Log.e(_tag, "Failed to request $condition");
+      return;
+    }
+    // Apply fetched data
+    for (T item in response.data) {
+      int index = state.indexOf(item);
+      if (index < 0 || index >= state.length) {
+        state.add(item);
+      } else {
+        state[index] = item;
+      }
+    }
+
   }
 }
 

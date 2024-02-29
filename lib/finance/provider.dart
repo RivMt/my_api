@@ -48,11 +48,8 @@ final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transa
   return ModelsState<Transaction>(ref);
 });
 
-void refreshTransactions(WidgetRef ref, {int? accountId, int? paymentId}) async {
-  Map<String, dynamic> map = {};
-  if (accountId != null) map[ModelKeys.keyAccountID] = accountId;
-  if (paymentId != null) map[ModelKeys.keyPaymentID] = paymentId;
-  ref.read(transactions.notifier).request([map], ApiClient.buildOptions(
+void fetchTransactions(WidgetRef ref, List<Map<String, dynamic>> condition) async {
+  ref.read(transactions.notifier).fetch(condition, ApiClient.buildOptions(
     sorts: [
       const Sort(ModelKeys.keyPaidDate, SortType.desc),
     ],
