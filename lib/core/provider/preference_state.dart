@@ -35,14 +35,14 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
   /// This process is required to idealize local and server.
   Future<bool> set(Preference pref) async {
     // Save in server first
-    final response = await ApiClient().create<Preference>([pref.map]);
+    var response = await ApiClient().create<Preference>([pref.map]);
     if (response.result != ApiResultCode.success || response.data.length != 1) {
-      // If failed, return failed response
+      // If failed, return false
+      Log.w(_tag, "Preference update/creation failed: $pref");
       return false;
     }
     // After success, apply to state
     state[pref.key] = pref;
-    sync();
     return true;
   }
 
@@ -57,7 +57,6 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
     }
     // After success, remove from state
     state.remove(key);
-    sync();
     return true;
   }
 

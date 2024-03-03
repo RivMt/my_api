@@ -1,7 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/model/model_keys.dart';
+import 'package:my_api/core/model/preference_keys.dart';
 import 'package:my_api/core/provider/model_state.dart';
+import 'package:my_api/core/provider/provider.dart' as core_provider;
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/currency.dart';
@@ -70,9 +72,13 @@ void refreshCategories(WidgetRef ref) {
   ));
 }
 
-final currencyFilter = StateNotifierProvider<ModelState<Currency>, Currency>((ref) {
-  return ModelState<Currency>(ref, Currency.unknown);
-});
+Currency getDefaultCurrency(ref) {
+  return Currency.fromValue(core_provider.getPreference<int>(ref, PreferenceKeys.defaultCurrency));
+}
+
+void setDefaultCurrency(WidgetRef ref, Currency value) {
+  core_provider.setPreference(ref, PreferenceKeys.defaultCurrency, value.value);
+}
 
 final transactionTypeFilter = StateNotifierProvider<ModelState<TransactionType>, TransactionType>((ref) {
   return ModelState<TransactionType>(ref, TransactionType.expense);
