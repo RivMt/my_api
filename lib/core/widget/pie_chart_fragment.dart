@@ -58,7 +58,7 @@ class PieChartFragment<K, V> extends StatefulWidget {
 
   final double Function(K, V) toDouble;
 
-  final Widget Function(K)? getIcon;
+  final Widget Function(K, Color)? getIcon;
 
   const PieChartFragment({
     super.key,
@@ -109,7 +109,7 @@ class _PieChartFragmentState<K, V> extends State<PieChartFragment<K, V>> {
       final k = keys[i];
       final v = values[i];
       final isTouched = (i == touchedIndex);
-      final radius = isTouched ? 25.0 : 16.0;
+      final radius = (isTouched ? 1 : 0.6) * math.min(widget.width, widget.height) * 0.3;
       sections.add(PieChartSectionData(
         value: widget.toDouble(k ,v),
         title: widget.getName(k),
@@ -123,78 +123,75 @@ class _PieChartFragmentState<K, V> extends State<PieChartFragment<K, V>> {
   @override
   Widget build(BuildContext context) {
     if (keys.isEmpty) {
-      return Center(
-        child: SizedBox(
-          width: widget.width,
-          height: widget.height,
-          child: const CircularProgressIndicator(),
+      return const Center(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: CircularProgressIndicator(),
         ),
       );
     }
-    return SizedBox(
-      width: widget.width,
-      height: widget.height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Visibility(
-                  visible: widget.title != "",
-                  child: Text(
-                    widget.title,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Align(
+          alignment: Alignment.topLeft,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Visibility(
+                visible: widget.title != "",
+                child: Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                Visibility(
-                  visible: widget.subtitle != "",
-                  child: Text(
-                    widget.subtitle,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
+              ),
+              Visibility(
+                visible: widget.subtitle != "",
+                child: Text(
+                  widget.subtitle,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: PieChart(
-                PieChartData(
-                  pieTouchData: PieTouchData(
-                    touchCallback: onPieChartTouch,
-                  ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  sectionsSpace: 0,
-                  centerSpaceRadius: 20,
-                  sections: showingSections(),
+        ),
+        SizedBox(
+          width: widget.width,
+          height: widget.height,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: PieChart(
+              PieChartData(
+                pieTouchData: PieTouchData(
+                  touchCallback: onPieChartTouch,
                 ),
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                sectionsSpace: 0,
+                centerSpaceRadius: 20,
+                sections: showingSections(),
               ),
             ),
           ),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: keys.length,
-            itemBuilder: (context, index) {
-              final key = keys[index];
-              final value = values[index];
-              return ListTile(
-                leading: widget.getIcon == null ? const Icon(Icons.circle) : widget.getIcon!(key),
-                title: Text(widget.getName(key)),
-                subtitle: Text(widget.getDescription(key, value)),
-              );
-            },
-          ),
-        ],
-      ),
+        ),
+        ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: keys.length,
+          itemBuilder: (context, index) {
+            final key = keys[index];
+            final value = values[index];
+            return ListTile(
+              leading: widget.getIcon == null ? const Icon(Icons.circle) : widget.getIcon!(key, _itemColors[index % _itemColors.length]),
+              title: Text(widget.getName(key)),
+              subtitle: Text(widget.getDescription(key, value)),
+            );
+          },
+        ),
+      ],
     );
   }
 }
