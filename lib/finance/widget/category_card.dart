@@ -70,13 +70,17 @@ class CategoryIcon extends StatelessWidget {
     this.icon = Icons.circle_outlined,
     this.included = true,
     this.isDeleted = false,
+    this.foreground,
+    this.background,
   });
 
   CategoryIcon.fromCategory(Category category, {super.key})
       : type = category.type,
         icon = category.icon.icon,
         included = category.isIncluded,
-        isDeleted = category.deleted;
+        isDeleted = category.deleted,
+        foreground = null,
+        background = null;
 
 
   /// Icon
@@ -91,8 +95,14 @@ class CategoryIcon extends StatelessWidget {
   /// Deleted
   final bool isDeleted;
 
+  /// Given colors by parent
+  final Color? foreground, background;
+
   /// Icon color
-  Color? get foreground {
+  Color? get foregroundColor {
+    if (foreground != null) {
+      return foreground;
+    }
     if (isDeleted) {
       return AppTheme.disabledForeground;
     }
@@ -100,7 +110,10 @@ class CategoryIcon extends StatelessWidget {
   }
 
   /// Background color
-  Color? get background {
+  Color? get backgroundColor {
+    if (background != null) {
+      return background;
+    }
     if (isDeleted) {
       return AppTheme.disabledBackground;
     }
@@ -135,12 +148,12 @@ class CategoryIcon extends StatelessWidget {
       height: 32,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: background,
+        color: backgroundColor,
         shape: BoxShape.circle,
       ),
       child: Icon(
         icon,
-        color: foreground,
+        color: foregroundColor,
       ),
     );
   }
