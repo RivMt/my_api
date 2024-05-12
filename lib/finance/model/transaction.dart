@@ -121,8 +121,7 @@ class Transaction extends FinanceModel {
   }
 
   /// ID of currency
-  /// TODO: Change default value to unknown
-  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.won);
+  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.unknown);
 
   set currency(Currency currency) => setCurrency(ModelKeys.keyCurrency, currency);
 
