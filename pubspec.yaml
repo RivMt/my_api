@@ -17,6 +17,7 @@ dependencies:
   hooks_riverpod:
   easy_localization:
   fl_chart:
+  dartdoc:
 
 dev_dependencies:
   test:

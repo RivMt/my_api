@@ -32,3 +32,6 @@ build/
 # Flutter plugins related
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Documentation
+doc

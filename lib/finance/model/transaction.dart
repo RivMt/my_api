@@ -132,9 +132,10 @@ class Transaction extends FinanceModel {
 
   /// Alternative currency of this transaction
   ///
-  /// This is used for foreign currency transaction. For example, transaction
-  /// is paid by Euro, and money withdrew (or will withdraw) from Dollar
-  /// account, [altCurrency] is Euro, and [currency] is Dollar.
+  /// This value is used for foreign currency transaction. For example,
+  /// transaction is paid by Euro, and money withdrew (or will withdraw) from Dollar
+  /// account, [altCurrency] should be Euro, and [currency] should be Dollar
+  /// in this case.
   Currency? get altCurrency {
     final value = getValue(ModelKeys.keyAltCurrency, null);
     if (value == null) {
@@ -153,9 +154,10 @@ class Transaction extends FinanceModel {
 
   /// Alternative mount of this transaction
   ///
-  /// This is used for foreign currency transaction. For example, transaction
-  /// is paid by 5 euros, and money withdrew (or will withdraw) from 2 dollars
-  /// account, [altAmount] is `5`, and [amount] is `2`.
+  /// This value is used for foreign currency transaction. For example,
+  /// transaction is paid by 5 euros, and 2 dollars withdrew (or will withdraw)
+  /// from dollar account, [altAmount] should be `5`, and [amount] should be `2`
+  /// in this case.
   Decimal? get altAmount {
     final value = getValue(ModelKeys.keyAltAmount, null);
     if (value == null) {
@@ -172,7 +174,7 @@ class Transaction extends FinanceModel {
     }
   }
 
-  /// [DateTime] of this transaction calculated in LOCAL
+  /// [DateTime] of this transaction calculated in local device.
   DateTime get calculatedDate => getDate(ModelKeys.keyCalculatedDate, defaultCalculatedDate);
 
   set calculatedDate(DateTime date) => setDate(ModelKeys.keyCalculatedDate, date);
@@ -182,7 +184,7 @@ class Transaction extends FinanceModel {
 
   set isIncluded(bool value) => map[ModelKeys.keyIncluded] = value;
 
-  /// Last date of this transaction is utility in LOCAL
+  /// Last [DateTime] of validation of this transaction in local device.
   DateTime get utilityEnd => getDate(ModelKeys.keyUtilityEnd, paidDate.add(const Duration(seconds: 1)));
 
   set utilityEnd(DateTime date) => setDate(ModelKeys.keyUtilityEnd, date);
