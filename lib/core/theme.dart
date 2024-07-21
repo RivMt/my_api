@@ -16,6 +16,8 @@ class AppTheme {
 
   static const double sizeDisplayLarge = 28;
 
+  static const double sizeDisplayMedium = 24;
+
   static const double sizeTitleLarge = 18;
 
   static const double sizeTitleMedium = 16;
@@ -260,6 +262,12 @@ class AppTheme {
         displayLarge: TextStyle(
           color: contentPrimary,
           fontSize: sizeDisplayLarge,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.2,
+        ),
+        displayMedium: TextStyle(
+          color: contentPrimary,
+          fontSize: sizeDisplayMedium,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.2,
         ),
