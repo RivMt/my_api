@@ -42,13 +42,9 @@ class ApiClient {
     return "api-user-secret$tail";
   }
 
-  /// User agent
-  static const String userAgent = "MyAPI-Client";
-
   /// Default header
   static const Map<String, String> headers = {
     "Content-Type": "application/json",
-    "User-Agent": userAgent,
   };
 
   /// Header key for API key
@@ -335,7 +331,6 @@ class ApiClient {
     // Headers
     final Map<String, String> headers = {
       "Content-Type": "application/json",
-      "User-Agent": userAgent,
       keyApiKey: secret,
     };
     // Body
