@@ -22,8 +22,7 @@ abstract class WalletItem extends FinanceModel {
   set limitation(Decimal value) => setDecimal(ModelKeys.keyLimitation, value);
 
   /// ID of currency
-  /// TODO: Change default value to unknown
-  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.won);
+  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.unknown);
 
   set currency(Currency currency) => setCurrency(ModelKeys.keyCurrency, currency);
 

@@ -4,8 +4,10 @@ import 'dart:math';
 
 import 'package:decimal/decimal.dart';
 import 'package:my_api/core/model/model_keys.dart';
+import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
+import 'package:my_api/finance/model/payment.dart';
 
 class Transaction extends FinanceModel {
 
@@ -95,14 +97,31 @@ class Transaction extends FinanceModel {
 
   set accountId(int pid) => map[ModelKeys.keyAccountID] = pid;
 
+  /// Set [accountId] and [currency] according to [account]
+  void setAccount(Account account) {
+    accountId = account.pid;
+    currency = account.currency;
+  }
+
   /// PID of [Payment] this transaction handled
   int get paymentId => getValue(ModelKeys.keyPaymentID, 0);
 
   set paymentId(int pid) => map[ModelKeys.keyPaymentID] = pid;
 
+  /// Set [paymentId], [altCurrency], and [altAmount] according to [payment]
+  void setPayment(Payment payment) {
+    paymentId = payment.pid;
+    if (payment.currency != Currency.unknown && payment.currency != currency) {
+      altCurrency = payment.currency;
+      altAmount = Decimal.zero;
+    } else {
+      altCurrency = null;
+      altAmount = null;
+    }
+  }
+
   /// ID of currency
-  /// TODO: Change default value to unknown
-  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.won);
+  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.unknown);
 
   set currency(Currency currency) => setCurrency(ModelKeys.keyCurrency, currency);
 

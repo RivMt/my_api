@@ -46,15 +46,16 @@ class ModelsState<T> extends StateNotifier<List<T>> {
       return;
     }
     // Apply fetched data
+    final list = List<T>.from(state);
     for (T item in response.data) {
-      int index = state.indexOf(item);
-      if (index < 0 || index >= state.length) {
-        state.add(item);
+      int index = list.indexOf(item);
+      if (index < 0 || index >= list.length) {
+        list.add(item);
       } else {
-        state[index] = item;
+        list[index] = item;
       }
     }
-
+    state = list;
   }
 }
 
