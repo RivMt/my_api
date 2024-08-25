@@ -9,6 +9,7 @@ class TransactionCard extends StatelessWidget {
     super.key,
     required this.data,
     required this.category,
+    this.isPaid = true,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -21,6 +22,9 @@ class TransactionCard extends StatelessWidget {
   /// Category
   final Category category;
 
+  /// Is paid
+  final bool isPaid;
+
   /// Tap action
   final Function()? onTap, onDoubleTap, onLongPress;
 
@@ -31,9 +35,27 @@ class TransactionCard extends StatelessWidget {
     final currency = data.altCurrency ?? data.currency;
     final amount = data.altAmount ?? data.amount;
     return DataCard(
-      leading: TransactionIcon(
-        data: data,
-        category: category,
+      leading: IndexedStack(
+        index: isPaid ? 0 : 1,
+        children: [
+          // Paid
+          TransactionIcon(
+            data: data,
+            category: category,
+          ),
+          // Not paid
+          Badge(
+            label: const Icon(
+              Icons.watch_later_outlined,
+              size: 12,
+              color: Colors.white,
+            ),
+            child: TransactionIcon(
+              data: data,
+              category: category,
+            ),
+          ),
+        ],
       ),
       top: Text(
         currency.format(amount),
