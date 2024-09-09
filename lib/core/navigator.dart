@@ -227,7 +227,9 @@ class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeNotifier, 
     if (currentConfiguration.path == RoutePath.register.path) {
       page = const RegisterPage();
     } else if (currentConfiguration.path == RoutePath.login.path) {
-      page = const LoginPage();
+      page = LoginPage(
+        router: this,
+      );
     } else {
       page = null;
     }

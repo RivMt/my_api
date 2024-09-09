@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/screen_planner.dart';
 import 'package:my_api/core/model/user.dart';
@@ -10,7 +11,7 @@ class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  State createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
@@ -66,6 +67,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
   /// Triggers on register button pressed
   void onRegisterButtonPressed() async {
+    // Autofill
+    TextInput.finishAutofillContext();
+    // Register
     final password = this.password.text;
     // Get data from UI
     apply();
@@ -109,99 +113,116 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Form(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Email
-                    TextFormField(
-                      controller: email,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: "E-mail",
-                      ),
-                    ),
-                    const SizedBox(height: 8,),
-                    // Password
-                    TextFormField(
-                      controller: password,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: "Password",
-                      ),
-                    ),
-                    const SizedBox(height: 8,),
-                    // Password check
-                    TextFormField(
-                      controller: passwordCheck,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: "Password Check",
-                      ),
-                    ),
-                    const SizedBox(height: 8,),
-                    // Name
-                    // First name
-                    TextFormField(
-                      controller: firstName,
-                      decoration: const InputDecoration(
-                        labelText: "First name",
-                      ),
-                    ),
-                    const SizedBox(height: 4,),
-                    // Last name
-                    TextFormField(
-                      controller: lastName,
-                      decoration: const InputDecoration(
-                        labelText: "Last name",
-                      ),
-                    ),
-                    const SizedBox(height: 8,),
-                    // Gender
-                    Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: RadioListTile<int>(
-                              value: UserGender.codeMale,
-                              groupValue: editing.gender.code,
-                              onChanged: onGenderChanged,
-                              title: Text(UserGender.male.name),
-                            ),
-                          ),
-                          Expanded(
-                            child: RadioListTile<int>(
-                              value: UserGender.codeFemale,
-                              groupValue: editing.gender.code,
-                              onChanged: onGenderChanged,
-                              title: Text(UserGender.female.name),
-                            ),
-                          ),
-                          Expanded(
-                            child: RadioListTile<int>(
-                              value: UserGender.codeOther,
-                              groupValue: editing.gender.code,
-                              onChanged: onGenderChanged,
-                              title: const Text("Other"),
-                            ),
-                          ),
+              AutofillGroup(
+                child: Form(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Email
+                      TextFormField(
+                        autofillHints: const [
+                          AutofillHints.email,
                         ],
-                      ),
-                    ),
-                    Visibility(
-                      visible: editing.gender.code == UserGender.codeOther,
-                      child: TextField(
-                        controller: gender,
+                        controller: email,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
-                          labelText: "Gender",
+                          labelText: "E-mail",
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8,),
+                      // Password
+                      TextFormField(
+                        autofillHints: const [
+                          AutofillHints.password,
+                        ],
+                        controller: password,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: "Password",
+                        ),
+                      ),
+                      const SizedBox(height: 8,),
+                      // Password check
+                      TextFormField(
+                        autofillHints: const [
+                          AutofillHints.password,
+                        ],
+                        controller: passwordCheck,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: "Password Check",
+                        ),
+                      ),
+                      const SizedBox(height: 8,),
+                      // Name
+                      // First name
+                      TextFormField(
+                        autofillHints: const [
+                          AutofillHints.givenName,
+                        ],
+                        controller: firstName,
+                        decoration: const InputDecoration(
+                          labelText: "First name",
+                        ),
+                      ),
+                      const SizedBox(height: 4,),
+                      // Last name
+                      TextFormField(
+                        autofillHints: const [
+                          AutofillHints.familyName,
+                        ],
+                        controller: lastName,
+                        decoration: const InputDecoration(
+                          labelText: "Last name",
+                        ),
+                      ),
+                      const SizedBox(height: 8,),
+                      // Gender
+                      Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: RadioListTile<int>(
+                                value: UserGender.codeMale,
+                                groupValue: editing.gender.code,
+                                onChanged: onGenderChanged,
+                                title: Text(UserGender.male.name),
+                              ),
+                            ),
+                            Expanded(
+                              child: RadioListTile<int>(
+                                value: UserGender.codeFemale,
+                                groupValue: editing.gender.code,
+                                onChanged: onGenderChanged,
+                                title: Text(UserGender.female.name),
+                              ),
+                            ),
+                            Expanded(
+                              child: RadioListTile<int>(
+                                value: UserGender.codeOther,
+                                groupValue: editing.gender.code,
+                                onChanged: onGenderChanged,
+                                title: const Text("Other"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Visibility(
+                        visible: editing.gender.code == UserGender.codeOther,
+                        child: TextField(
+                          controller: gender,
+                          decoration: const InputDecoration(
+                            labelText: "Gender",
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 8,),

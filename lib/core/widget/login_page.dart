@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_api/core/api.dart';
+import 'package:my_api/core/navigator.dart';
 import 'package:my_api/core/screen_planner.dart';
-import 'package:my_api/core/widget/register_page.dart';
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
 
@@ -9,7 +10,12 @@ class LoginPage extends StatefulWidget {
 
   static const String route = "/login";
 
-  const LoginPage({super.key});
+  const LoginPage({
+    super.key,
+    required this.router,
+  });
+
+  final CoreRouterDelegate router;
 
   @override
   State createState() => _LoginPageState();
@@ -30,6 +36,9 @@ class _LoginPageState extends State<LoginPage> {
 
   /// Try login
   void login() async {
+    // Autofill
+    TextInput.finishAutofillContext();
+    // Login
     final client = ApiClient();
     try {
       final User user = await client.login(email.text, password.text);
@@ -72,27 +81,35 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Form(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      controller: email,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: "E-mail",
+              AutofillGroup(
+                child: Form(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        autofillHints: const [
+                          AutofillHints.email,
+                        ],
+                        controller: email,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          labelText: "E-mail",
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8,),
-                    TextFormField(
-                      controller: password,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: "Password",
+                      const SizedBox(height: 8,),
+                      TextFormField(
+                        autofillHints: const [
+                          AutofillHints.password,
+                        ],
+                        controller: password,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: "Password",
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 8,),
@@ -119,7 +136,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 8,),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, RegisterPage.route),
+                onPressed: () {
+                  widget.router.setNewRoutePath(RoutePath.register);
+                },
                 child: const Text('Register'),
               ),
             ],
