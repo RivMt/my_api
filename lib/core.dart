@@ -20,7 +20,7 @@ export 'package:my_api/core/widget/no_glow_scroll_behavior.dart';
 export 'package:my_api/core/widget/date_button.dart';
 export 'package:my_api/core/widget/month_picker.dart';
 export 'package:my_api/core/widget/pie_chart_fragment.dart';
-export 'package:my_api/core/widget/value_edit_dialog.dart';
+export 'package:my_api/core/widget/value_edit_modal.dart';
 
 // Model
 export 'package:my_api/core/model/model.dart';

@@ -10,6 +10,12 @@ import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/finance/model/transaction.dart';
 
+final initFinancePreference = {
+  PreferenceKeys.defaultCurrency: Currency.unknown.value,
+  PreferenceKeys.pieChartMaxEntries: 5,
+  PreferenceKeys.budgets: {},
+};
+
 final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
   return ModelsState<Account>(ref);
 });
