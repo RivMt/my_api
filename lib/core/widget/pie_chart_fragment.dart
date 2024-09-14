@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:my_api/core/model/stateful_data.dart';
+import 'package:my_api/core/widget/home_card.dart';
 
 const List<Color> _itemColors = [
   Colors.blue,
@@ -60,6 +62,8 @@ class PieChartFragment<K, V> extends StatefulWidget {
 
   final Widget Function(K, Color)? getIcon;
 
+  final StatefulDataState state;
+
   const PieChartFragment({
     super.key,
     this.title = "",
@@ -73,6 +77,7 @@ class PieChartFragment<K, V> extends StatefulWidget {
     required this.height,
     this.entries = 5,
     this.getIcon,
+    required this.state,
   });
 
   @override
@@ -122,41 +127,11 @@ class _PieChartFragmentState<K, V> extends State<PieChartFragment<K, V>> {
 
   @override
   Widget build(BuildContext context) {
-    if (keys.isEmpty) {
-      return const Center(
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return HomeCard(
+      title: widget.title,
+      subtitle: widget.subtitle,
+      state: widget.state,
       children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Visibility(
-                visible: widget.title != "",
-                child: Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              Visibility(
-                visible: widget.subtitle != "",
-                child: Text(
-                  widget.subtitle,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-            ],
-          ),
-        ),
         SizedBox(
           width: widget.width,
           height: widget.height,
