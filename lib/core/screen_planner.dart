@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 class ScreenPlanner {
@@ -44,5 +47,15 @@ class ScreenPlanner {
 
   /// Height of dialog
   double get dialogHeight => MediaQuery.of(_context!).size.height * _dialogWidthRadio;
+
+  /// Value of the platform is desktop compatible or not
+  bool get isDesktop {
+    if (kIsWeb) {
+      return panelNumber >= 2;
+    }
+    return Platform.isMacOS
+        || Platform.isWindows
+        || Platform.isLinux;
+  }
 
 }
