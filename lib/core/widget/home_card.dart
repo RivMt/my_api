@@ -31,8 +31,9 @@ class HomeCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Align(
+            Container(
               alignment: Alignment.topLeft,
+              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
