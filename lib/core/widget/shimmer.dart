@@ -13,7 +13,7 @@ class Shimmer extends StatefulWidget {
   final bool isLoading;
 
   @override
-  _ShimmerState createState() => _ShimmerState();
+  State createState() => _ShimmerState();
 }
 
 class _ShimmerState extends State<Shimmer> with TickerProviderStateMixin {
@@ -44,7 +44,7 @@ class _ShimmerState extends State<Shimmer> with TickerProviderStateMixin {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
             ),
-            color: AppTheme.frontBackground,
+            color: AppTheme.swatches.frontBackground,
             margin: const EdgeInsets.all(8),
           ),
         ),

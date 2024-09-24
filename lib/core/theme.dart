@@ -35,88 +35,57 @@ class AppTheme {
   static const double sizeLabelSmall = 12;
 
   /// Is theme is dark or not
-  static late bool isDarkMode;
+  static bool isDarkMode = false;
 
-  /// Primary swatch
-  static late Color primary;
+  /// Swatches of current theme
+  static ColorSwatches get swatches => isDarkMode ? _darkSwatches : _lightSwatches;
 
-  /// Foreground color located at top of screen depth
-  static late Color frontForeground;
+  static final ColorSwatches _lightSwatches = ColorSwatches(
+    isDarkMode: false,
+    // Foreground
+    frontForeground: Colors.grey[900]!,
+    middleForeground: Colors.grey[850]!,
+    rearForeground: Colors.grey[800]!,
+    // Background
+    background: Colors.white,
+    frontBackground: Colors.grey[200]!,
+    middleBackground: Colors.grey[100]!,
+    rearBackground: Colors.white,
+    // Disabled
+    disabledForeground: Colors.grey[500]!,
+    disabledBackground: Colors.grey[800]!,
+    // Text
+    contentPrimary: Colors.black,
+    contentSecondary: Colors.grey[900]!,
+  );
 
-  /// Foreground color located at middle of screen depth
-  static late Color middleForeground;
-
-  /// Foreground color located at bottom of screen depth
-  static late Color rearForeground;
-
-  /// Default background
-  static late Color background;
-
-  /// Background color located at top of screen depth
-  static late Color frontBackground;
-
-  /// Background color located at middle of screen depth
-  static late Color middleBackground;
-
-  /// Background color located at bottom of screen depth
-  static late Color rearBackground;
-
-  /// Primary content color
-  static late Color contentPrimary;
-
-  /// Secondary content color
-  static late Color contentSecondary;
-
-  /// Disabled foreground color
-  static late Color disabledForeground;
-
-  /// Disabled background color
-  static late Color disabledBackground;
+  static final ColorSwatches _darkSwatches = ColorSwatches(
+    isDarkMode: true,
+    // Foreground
+    frontForeground: Colors.white,
+    middleForeground: Colors.grey[400]!,
+    rearForeground: Colors.grey[600]!,
+    // Background
+    background: Colors.black,
+    frontBackground: Colors.grey[800]!,
+    middleBackground: Colors.grey[850]!,
+    rearBackground: Colors.grey[900]!,
+    // Disabled
+    disabledForeground: Colors.grey[800]!,
+    disabledBackground: Colors.grey[500]!,
+    // Text
+    contentPrimary: Colors.white,
+    contentSecondary: Colors.grey[400]!,
+  );
 
   /// Light theme
   static ThemeData light(Color primary) {
-    AppTheme.primary = primary;
-    isDarkMode = false;
-    // Foreground
-    frontForeground = Colors.grey[900] ?? Colors.black;
-    middleForeground = Colors.grey[850] ?? Colors.black;
-    rearForeground = Colors.grey[800] ?? Colors.black;
-    // Background
-    background = Colors.white;
-    frontBackground = Colors.grey[200] ?? Colors.white;
-    middleBackground = Colors.grey[100] ?? Colors.white;
-    rearBackground = Colors.white;
-    // Disabled
-    disabledForeground = Colors.grey[500] ?? Colors.black;
-    disabledBackground = Colors.grey[800] ?? Colors.black;
-    // Text
-    contentPrimary = Colors.black;
-    contentSecondary = Colors.grey[900] ?? Colors.black;
-    // Return
-    return _theme;
+    return _theme(primary, _lightSwatches);
   }
 
   /// Dark theme
   static ThemeData dark(Color primary) {
-    AppTheme.primary = primary;
-    isDarkMode = true;
-    // Foreground
-    frontForeground = Colors.white;
-    middleForeground = Colors.grey[400] ?? Colors.white;
-    rearForeground = Colors.grey[600] ?? Colors.white;
-    // Background
-    background = Colors.black;
-    frontBackground = Colors.grey[800] ?? Colors.grey;
-    middleBackground = Colors.grey[850] ?? Colors.grey;
-    rearBackground = Colors.grey[900] ?? Colors.grey;
-    // Disabled
-    disabledForeground = Colors.grey[800] ?? Colors.black;
-    disabledBackground = Colors.grey[500] ?? Colors.black;
-    // Text
-    contentPrimary = Colors.white;
-    contentSecondary = Colors.grey[400] ?? Colors.white;
-    // Return
-    return _theme;
+    return _theme(primary, _darkSwatches);
   }
 
   static MaterialStateProperty<Color?>? textButtonOverlay(Color color) {
@@ -134,45 +103,45 @@ class AppTheme {
     });
   }
 
-  static ThemeData get _theme {
+  static ThemeData _theme(Color primary, ColorSwatches swatches) {
     // InputDecoration
     final inputDecoration = InputDecorationTheme(
       // Padding
       contentPadding: const EdgeInsets.all(4),
       // Color
-      fillColor: middleBackground,
+      fillColor: swatches.middleBackground,
       filled: true,
       // Text
       labelStyle: TextStyle(
-        color: contentSecondary,
+        color: swatches.contentSecondary,
         fontSize: sizeLabelSmall,
         fontWeight: FontWeight.normal,
         letterSpacing: 0.25,
       ),
       hintStyle: TextStyle(
-        color: contentSecondary,
+        color: swatches.contentSecondary,
         fontSize: sizeBodyMedium,
         fontWeight: FontWeight.normal,
         letterSpacing: 0.25,
       ),
       helperMaxLines: 2,
       helperStyle: TextStyle(
-        color: contentSecondary,
+        color: swatches.contentSecondary,
         fontSize: sizeBodySmall,
         fontWeight: FontWeight.w300,
         letterSpacing: 0.25,
       ),
       // Prefix and suffix
-      prefixIconColor: contentSecondary,
+      prefixIconColor: swatches.contentSecondary,
       prefixStyle: TextStyle(
-        color: contentSecondary,
+        color: swatches.contentSecondary,
         fontSize: sizeLabelLarge,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.15,
       ),
-      suffixIconColor: contentSecondary,
+      suffixIconColor: swatches.contentSecondary,
       suffixStyle: TextStyle(
-        color: contentSecondary,
+        color: swatches.contentSecondary,
         fontSize: sizeLabelLarge,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.15,
@@ -181,14 +150,14 @@ class AppTheme {
       border: UnderlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(
-          color: middleForeground,
+          color: swatches.middleForeground,
           width: 3,
         ),
       ),
       enabledBorder: UnderlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(
-          color: middleForeground,
+          color: swatches.middleForeground,
           width: 3,
         ),
       ),
@@ -216,22 +185,23 @@ class AppTheme {
       disabledBorder: UnderlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(
-          color: rearForeground,
+          color: swatches.rearForeground,
           width: 3,
         ),
       ),
     );
+    final primarySchemes = ColorScheme.fromSeed(
+      seedColor: primary,
+      brightness: swatches.isDarkMode ? Brightness.dark : Brightness.light,
+    );
     // ThemeData
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primary,
-        brightness: isDarkMode ? Brightness.dark : Brightness.light,
-      ),
+      colorScheme: primarySchemes,
       useMaterial3: true,
-      brightness: isDarkMode ? Brightness.dark : Brightness.light,
+      brightness: swatches.isDarkMode ? Brightness.dark : Brightness.light,
       // Color
       primaryColor: primary,
-      scaffoldBackgroundColor: background,
+      scaffoldBackgroundColor: swatches.background,
       // AppBar
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -244,13 +214,13 @@ class AppTheme {
           color: primary,
         ),
         titleTextStyle: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeTitleLarge,
         ),
       ),
       // Floating Action Button
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: rearBackground,
+        backgroundColor: swatches.rearBackground,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -260,32 +230,32 @@ class AppTheme {
       textTheme: TextTheme(
         // Display
         displayLarge: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeDisplayLarge,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.2,
         ),
         displayMedium: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeDisplayMedium,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.2,
         ),
         // Title
         titleLarge: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeTitleLarge,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.15,
         ),
         titleMedium: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
         ),
         titleSmall: TextStyle(
-          color: contentSecondary,
+          color: swatches.contentSecondary,
           fontSize: sizeTitleSmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.15,
@@ -293,32 +263,32 @@ class AppTheme {
         ),
         // Body
         bodyMedium: TextStyle(
-          color: contentSecondary,
+          color: swatches.contentSecondary,
           fontSize: sizeBodyMedium,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         bodySmall: TextStyle(
-          color: contentSecondary,
+          color: swatches.contentSecondary,
           fontSize: sizeBodySmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         // Label
         labelLarge: TextStyle(
-          color: contentSecondary,
+          color: swatches.contentSecondary,
           fontSize: sizeLabelLarge,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
         ),
         labelMedium: TextStyle(
-          color: contentSecondary,
+          color: swatches.contentSecondary,
           fontSize: sizeLabelMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.25,
         ),
         labelSmall: TextStyle(
-          color: contentSecondary,
+          color: swatches.contentSecondary,
           fontSize: sizeLabelSmall,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
@@ -329,7 +299,7 @@ class AppTheme {
       inputDecorationTheme: inputDecoration,
       // Card
       cardTheme: CardTheme(
-        color: rearBackground,
+        color: swatches.rearBackground,
         surfaceTintColor: primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -341,7 +311,7 @@ class AppTheme {
       // Buttons
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-          iconColor: MaterialStateProperty.all(contentPrimary),
+          iconColor: MaterialStateProperty.all(swatches.contentPrimary),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -352,9 +322,9 @@ class AppTheme {
           textStyle: MaterialStateProperty.resolveWith((states) {
             late Color color;
             if (states.contains(MaterialState.disabled)) {
-              color = rearForeground;
+              color = swatches.rearForeground;
             } else {
-              color = contentPrimary;
+              color = swatches.contentPrimary;
             }
             return TextStyle(
               color: color,
@@ -370,7 +340,7 @@ class AppTheme {
           textStyle: MaterialStateProperty.resolveWith((states) {
             late Color color;
             if (states.contains(MaterialState.disabled)) {
-              color = rearForeground;
+              color = swatches.rearForeground;
             } else {
               color = primary;
             }
@@ -390,7 +360,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(2),
         ),
         side: BorderSide(
-          color: middleForeground,
+          color: swatches.middleForeground,
           width: 2,
         ),
         fillColor: MaterialStateProperty.resolveWith((states) {
@@ -407,7 +377,7 @@ class AppTheme {
       ),
       // Modal Bottom Sheet
       bottomSheetTheme: BottomSheetThemeData(
-        modalBackgroundColor: rearBackground,
+        modalBackgroundColor: swatches.rearBackground,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(16),
@@ -417,18 +387,18 @@ class AppTheme {
       ),
       // Dialog
       dialogTheme: DialogTheme(
-        backgroundColor: rearBackground,
+        backgroundColor: swatches.rearBackground,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
         titleTextStyle: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
         ),
         contentTextStyle: TextStyle(
-          color: contentSecondary,
+          color: swatches.contentSecondary,
           fontSize: sizeBodyMedium,
           fontWeight: FontWeight.normal,
           letterSpacing: 0.25,
@@ -436,8 +406,8 @@ class AppTheme {
       ),
       // ListTile
       listTileTheme: ListTileThemeData(
-        iconColor: contentPrimary,
-        textColor: contentPrimary,
+        iconColor: swatches.contentPrimary,
+        textColor: swatches.contentPrimary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -445,7 +415,7 @@ class AppTheme {
       // Dropdown
       dropdownMenuTheme: DropdownMenuThemeData(
         textStyle: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeTitleMedium,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.15,
@@ -460,13 +430,13 @@ class AppTheme {
       // Badge
       badgeTheme: BadgeThemeData(
         backgroundColor: primary,
-        textColor: frontForeground,
+        textColor: swatches.frontForeground,
         smallSize: 8,
         largeSize: 16,
       ),
       // PopupMenu
       popupMenuTheme: PopupMenuThemeData(
-        color: middleBackground,
+        color: swatches.middleBackground,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -474,16 +444,16 @@ class AppTheme {
       // Chip
       chipTheme: ChipThemeData(
         elevation: 0,
-        backgroundColor: middleBackground,
-        disabledColor: rearBackground,
+        backgroundColor: swatches.middleBackground,
+        disabledColor: swatches.rearBackground,
         selectedColor: primary,
         labelStyle: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeBodyMedium,
         ),
         secondarySelectedColor: primary,
         secondaryLabelStyle: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeBodyMedium,
         ),
         shadowColor: Colors.transparent,
@@ -493,20 +463,65 @@ class AppTheme {
       ),
       // Divider
       dividerTheme: DividerThemeData(
-        color: rearForeground,
+        color: swatches.rearForeground,
       ),
       // TabBar
       tabBarTheme: TabBarTheme(
         indicatorColor: primary,
         labelStyle: TextStyle(
-          color: contentPrimary,
+          color: swatches.contentPrimary,
           fontSize: sizeTitleMedium,
         ),
         unselectedLabelStyle: TextStyle(
-          color: contentSecondary,
+          color: swatches.contentSecondary,
           fontSize: sizeTitleMedium,
         ),
       ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: swatches.background,
+        selectedItemColor: primarySchemes.onSecondaryContainer,
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: swatches.background,
+        selectedIconTheme: IconThemeData(
+          color: primarySchemes.onSecondaryContainer,
+        ),
+        selectedLabelTextStyle: TextStyle(
+          color: primarySchemes.onSecondaryContainer,
+        ),
+        indicatorColor: primarySchemes.secondaryContainer,
+      )
     );
   }
+}
+
+class ColorSwatches {
+
+  final bool isDarkMode;
+
+  final Color frontForeground, middleForeground, rearForeground;
+
+  final Color background;
+
+  final Color frontBackground, middleBackground, rearBackground;
+
+  final Color contentPrimary, contentSecondary;
+
+  final Color disabledForeground, disabledBackground;
+
+  ColorSwatches({
+    required this.isDarkMode,
+    required this.frontForeground,
+    required this.middleForeground,
+    required this.rearForeground,
+    required this.background,
+    required this.frontBackground,
+    required this.middleBackground,
+    required this.rearBackground,
+    required this.contentPrimary,
+    required this.contentSecondary,
+    required this.disabledForeground,
+    required this.disabledBackground,
+  });
+
 }

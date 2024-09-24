@@ -86,8 +86,8 @@ class WalletItemCard extends StatelessWidget {
       unknownMessage: unknownMessage,
       leading: WalletItemIcon(
         icon: icon,
-        foreground: isDeleted ? AppTheme.disabledForeground : foreground,
-        background: isDeleted ? AppTheme.disabledBackground : background,
+        foreground: isDeleted ? AppTheme.swatches.disabledForeground : foreground,
+        background: isDeleted ? AppTheme.swatches.disabledBackground : background,
         selected: selected,
       ),
       top: Visibility(

@@ -104,7 +104,7 @@ class CategoryIcon extends StatelessWidget {
       return foreground;
     }
     if (isDeleted) {
-      return AppTheme.disabledForeground;
+      return AppTheme.swatches.disabledForeground;
     }
     return getColor(type, included, false);
   }
@@ -115,7 +115,7 @@ class CategoryIcon extends StatelessWidget {
       return background;
     }
     if (isDeleted) {
-      return AppTheme.disabledBackground;
+      return AppTheme.swatches.disabledBackground;
     }
     return getColor(type, included, true);
   }

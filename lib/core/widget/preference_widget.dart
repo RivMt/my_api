@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_api/core.dart';
 
 const double _defaultPadding = 8;
 
@@ -25,7 +24,7 @@ class PreferenceHeader extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: AppTheme.primary,
+              color: Theme.of(context).primaryColor,
             ),
           ),
           trailing,
