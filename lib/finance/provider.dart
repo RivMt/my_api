@@ -22,9 +22,7 @@ final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref
 
 void refreshAccounts(WidgetRef ref) {
   ref.read(accounts.notifier).request(
-    [{
-      ModelKeys.keyDeleted: false,
-    }],
+    [],
     ApiClient.buildOptions(
       sorts: [
         const Sort(ModelKeys.keyIcon, SortType.asc),
@@ -40,9 +38,7 @@ final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref
 
 void refreshPayments(WidgetRef ref) {
   ref.read(payments.notifier).request(
-    [{
-      ModelKeys.keyDeleted: false,
-    }],
+    [],
     ApiClient.buildOptions(
       sorts: [
         const Sort(ModelKeys.keyIcon, SortType.asc),
