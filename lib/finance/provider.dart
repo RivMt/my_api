@@ -67,6 +67,8 @@ final categories = StateNotifierProvider<ModelsState<Category>, List<Category>>(
 void refreshCategories(WidgetRef ref) {
   ref.read(categories.notifier).request([], ApiClient.buildOptions(
     sorts: [
+      const Sort(ModelKeys.keyDeleted, SortType.asc),
+      const Sort(ModelKeys.keyIncluded, SortType.desc),
       const Sort(ModelKeys.keyPid, SortType.asc),
     ],
   ));

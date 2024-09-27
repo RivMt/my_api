@@ -38,6 +38,7 @@ class CategoryCard extends StatelessWidget {
         type: category.type,
         icon: category.icon.icon,
         included: category.isIncluded,
+        isDeleted: category.deleted,
       ),
       top: Text(
         category.name,
