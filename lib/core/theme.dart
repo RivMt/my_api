@@ -52,8 +52,8 @@ class AppTheme {
     middleBackground: Colors.grey[100]!,
     rearBackground: Colors.white,
     // Disabled
-    disabledForeground: Colors.grey[500]!,
-    disabledBackground: Colors.grey[800]!,
+    disabledForeground: Colors.grey[800]!,
+    disabledBackground: Colors.grey[500]!,
     // Text
     contentPrimary: Colors.black,
     contentSecondary: Colors.grey[900]!,
