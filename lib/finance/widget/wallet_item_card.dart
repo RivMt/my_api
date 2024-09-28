@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_api/core.dart';
+import 'package:my_api/core/theme.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/payment.dart';
@@ -124,6 +124,7 @@ class AccountCard extends StatelessWidget {
     required this.data,
     this.selected = false,
     this.showBalance = true,
+    this.ignoreDeleted = false,
     this.unknownMessage,
     this.onTap,
     this.onDoubleTap,
@@ -135,6 +136,8 @@ class AccountCard extends StatelessWidget {
   final Account data;
 
   final bool selected;
+
+  final bool ignoreDeleted;
 
   /// Value of show account's balance or not
   ///
@@ -163,7 +166,7 @@ class AccountCard extends StatelessWidget {
       icon: data.icon.icon,
       selected: selected,
       isUnknown: data == Account.unknown,
-      isDeleted: data.deleted,
+      isDeleted: ignoreDeleted ? false : data.deleted,
       unknownMessage: unknownMessage,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
@@ -180,6 +183,7 @@ class PaymentCard extends StatelessWidget {
     required this.data,
     this.selected = false,
     this.unknownMessage,
+    this.ignoreDeleted = false,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -190,6 +194,8 @@ class PaymentCard extends StatelessWidget {
   final Payment data;
 
   final bool selected;
+
+  final bool ignoreDeleted;
 
   final String? unknownMessage;
 
@@ -207,7 +213,7 @@ class PaymentCard extends StatelessWidget {
       icon: data.icon.icon,
       selected: selected,
       isUnknown: data == Payment.unknown,
-      isDeleted: data.deleted,
+      isDeleted: ignoreDeleted ? false : data.deleted,
       unknownMessage: unknownMessage,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
