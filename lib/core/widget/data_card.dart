@@ -38,7 +38,7 @@ class DataCard extends StatefulWidget {
   final Function(bool)? onHover;
 
   @override
-  _DataCardState createState() => _DataCardState();
+  State createState() => _DataCardState();
 }
 
 class _DataCardState extends State<DataCard> {

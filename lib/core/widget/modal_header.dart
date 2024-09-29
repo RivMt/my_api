@@ -25,7 +25,7 @@ class ModalHeader extends StatefulWidget {
   final Function()? onPositiveButtonPressed;
 
   @override
-  _ModalHeaderState createState() => _ModalHeaderState();
+  State createState() => _ModalHeaderState();
 }
 
 class _ModalHeaderState extends State<ModalHeader> {

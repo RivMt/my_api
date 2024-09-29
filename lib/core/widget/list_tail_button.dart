@@ -20,7 +20,7 @@ class ListTailButton extends StatefulWidget {
   final Function(bool)? onHover;
 
   @override
-  _ListTailButtonState createState() => _ListTailButtonState();
+  State createState() => _ListTailButtonState();
 }
 
 class _ListTailButtonState extends State<ListTailButton> {
