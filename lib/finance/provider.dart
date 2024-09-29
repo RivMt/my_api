@@ -14,6 +14,7 @@ final initFinancePreference = {
   PreferenceKeys.defaultCurrency: Currency.unknown.value,
   PreferenceKeys.pieChartMaxEntries: 5,
   PreferenceKeys.budgets: {},
+  PreferenceKeys.targetBalance: {},
 };
 
 final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
