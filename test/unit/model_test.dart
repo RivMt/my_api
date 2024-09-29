@@ -247,6 +247,18 @@ void main() {
       final Preference pref = Preference.fromKV({}, key: key, value: value);
       expect(const DeepCollectionEquality().equals(pref.value, value), true);
     });
+    test('DateTime', () {
+      final value = DateTime.now();
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value.year, value.year);
+      expect(pref.value.month, value.month);
+      expect(pref.value.day, value.day);
+      expect(pref.value.hour, value.hour);
+      expect(pref.value.minute, value.minute);
+      expect(pref.value.second, value.second);
+      expect(pref.value.millisecond, value.millisecond);
+      expect(pref.value.isUtc, value.isUtc);
+    });
     test('Equality', () {
       const value = 0;
       final Preference a = Preference.fromKV({}, key: key, value: value);

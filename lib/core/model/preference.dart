@@ -35,6 +35,8 @@ class Preference extends Model {
 
   static const String tokenMapCloser = "}";
 
+  static const String tokenDateTime = "Z";
+
   static const List<String> escapeCandidates = [
     tokenListSeparator,
     tokenListOpener,
@@ -83,10 +85,13 @@ class Preference extends Model {
     } else if (value is Map) {
       type = tokenMap;
       final s = [];
-      for(dynamic key in value.keys) {
+      for (dynamic key in value.keys) {
         s.add("${encode(key)}$tokenMapConnector${encode(value[key])}");
       }
       str = tokenMapOpener + s.join(tokenMapSeparator) + tokenMapCloser;
+    } else if (value is DateTime) {
+      type = tokenDateTime;
+      str = value.toUtc().millisecondsSinceEpoch.toString();
     } else {
       throw UnsupportedError("Unsupported type of value: $value");
     }
@@ -172,6 +177,8 @@ class Preference extends Model {
           cursor++;
         }
         return map;
+      case tokenDateTime:
+        return DateTime.fromMillisecondsSinceEpoch(int.parse(data.substring(1, data.length)), isUtc: true).toLocal();
       default:
         return null;
     }
