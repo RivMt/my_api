@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_api/core/model/preference.dart';
@@ -209,6 +210,11 @@ void main() {
       final Preference pref = Preference.fromKV({}, key: key, value: value);
       expect(pref.value, value);
     });
+    test('Nested List', () {
+      const value = [["A", 1, ["N!=1"]], "B", ",,,,,"];
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(pref.value, value);
+    });
     test('Map', () {
       final value = {
         "A": 0,
@@ -217,6 +223,29 @@ void main() {
       };
       final Preference pref = Preference.fromKV({}, key: key, value: value);
       expect(pref.value, value);
+    });
+    test('Nested Map', () {
+      final value = {
+        "A": {
+          1: "one",
+          "Two": 2,
+          Decimal.one: "Data"
+        },
+        "B": [1, 2, "::::"],
+        0: "Hi"
+      };
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(const DeepCollectionEquality().equals(pref.value, value), true);
+    });
+    test('Complex Structure', () {
+      final value = {
+        "M{I0:I1}": {0:1},
+        "L[0,1]": [0,1],
+        "M{L[0]:L[1]}": {[0]: [1]},
+        "L[M{I0:I0}]": [{0:1}],
+      };
+      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      expect(const DeepCollectionEquality().equals(pref.value, value), true);
     });
     test('Equality', () {
       const value = 0;

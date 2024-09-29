@@ -19,6 +19,7 @@ dependencies:
   fl_chart:
 
 dev_dependencies:
+  collection:
   test:
   flutter_test:
     sdk: flutter
