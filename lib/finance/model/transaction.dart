@@ -20,6 +20,11 @@ class Transaction extends FinanceModel {
   /// Default [DateTime] of [calculatedDate]
   static final DateTime defaultCalculatedDate = DateTime(1970, 1, 1, 0, 0, 0, 0, 0);
 
+  /// Get amount verification [RegExp] by given [currency]
+  static RegExp getAmountRegex(Currency currency) {
+    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
+  }
+
   Transaction([super.map]);
 
   Transaction.init() : super() {
@@ -204,9 +209,7 @@ class Transaction extends FinanceModel {
   set folderId(int value) => map[ModelKeys.keyFolder] = value;
 
   /// [RegExp] for verify [amount] and [altAmount]
-  RegExp get regex {
-    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
-  }
+  RegExp get regex => getAmountRegex(currency);
 }
 
 

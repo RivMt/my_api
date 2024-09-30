@@ -1,21 +1,12 @@
 library my_api;
 
-import 'dart:math';
-
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
-import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
 
 class Account extends WalletItem {
-
-  /// Maximum digits of integer part
-  static const int maxIntegerPartDigits = 30;
-
-  /// Maximum digits of decimal part
-  static const int maxDecimalPartDigits = 2;
 
   /// Unknown account
   static final Account unknown = Account({
@@ -44,9 +35,7 @@ class Account extends WalletItem {
   }
 
   /// [RegExp] for verify [amount] and [altAmount]
-  RegExp get regex {
-    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
-  }
+  RegExp get regex => WalletItem.getAmountRegex(currency);
 
   /// Index of icon
   AccountSymbol get icon => AccountSymbol.fromId(getValue(ModelKeys.keyIcon, AccountSymbol.account.id));

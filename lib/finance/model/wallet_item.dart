@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/core/model/model_keys.dart';
@@ -6,6 +8,17 @@ import 'package:my_api/finance/model/finance_model.dart';
 
 /// Superclass of [Account] and [Payment]
 abstract class WalletItem extends FinanceModel {
+
+  /// Maximum digits of integer part
+  static const int maxIntegerPartDigits = 30;
+
+  /// Maximum digits of decimal part
+  static const int maxDecimalPartDigits = 2;
+
+  /// Get amount verification [RegExp] by given [currency]
+  static RegExp getAmountRegex(Currency currency) {
+    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
+  }
 
   WalletItem([super.map]);
 

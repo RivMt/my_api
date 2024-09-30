@@ -5,16 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
-import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
 
 class Payment extends WalletItem {
-
-  /// Maximum digits of integer part
-  static const int maxIntegerPartDigits = 30;
-
-  /// Maximum digits of decimal part
-  static const int maxDecimalPartDigits = 2;
 
   /// Minimum day of payment day
   static const int payDayMin = 1;
@@ -64,9 +57,7 @@ class Payment extends WalletItem {
   }
 
   /// [RegExp] for verify [amount] and [altAmount]
-  RegExp get regex {
-    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
-  }
+  RegExp get regex => WalletItem.getAmountRegex(currency);
 
   /// Is this account handled as cash or not
   bool get isCredit => getValue(ModelKeys.keyIsCredit, false);
