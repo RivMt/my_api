@@ -20,11 +20,13 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
 
   /// Set [state] as [settings]
   void setDefaults(Map<String, dynamic> settings) {
+    Map<String, Preference> map = Map.from(state);
     for(String key in settings.keys) {
-      if (!state.containsKey(key)) {
-        state[key] = Preference.fromKV({}, key: key, value: settings[key]);
+      if (!map.containsKey(key)) {
+        map[key] = Preference.fromKV({}, key: key, value: settings[key]);
       }
     }
+    state = map;
   }
 
   /// Set value about key
@@ -42,7 +44,9 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
       return false;
     }
     // After success, apply to state
-    state[pref.key] = pref;
+    Map<String, Preference> map = Map.from(state);
+    map[pref.key] = pref;
+    state = map;
     return true;
   }
 
@@ -56,7 +60,9 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
       return false;
     }
     // After success, remove from state
-    state.remove(key);
+    Map<String, Preference> map = Map.from(state);
+    map.remove(key);
+    state = map;
     return true;
   }
 
@@ -82,10 +88,12 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
       return false;
     }
     // Apply
+    Map<String, Preference> map = Map.from(state);
     for(Preference pref in response.data) {
       Log.i(_tag, "Request completed: $pref");
-      state[pref.key] = pref;
+      map[pref.key] = pref;
     }
+    state = map;
     return true;
   }
 }
