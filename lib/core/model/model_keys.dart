@@ -51,6 +51,7 @@ abstract class ModelKeys {
   static const String keyIncluded = "included";
   static const String keyUtilityEnd = "utility_end";
   static const String keyName = "name";
+  static const String keyDate = "date";
 
   static const String keyTable = "table";
   static const String keyAccountName = "account_name";
