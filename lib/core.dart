@@ -12,7 +12,7 @@ export 'package:my_api/core/widget/group_card.dart';
 export 'package:my_api/core/widget/data_card.dart';
 export 'package:my_api/core/widget/login_page.dart';
 export 'package:my_api/core/widget/message_box.dart';
-export 'package:my_api/core/widget/modal_header.dart';
+export 'package:my_api/core/widget/modal.dart';
 export 'package:my_api/core/widget/list_tail_button.dart';
 export 'package:my_api/core/widget/user_card.dart';
 export 'package:my_api/core/widget/preference_widget.dart';
