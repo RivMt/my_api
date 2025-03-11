@@ -13,10 +13,12 @@ dependencies:
   http:
   shared_preferences:
   intl:
-  decimal:
+  decimal: ^3.0.2
   hooks_riverpod:
   easy_localization:
   fl_chart:
+  oidc: ^0.9.0+1
+  oidc_default_store: ^0.2.0+12
 
 dev_dependencies:
   collection:

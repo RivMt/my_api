@@ -8,6 +8,7 @@ import 'package:my_api/core/exceptions.dart';
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/user.dart';
+import 'package:my_api/core/oidc.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/finance_search_result.dart';
@@ -30,18 +31,6 @@ const String _tag = "API";
 /// [ModelState] alternatively, to manage widgets' state easily.
 class ApiClient {
 
-  /// Key of user id for [SharedPreferences]
-  static String get keyPreferencesUserId {
-    const tail = kDebugMode ? "-test" : "";
-    return "api-user-id$tail";
-  }
-
-  /// Key of user secrets for [SharedPreferences]
-  static String get keyPreferencesUserSecret {
-    const tail = kDebugMode ? "-test" : "";
-    return "api-user-secret$tail";
-  }
-
   /// Default header
   static const Map<String, String> headers = {
     "Content-Type": "application/json",
@@ -50,33 +39,11 @@ class ApiClient {
   /// Header key for API key
   static const String keyApiKey = "X-API-Key";
 
-  /// Getter of [_serverType]
-  ServerType get serverType => _serverType;
+  final OpenIDConnect oidc = OpenIDConnect();
 
-  /// Type of currently connected server
-  ServerType _serverType = ServerType.unknown;
+  String _uri = "";
 
-  /// Base url of server
-  String url = "";
-
-  /// Base path of authentication
-  String authPath = "auth/v1/users";
-
-  /// User ID
-  String get id => user.userId;
-
-  /// User secret key
-  String get secret => user.userSecret;
-
-  /// Duration of [secret] is available
-  DateTime validation = DateTime.now();
-
-  /// This session is valid when [secret] is not empty string and [validation]
-  /// has still left time
-  bool get valid => (secret != "" && DateTime.now().compareTo(validation) < 0);
-
-  /// [User] who currently logged in
-  User user = User({});
+  String get uri => _uri;
 
   /// Private instance for singleton pattern
   static final ApiClient _instance = ApiClient._();
@@ -108,112 +75,30 @@ class ApiClient {
   Future<void> init({
     required Function() onLoginRequired,
     required Map<String, dynamic> preferences,
-    bool? useTest,
   }) async {
-    // Check json file
-    if (!preferences.containsKey("url") || !preferences.containsKey("test")) {
-      throw const FileSystemException("Key 'url' or 'test' does not exists.");
-    }
-    // Load url from json
-    final bool setup = useTest ?? kDebugMode;
-    url = setup ? preferences["test"]! : preferences["url"]!;
-    Log.v(_tag, "Trying to connect: $url");
-    _serverType = setup ? ServerType.test : ServerType.production;
-    // Authenticate
-    user = await loadUser();
-    if (!user.isValid) {
-      Log.e(_tag, "Failed to connect server: $url");
-      onLoginRequired();
-      return;
-    }
-    Log.i(_tag, "Connected: $url");
+    final serverUri = preferences["authUri"];
+    final clientId = preferences["clientId"];
+    final clientSecret = preferences["clientSecret"];
+    final redirectUri = preferences["redirectUri"];
+    // Initialize
+    Log.v(_tag, "Trying to connect: $serverUri");
+    oidc.init(
+      serverUri: serverUri,
+      clientId: clientId,
+      clientSecret: clientSecret,
+      redirectUri: redirectUri,
+    );
+    Log.i(_tag, "Connected: $serverUri");
     return;
   }
 
-  /// Save user id and secret
-  void saveUser(User user) async {
-    if (!user.isValid) {
-      return;
-    }
-    Log.v(_tag, "Userdata saved: ${user.userId}");
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(keyPreferencesUserId, user.userId);
-    await prefs.setString(keyPreferencesUserSecret, user.userSecret);
+  Future<User> login() async {
+    return await oidc.login();
   }
 
-  /// Load user
-  Future<User> loadUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    try {
-      final String id = prefs.getString(keyPreferencesUserId)!;
-      final String secret = prefs.getString(keyPreferencesUserSecret)!;
-      Log.v(_tag, "Userdata loaded: $id");
-      return await authenticate(id, secret);
-    } on Error catch(e) {
-      Log.e(_tag, "Error: $e");
-    }
-    return User({});
-  }
-
-  /// Send authenticate request using [body]
-  Future<User> auth(Map<String, dynamic> body, [Map<String, String>? headers]) async {
-    // Request
-    final response = await _send(
-      method: HttpMethod.post,
-      link: authPath,
-      headers: headers ?? ApiClient.headers,
-      body: body,
-    );
-
-    // Check result
-    if (response.result != ApiResultCode.success) {
-      throw RequestFailedException();
-    }
-    final User user = User(response.data);
-
-    // Check body is not valid
-    if (!user.isValid) {
-      throw InvalidModelException(ModelKeys.keyUserSecret);
-    }
-
-    // Valid
-    saveUser(user);
-    return user;
-  }
-
-  /// Request [secret] using [email] and [password]
-  Future<User> login(String email, String password) async => auth({
-    ModelKeys.keyEmail: email,
-    ModelKeys.keyPassword: password,
-  });
-
-  /// Check user data with [id] and [secret] is valid
-  Future<User> authenticate(String id, String secret) async {
-    Map<String, String> map = Map.from(headers);
-    map[keyApiKey] = secret;
-    return auth({
-      ModelKeys.keyUserId: id,
-    }, map);
-  }
-
-  /// Register new user
-  Future<User> register(User user, String password) async {
-    final map = user.map;
-    map[ModelKeys.keyPassword] = password;
-    final response = await _send(
-      method: HttpMethod.put,
-      link: authPath,
-      body: map,
-    );
-    if (response.result != ApiResultCode.success) {
-      return user;
-    }
-    return auth(map);
-  }
-
-  /// Send HTTP request to [link] base on [url]
+  /// Send HTTP request to [path] base on [url]
   ///
-  /// [method] is instance of [HttpMethod] such as POST or GET. [link] is part
+  /// [method] is instance of [HttpMethod] such as POST or GET. [path] is part
   /// of url like `test` in `http://example.com/test?query=1`. [queries] are
   /// [Map] of query strings. For example, below data converts to `?query=1` in
   /// former sample url.
@@ -233,16 +118,16 @@ class ApiClient {
   /// it will not be used.
   Future<ApiResponse<Map<String, dynamic>>> _send({
     required HttpMethod method,
-    required String link,
+    required String path,
     Map<String, dynamic>? queries,
     Map<String, String> headers = headers,
     Map<String, dynamic>? body,
   }) async {
     // Url
     final StringBuffer sb = StringBuffer();
-    sb.write(this.url);
+    sb.write(uri);
     sb.write("/");
-    sb.write(link);
+    sb.write(path);
     if (queries != null && queries.isNotEmpty) {
       sb.write("?");
       final List args = [];
@@ -314,15 +199,14 @@ class ApiClient {
   /// Send API request
   Future<ApiResponse<Map<String, dynamic>>> send({
     required HttpMethod method,
-    required String home,
-    required String path,
-    required List<Map<String, dynamic>> data,
-    Map<String, dynamic>? options,
+    required String host,
+    required String endpoint,
+    dynamic body,
     Map<String, dynamic>? queries,
   }) async {
     // Check host name is defined
-    if (url == "") {
-      Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $home/$path");
+    if (uri == "") {
+      Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $host/$endpoint");
       return ApiResponse(
         result: ApiResultCode.failed,
         data: {},
@@ -331,59 +215,17 @@ class ApiClient {
     // Headers
     final Map<String, String> headers = {
       "Content-Type": "application/json",
-      keyApiKey: secret,
+      "Authorization": "Bearer ${oidc.idToken}",
     };
-    // Body
-    final Map<String, dynamic> body = {
-      "user_id": id,
-      "now": DateTime.now().toIso8601String(),
-      "data": data,
-    };
-    // Options
-    if (options != null) {
-      body['options'] = options;
-    }
     // Send
     final response = await _send(
       method: method,
-      link: "$home/$path",
+      path: "$host/$endpoint",
       queries: queries,
       headers: headers,
       body: body,
     );
     return response;
-  }
-
-  /// Build options
-  static Map<String, dynamic> buildOptions({
-    // Calculation
-    CalculationType? calcType,
-    String? calcAttribute,
-    // Sort Order
-    List<Sort>? sorts,
-    // Limit
-    int? limit,
-  }) {
-    final Map<String, dynamic> map = {};
-    // Calc
-    if (calcType != null && calcAttribute != null) {
-      map["calc"] = {
-        "type": calcType.name.toUpperCase(),
-        "attr": calcAttribute,
-      };
-    }
-    // Sort Order
-    if (sorts != null && sorts.isNotEmpty) {
-      map["order"] = {
-        "type": List.generate(sorts.length, (index) => sorts[index].type.name.toUpperCase()),
-        "attr": List.generate(sorts.length, (index) => sorts[index].attr),
-      };
-    }
-    // Limits
-    if (limit != null) {
-      map["limit"] = limit;
-    }
-    return map;
   }
 
   /// Get home from [T]
@@ -395,7 +237,7 @@ class ApiClient {
       case RawTransaction:
       case Category:
       case FinanceSearchResult:
-        return "finance/v1";
+        return "finance";
       case Preference:
         return "userdata/v1";
       default:
@@ -463,137 +305,49 @@ class ApiClient {
     return list;
   }
 
-  /// Create [data] from [link]
-  Future<ApiResponse<List<T>>> create<T>(List<Map<String, dynamic>> data) async {
+  /// Create [body] from [link]
+  Future<ApiResponse<List<T>>> create<T>(List<Map<String, dynamic>> body) async {
     final result = await send(
-      method: HttpMethod.put,
-      home: home<T>(),
-      path: path<T>(),
-      data: data,
+      method: HttpMethod.post,
+      host: home<T>(),
+      endpoint: path<T>(),
+      body: body,
     );
     return result.converts<T>(converts<T>(result.data));
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<List<T>>> read<T>(List<Map<String, dynamic>> data, [Map<String, dynamic>? options, Map<String, dynamic>? queries]) async {
+  Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? queries]) async {
     final result = await send(
-      method: HttpMethod.post,
-      home: home<T>(),
-      path: path<T>(),
-      data: data,
-      options: options,
+      method: HttpMethod.get,
+      host: home<T>(),
+      endpoint: path<T>(),
       queries: queries,
     );
     return result.converts<T>(converts<T>(result.data));
   }
 
-  /// Update [data] from [link]
-  Future<ApiResponse<List<T>>> update<T>(List<Map<String, dynamic>> data) async {
+  /// Update [body] from [link]
+  Future<ApiResponse<List<T>>> update<T>(List<Map<String, dynamic>> body) async {
     final result = await send(
-      method: HttpMethod.patch,
-      home: home<T>(),
-      path: path<T>(),
-      data: data,
+      method: HttpMethod.put,
+      host: home<T>(),
+      endpoint: path<T>(),
+      body: body,
     );
     return result.converts<T>(converts<T>(result.data));
   }
 
-  /// Delete [data] from [link]
-  Future<ApiResponse<List<T>>> delete<T>(List<Map<String, dynamic>> data) async {
+  /// Delete [body] from [link]
+  Future<ApiResponse<List<T>>> delete<T>(List<Map<String, dynamic>> body) async {
     final result = await send(
       method: HttpMethod.delete,
-      home: home<T>(),
-      path: path<T>(),
-      data: data,
+      host: home<T>(),
+      endpoint: path<T>(),
+      body: body,
     );
     return result.converts<T>(converts<T>(result.data));
   }
-
-  /// Request calculation result which fits to [data]
-  ///
-  /// [calc] defines type of calculation. And [attribute] defines column name
-  /// which is calculated
-  Future<ApiResponse<Decimal>> calculate<T>(
-    List<Map<String, dynamic>> data,
-    CalculationType calc,
-    String attribute, [
-      Map<String, dynamic>? queries,
-  ]) async {
-    final result = await send(
-      method: HttpMethod.post,
-      home: home<T>(),
-      path: path<T>(),
-      data: data,
-      options: buildOptions(
-        calcType: calc,
-        calcAttribute: attribute,
-      ),
-      queries: queries,
-    );
-    return result.convert<Decimal>(convert<Decimal>(result.data));
-  }
-
-  /// Get preference value from [key]
-  ///
-  /// If [SharedPreference] does not have value about [key], it requests
-  /// API server to get value and save to local. And that request also failed,
-  /// return [Preference] instance that has [defaultValue].
-  Future<Preference> getPreference(String key, dynamic defaultValue) async {
-    // Check local preference has value
-    final prefs = await SharedPreferences.getInstance();
-    final local = prefs.getString(key);
-    if (local != null) {
-      Log.i("GetPref", "Get preference $key=$local from local strorage");
-      return Preference.fromKV({},
-        key: key,
-        value: local,
-      );
-    }
-    // If not exists, send request to API server
-    final response = await read<Preference>([{
-      ModelKeys.keyKey: key,
-    }]);
-    if (response.result == ApiResultCode.success && response.data.length == 1) {
-      final value = response.data[0];
-      // Save to local
-      Log.i("GetPref", "Get preference $key=${value.rawValue} from API server");
-      prefs.setString(key, value.rawValue);
-      return value;
-    }
-    // Otherwise, return default
-    Log.w("GetPref", "Unable to find $key from anywhere");
-    return Preference.fromKV({},
-      key: key,
-      value: defaultValue,
-    );
-  }
-
-  /// Set [value] about [key]
-  ///
-  /// It request to save [pref] to server. If it failed, don't save to local
-  /// storage. It only save [pref] to local storage when request succeed.
-  ///
-  /// This process is required to idealize local and server.
-  Future<ApiResponse<Preference>> setPreference(Preference pref) async {
-    // Save in server first
-    final response = await create<Preference>([pref.map]);
-    if (response.result != ApiResultCode.success || response.data.length != 1) {
-      // If failed, return failed response
-      return response.convert(Preference.unknown);
-    }
-    // Save local
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(pref.key, pref.rawValue);
-    //
-    return response.convert(response.data[0]);
-  }
-}
-
-/// Type of server
-enum ServerType {
-  unknown,
-  test,
-  production,
 }
 
 /// HTTP Method
@@ -603,33 +357,6 @@ enum HttpMethod {
   put,
   patch,
   delete,
-}
-
-/// Types of DB sort order
-enum SortType {
-  asc,
-  desc,
-}
-
-/// Data class which has type of sort and attribute.
-class Sort {
-
-  const Sort(this.attr, this.type);
-
-  /// Type of sort order
-  final SortType type;
-
-  /// Attribute to sort
-  final String attr;
-
-}
-
-/// Types of DB calculation query
-enum CalculationType {
-  sum,
-  avg,
-  max,
-  min,
 }
 
 enum ApiResultCode {

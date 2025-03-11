@@ -56,7 +56,7 @@ enum Currency {
       symbol: symbol,
       decimalDigits: decimalDigits,
     );
-    return currency.format(DecimalIntl(amount));
+    return currency.format(amount);
   }
 
   /// Format [amount] to current currency's format without symbol

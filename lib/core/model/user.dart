@@ -1,24 +1,15 @@
 import 'package:my_api/core/model/model.dart';
 import 'package:my_api/core/model/model_keys.dart';
+import 'package:oidc/oidc.dart';
 
 class User extends Model {
 
-  static const int minPasswordLength = 8;
-
   User([super.map]);
 
-  /// Check password validation
-  static bool checkPassword(String password) {
-    // Length
-    if (password.length < minPasswordLength) {
-      return false;
-    }
-    // Allow letter
-    final allow = RegExp(r"[^a-z\d._\-@!~`#$%^&*()=+\[\]{}:;/?]");
-    if (allow.hasMatch(password)) {
-      return false;
-    }
-    return true;
+  User.fromOidc(OidcUser user) {
+    map[ModelKeys.keyUserId] = user.uid ?? "";
+    map[ModelKeys.keyEmail] = user.userInfo[ModelKeys.keyEmail] ?? "";
+    map[ModelKeys.keyName] = user.userInfo[ModelKeys.keyName] ?? "";
   }
 
   /// Unique identification code (Read-only)
@@ -27,36 +18,8 @@ class User extends Model {
   /// Email
   String get email => getValue(ModelKeys.keyEmail, "");
 
-  set email(String value) => map[ModelKeys.keyEmail] = value;
-
-  /// First name
-  String get firstName => getValue(ModelKeys.keyFirstName, "");
-
-  set firstName(String name) => map[ModelKeys.keyFirstName] = name;
-
-  /// Last name
-  String get lastName => getValue(ModelKeys.keyLastName, "");
-
-  set lastName(String name) => map[ModelKeys.keyLastName] = name;
-
-  /// Birthday
-  DateTime get birthday => DateTime.fromMillisecondsSinceEpoch(getValue(ModelKeys.keyBirthday, 0));
-
-  set birthday(DateTime date) => map[ModelKeys.keyBirthday] = date.millisecondsSinceEpoch;
-
-  /// Gender
-  UserGender get gender => UserGender.fromName(getValue(ModelKeys.keyGender, ""));
-
-  set gender(UserGender gender) => map[ModelKeys.keyGender] = gender.name;
-
-  /// Validation (Read-only)
-  DateTime get validation => DateTime.fromMillisecondsSinceEpoch(getValue(ModelKeys.keyValidation, 0));
-
-  /// User secret
-  String get userSecret => getValue(ModelKeys.keyUserSecret, "");
-
-  /// Valid
-  bool get isValid => (userId != "" && userSecret != "");
+  /// Name
+  String get name => getValue(ModelKeys.keyName, "");
 
 }
 
