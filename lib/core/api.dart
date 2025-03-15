@@ -4,9 +4,7 @@ import 'dart:convert';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:http/http.dart' as http;
-import 'package:my_api/core/exceptions.dart';
 import 'package:my_api/core/log.dart';
-import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:my_api/core/oidc.dart';
 import 'package:my_api/finance/model/account.dart';
@@ -16,7 +14,6 @@ import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/core/model/preference.dart';
 import 'package:my_api/finance/model/transaction.dart';
 import 'package:my_api/finance/model/transaction_raw.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const String _tag = "API";
 
@@ -76,6 +73,7 @@ class ApiClient {
     required Function() onLoginRequired,
     required Map<String, dynamic> preferences,
   }) async {
+    _uri = preferences["apiUri"];
     final serverUri = preferences["authUri"];
     final clientId = preferences["clientId"];
     final clientSecret = preferences["clientSecret"];
@@ -96,81 +94,58 @@ class ApiClient {
     return await oidc.login();
   }
 
-  /// Send HTTP request to [path] base on [url]
-  ///
-  /// [method] is instance of [HttpMethod] such as POST or GET. [path] is part
-  /// of url like `test` in `http://example.com/test?query=1`. [queries] are
-  /// [Map] of query strings. For example, below data converts to `?query=1` in
-  /// former sample url.
-  /// ```json
-  /// {
-  ///   "query": 1
-  /// }
-  /// ```
-  /// And [headers] are [Map] of http request header. If it is `null`, default
-  /// header is set like below.
-  /// ```json
-  /// {
-  ///   "Content-Type": "application/json"
-  /// }
-  /// ```
-  /// Finally, [body] is content body of http request. If [method] is [HttpMethod.get],
-  /// it will not be used.
-  Future<ApiResponse<Map<String, dynamic>>> _send({
-    required HttpMethod method,
-    required String path,
-    Map<String, dynamic>? queries,
-    Map<String, String> headers = headers,
-    Map<String, dynamic>? body,
-  }) async {
-    // Url
-    final StringBuffer sb = StringBuffer();
-    sb.write(uri);
-    sb.write("/");
-    sb.write(path);
-    if (queries != null && queries.isNotEmpty) {
-      sb.write("?");
-      final List args = [];
-      for(String key in queries.keys) {
-        args.add("$key=${queries[key]}");
-      }
-      sb.write(args.join("&"));
+  /// Send API request
+  Future<ApiResponse> send(
+    HttpMethod method,
+    String endpoint, [
+    dynamic body,
+    ApiQuery? queries,
+  ]) async {
+    // Check host name is defined
+    if (uri == "") {
+      Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $uri/$endpoint");
+      return ApiResponse.failed({});
     }
-    final String url = sb.toString();
+    final url = Uri.https(uri, endpoint, queries?.queries);
+    // Headers
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${oidc.idToken}",
+    };
     // Send request
     late http.Response response;
     try {
       switch (method) {
         case HttpMethod.get:
           response = await http.get(
-            Uri.parse(url),
+            url,
             headers: headers,
           );
           break;
         case HttpMethod.post:
           response = await http.post(
-            Uri.parse(url),
+            url,
             headers: headers,
             body: json.encode(body),
           );
           break;
         case HttpMethod.put:
           response = await http.put(
-            Uri.parse(url),
+            url,
             headers: headers,
             body: json.encode(body),
           );
           break;
         case HttpMethod.patch:
           response = await http.patch(
-            Uri.parse(url),
+            url,
             headers: headers,
             body: json.encode(body),
           );
           break;
         case HttpMethod.delete:
           response = await http.delete(
-            Uri.parse(url),
+            url,
             headers: headers,
             body: json.encode(body),
           );
@@ -196,66 +171,17 @@ class ApiClient {
     );
   }
 
-  /// Send API request
-  Future<ApiResponse<Map<String, dynamic>>> send({
-    required HttpMethod method,
-    required String host,
-    required String endpoint,
-    dynamic body,
-    Map<String, dynamic>? queries,
-  }) async {
-    // Check host name is defined
-    if (uri == "") {
-      Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $host/$endpoint");
-      return ApiResponse(
-        result: ApiResultCode.failed,
-        data: {},
-      );
-    }
-    // Headers
-    final Map<String, String> headers = {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer ${oidc.idToken}",
-    };
-    // Send
-    final response = await _send(
-      method: method,
-      path: "$host/$endpoint",
-      queries: queries,
-      headers: headers,
-      body: body,
-    );
-    return response;
-  }
-
-  /// Get home from [T]
-  String home<T>() {
-    switch(T) {
-      case Account:
-      case Payment:
-      case Transaction:
-      case RawTransaction:
-      case Category:
-      case FinanceSearchResult:
-        return "finance";
-      case Preference:
-        return "userdata/v1";
-      default:
-        throw UnimplementedError();
-    }
-  }
-
   /// Get path from [T]
-  String path<T>() {
+  static String endpoint<T>() {
     switch(T) {
       case Account:
-        return "accounts";
+        return "api/finance/accounts";
       case Payment:
-        return "payments";
+        return "api/finance/payments";
       case Transaction:
-        return "transactions";
+        return "api/finance/transactions";
       case Category:
-        return "categories";
+        return "api/finance/categories";
       case Preference:
         return "preferences";
       case FinanceSearchResult:
@@ -295,58 +221,43 @@ class ApiClient {
     }
   }
 
-  /// Covert multiple items in [map] to [T]
-  List<T> converts<T>(Map<String, dynamic> map, [String key = "data"]) {
-    final List<T> list = [];
-    final data = (key == "") ? map : (map[key] ?? []);
-    for (Map<String, dynamic> m in data) {
-      list.add(convert<T>(m, ""));
-    }
-    return list;
-  }
-
   /// Create [body] from [link]
-  Future<ApiResponse<List<T>>> create<T>(List<Map<String, dynamic>> body) async {
-    final result = await send(
-      method: HttpMethod.post,
-      host: home<T>(),
-      endpoint: path<T>(),
-      body: body,
-    );
-    return result.converts<T>(converts<T>(result.data));
+  Future<ApiResponse<T>> create<T>(Map<String, dynamic> body) async {
+    final result = await send(HttpMethod.post, endpoint<T>(), body);
+    return result.convert<T>(result.data);
   }
 
   /// Read [data] from [link]
   Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? queries]) async {
-    final result = await send(
-      method: HttpMethod.get,
-      host: home<T>(),
-      endpoint: path<T>(),
-      queries: queries,
-    );
-    return result.converts<T>(converts<T>(result.data));
+    final result = await send(HttpMethod.get, endpoint<T>(), null, ApiQuery(queries));
+    return result.converts<T>(result.data);
   }
 
   /// Update [body] from [link]
-  Future<ApiResponse<List<T>>> update<T>(List<Map<String, dynamic>> body) async {
-    final result = await send(
-      method: HttpMethod.put,
-      host: home<T>(),
-      endpoint: path<T>(),
-      body: body,
-    );
-    return result.converts<T>(converts<T>(result.data));
+  Future<ApiResponse<T>> update<T>(Map<String, dynamic> body) async {
+    final result = await send(HttpMethod.put, endpoint<T>(), body);
+    return result.convert<T>(result.data);
   }
 
   /// Delete [body] from [link]
-  Future<ApiResponse<List<T>>> delete<T>(List<Map<String, dynamic>> body) async {
-    final result = await send(
-      method: HttpMethod.delete,
-      host: home<T>(),
-      endpoint: path<T>(),
-      body: body,
-    );
-    return result.converts<T>(converts<T>(result.data));
+  Future<ApiResponse<T>> delete<T>(String uuid) async {
+    final result = await send(HttpMethod.delete, "${endpoint<T>()}/$uuid");
+    return result.convert<T>(result.data);
+  }
+
+  /// Read [data] from [link]
+  Future<ApiResponse<Map<String, Decimal>>> stat<T>([ApiQuery? queries]) async {
+    final result = await send(HttpMethod.get, "${endpoint<T>()}/stat", null, queries);
+    final Map<String, Decimal> data = {};
+    for (String key in result.data) {
+      try {
+        data[key] = Decimal.parse(result.data[key]);
+      } on FormatException {
+        Log.w(_tag, "Unable to parse: ${result.data[key]}");
+        data[key] = Decimal.zero;
+      }
+    }
+    return ApiResponse(result: result.result, data: data);
   }
 }
 
@@ -393,5 +304,49 @@ class ApiResponse<T> {
     result: result,
     data: data,
   );
+}
 
+class ApiQuery {
+
+  static const String keySortField = "sort_field";
+
+  static const String keySortOrder = "sort_order";
+
+  final Map<String, dynamic>? conditions;
+
+  const ApiQuery(this.conditions);
+
+  Map<String, String> get queries {
+    if (conditions == null) {
+      return {};
+    }
+    final Map<String, String> result = {};
+    for(String key in conditions!.keys) {
+      var value = conditions![key];
+      if (value is List) {
+        result[key] =
+            value.map((item) => item.toString()).toList(growable: false).join(
+                ",");
+      } else if (value is Map<String, dynamic>) {
+        for (String subkey in value.keys) {
+          result["${subkey}_$key"] = value[subkey].toString();
+        }
+      } else {
+        result[key] = value.toString();
+      }
+    }
+    return result;
+  }
+}
+
+enum SortOrder {
+  asc(true),
+  desc(false);
+
+  final bool order;
+
+  const SortOrder(this.order);
+
+  @override
+  String toString() => order ? "asc" : "desc";
 }

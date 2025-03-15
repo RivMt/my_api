@@ -10,19 +10,13 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
   CalculateValueState(this.ref, {
     required this.conditions,
     required this.type,
-    required this.attribute,
-    this.queries,
   }) : super(Decimal.zero);
 
   final Ref ref;
 
-  List<Map<String, dynamic>> conditions = [{}];
+  final Map<String, dynamic> conditions;
 
   final CalculationType type;
-
-  final String attribute;
-
-  Map<String, dynamic>? queries;
 
   /// Clear state
   void clear() => state = Decimal.zero;
@@ -30,12 +24,23 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
   /// Request [T] items fit to [conditions] and filter by [options]
   Future<void> request() async {
     final client = ApiClient();
-    final ApiResponse<Decimal> response = await client.calculate<T>(conditions, type, attribute, queries);
+    final ApiResponse<Map<String, Decimal>> response = await client.stat<T>(ApiQuery(conditions));
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to request $conditions");
       state = Decimal.parse("0");
       return;
     }
-    state = response.data;
+    state = response.data[type.key]!;
   }
+}
+
+enum CalculationType {
+  sum("total"),
+  average("average"),
+  count("count");
+
+  final String key;
+
+  const CalculationType(this.key);
+
 }

@@ -1,7 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/log.dart';
-import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference.dart';
 
 const String _tag = "Prefs";
@@ -37,8 +36,8 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
   /// This process is required to idealize local and server.
   Future<bool> set(Preference pref) async {
     // Save in server first
-    var response = await ApiClient().create<Preference>([pref.map]);
-    if (response.result != ApiResultCode.success || response.data.length != 1) {
+    var response = await ApiClient().create<Preference>(pref.map);
+    if (response.result != ApiResultCode.success) {
       // If failed, return false
       Log.w(_tag, "Preference update/creation failed: $pref");
       return false;
@@ -53,9 +52,7 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
   /// Delete preference as [key]
   Future<bool> delete(String key) async {
     // Try from server first
-    final response = await ApiClient().delete([{
-      ModelKeys.keyKey: key,
-    }]);
+    final response = await ApiClient().delete(key);
     if (response.result != ApiResultCode.success || response.data.length != 1) {
       return false;
     }
@@ -72,18 +69,11 @@ class PreferenceState extends StateNotifier<Map<String, Preference>> {
     if (settings != null) {
       setDefaults(settings);
     }
-    // Build condition
-    final List<Map<String, dynamic>> condition = [];
-    for (String key in keys) {
-      condition.add({
-        ModelKeys.keyKey: key,
-      });
-    }
     // Request
     final client = ApiClient();
-    final ApiResponse<List<Preference>> response = await client.read<Preference>(condition);
+    final ApiResponse<List<Preference>> response = await client.read<Preference>();
     if (response.result != ApiResultCode.success) {
-      Log.e(_tag, "Failed to request $condition");
+      Log.e(_tag, "Failed to request preferences");
       clear();
       return false;
     }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/widget/login_page.dart';
-import 'package:my_api/core/widget/register_page.dart';
 import 'package:my_api/core/widget/unknown_page.dart';
 
 const String _tag = "Navigator";
@@ -224,9 +223,7 @@ class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeNotifier, 
     Log.v(_tag, "Find page about: ${currentConfiguration.location}");
     final List<Page> pages = [];
     late Widget? page;
-    if (currentConfiguration.path == RoutePath.register.path) {
-      page = const RegisterPage();
-    } else if (currentConfiguration.path == RoutePath.login.path) {
+    if (currentConfiguration.path == RoutePath.login.path) {
       page = LoginPage(
         router: this,
       );

@@ -41,12 +41,10 @@ class _LoginPageState extends State<LoginPage> {
     // Login
     final client = ApiClient();
     try {
-      final User user = await client.login(email.text, password.text);
-      if (user.isValid) {
-        Log.i(_tag, "Login successful: ${user.email}");
-        close();
-        return;
-      }
+      final User user = await client.login();
+      Log.i(_tag, "Login successful: ${user.email}");
+      close();
+      return;
     } on Exception catch(e) {
       Log.e(_tag, "Exception: $e");
     } on Error catch(e) {

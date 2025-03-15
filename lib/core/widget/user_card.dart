@@ -20,9 +20,7 @@ class UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.account_circle_outlined),
-      title: Text(
-        "${user.firstName} ${user.lastName}", //TODO: Display user name as they set
-      ),
+      title: Text(user.name),
       subtitle: Text(user.email),
       onTap: onTap,
       onLongPress: onLongPress,

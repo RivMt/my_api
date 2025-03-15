@@ -16,15 +16,11 @@ class ModelsState<T> extends StateNotifier<List<T>> {
   /// Request [T] items fit to [condition] and filter by [options]
   ///
   /// This method overrides [state]
-  Future<void> request(List<Map<String, dynamic>> condition, [Map<String, dynamic>? options, Map<String, dynamic>? queries]) async {
+  Future<void> request(Map<String, dynamic>? queries) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(
-      condition,
-      options,
-      queries
-    );
+    final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success) {
-      Log.e(_tag, "Failed to request $condition");
+      Log.e(_tag, "Failed to request $queries");
       state = [];
       return;
     }
@@ -34,15 +30,11 @@ class ModelsState<T> extends StateNotifier<List<T>> {
   /// Get [T] items fit to [condition] and filter by [options]
   ///
   /// This method append/update data to [state]
-  Future<void> fetch(List<Map<String, dynamic>> condition, [Map<String, dynamic>? options, Map<String, dynamic>? queries]) async {
+  Future<void> fetch(Map<String, dynamic>? queries) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(
-        condition,
-        options,
-        queries
-    );
+    final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success) {
-      Log.e(_tag, "Failed to request $condition");
+      Log.e(_tag, "Failed to request $queries");
       return;
     }
     // Apply fetched data
@@ -71,14 +63,11 @@ class ModelState<T> extends StateNotifier<T> {
   void clear() => state = unknown;
 
   /// Request [T] item fit to [condition] and filter by [options]
-  Future<void> request(Map<String, dynamic> condition, [Map<String, dynamic>? options]) async {
+  Future<void> request(Map<String, dynamic>? queries) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(
-      [condition],
-      options,
-    );
+    final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success || response.data.isEmpty) {
-      Log.e(_tag, "Failed to request $condition");
+      Log.e(_tag, "Failed to request $queries");
       state = unknown;
       return;
     }

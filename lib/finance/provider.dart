@@ -22,15 +22,10 @@ final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref
 });
 
 void refreshAccounts(WidgetRef ref) {
-  ref.read(accounts.notifier).request(
-    [],
-    ApiClient.buildOptions(
-      sorts: [
-        const Sort(ModelKeys.keyIcon, SortType.asc),
-        const Sort(ModelKeys.keyLastUsed, SortType.desc),
-      ],
-    ),
-  );
+  ref.read(accounts.notifier).request({
+    ApiQuery.keySortField: [ModelKeys.keyIcon],
+    ApiQuery.keySortOrder: [ModelKeys.keyLastUsed]
+  });
 }
 
 final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref) {
@@ -38,27 +33,26 @@ final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref
 });
 
 void refreshPayments(WidgetRef ref) {
-  ref.read(payments.notifier).request(
-    [],
-    ApiClient.buildOptions(
-      sorts: [
-        const Sort(ModelKeys.keyIcon, SortType.asc),
-        const Sort(ModelKeys.keyLastUsed, SortType.desc),
-      ],
-    ),
-  );
+  ref.read(payments.notifier).request({
+    ApiQuery.keySortField: [
+      ModelKeys.keyIcon,
+      ModelKeys.keyLastUsed
+    ],
+    ApiQuery.keySortOrder: [
+      SortOrder.asc,
+      SortOrder.desc
+    ]
+  });
 }
 
 final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transaction>>((ref) {
   return ModelsState<Transaction>(ref);
 });
 
-void fetchTransactions(WidgetRef ref, List<Map<String, dynamic>> condition) async {
-  ref.read(transactions.notifier).fetch(condition, ApiClient.buildOptions(
-    sorts: [
-      const Sort(ModelKeys.keyPaidDate, SortType.desc),
-    ],
-  ));
+void fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) async {
+  condition[ApiQuery.keySortField] = [ModelKeys.keyPaidDate];
+  condition[ApiQuery.keySortOrder] = [SortOrder.desc];
+  ref.read(transactions.notifier).fetch(condition);
 }
 
 final categories = StateNotifierProvider<ModelsState<Category>, List<Category>>((ref) {
@@ -66,13 +60,18 @@ final categories = StateNotifierProvider<ModelsState<Category>, List<Category>>(
 });
 
 void refreshCategories(WidgetRef ref) {
-  ref.read(categories.notifier).request([], ApiClient.buildOptions(
-    sorts: [
-      const Sort(ModelKeys.keyDeleted, SortType.asc),
-      const Sort(ModelKeys.keyIncluded, SortType.desc),
-      const Sort(ModelKeys.keyPid, SortType.asc),
+  ref.read(categories.notifier).request({
+    ApiQuery.keySortField: [
+      ModelKeys.keyDeleted,
+      ModelKeys.keyIncluded,
+      ModelKeys.keyPid
     ],
-  ));
+    ApiQuery.keySortOrder: [
+      SortOrder.asc,
+      SortOrder.desc,
+      SortOrder.asc
+    ]
+  });
 }
 
 Currency getDefaultCurrency(ref) {

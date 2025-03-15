@@ -22,8 +22,6 @@ class SearchState<T> extends StateNotifier<List<T>> {
     final text = base64Encode(utf8.encode(query));
     Log.v(_tag, "Search: $query ($text)");
     final ApiResponse<List<T>> response = await client.read<T>(
-      [{}],
-      {},
       {
         "query": text,
       },
