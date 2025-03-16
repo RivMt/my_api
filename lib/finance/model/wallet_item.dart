@@ -17,7 +17,7 @@ abstract class WalletItem extends FinanceModel {
 
   /// Get amount verification [RegExp] by given [currency]
   static RegExp getAmountRegex(Currency currency) {
-    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
+    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalPoint));
   }
 
   WalletItem([super.map]);
@@ -35,9 +35,9 @@ abstract class WalletItem extends FinanceModel {
   set limitation(Decimal value) => setDecimal(ModelKeys.keyLimitation, value);
 
   /// ID of currency
-  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.unknown);
+  String get currencyId => getValue(ModelKeys.keyCurrencyId, "");
 
-  set currency(Currency currency) => setCurrency(ModelKeys.keyCurrency, currency);
+  set currencyId(String uuid) => map[ModelKeys.keyCurrencyId] = uuid;
 
   /// Serial number
   String get serialNumber => getValue(ModelKeys.keySerialNumber, "");

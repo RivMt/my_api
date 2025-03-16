@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/widget/category_card.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/transaction.dart';
+import 'package:my_api/finance/provider.dart' as finance_provider;
 
-class TransactionCard extends StatelessWidget {
+class TransactionCard extends ConsumerWidget {
   const TransactionCard({
     super.key,
     required this.data,
@@ -31,8 +33,8 @@ class TransactionCard extends StatelessWidget {
   final Function(bool)? onHover;
 
   @override
-  Widget build(BuildContext context) {
-    final currency = data.altCurrency ?? data.currency;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currency = finance_provider.getCurrency(ref, data.altCurrencyId ?? data.currencyId);
     final amount = data.altAmount ?? data.amount;
     return DataCard(
       leading: IndexedStack(

@@ -83,46 +83,46 @@ void main() {
       return List.generate(length, (index) => index%9+1).join("");
     }
     test('Extra integer part with no decimal part', () {
-      data.currency = Currency.won;
+      final currency = Currency.instance(decimalPoint: 0);
       data.amount = Decimal.parse(
           gen(Transaction.maxIntegerPartDigits + 2)
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
     test('Extra integer part with extra decimal part', () {
-      data.currency = Currency.won;
+      final currency = Currency.instance(decimalPoint: 0);
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits + 2)}.${gen(Transaction.maxDecimalPartDigits + 2)}"
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
     test('Extra integer part with appropriate decimal part', () {
-      data.currency = Currency.won;
+      final currency = Currency.instance(decimalPoint: 0);
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits + 2)}.${gen(Transaction.maxDecimalPartDigits - 1)}"
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
     test('Appropriate integer part with no decimal part', () {
-      data.currency = Currency.won;
+      final currency = Currency.instance(decimalPoint: 0);
       data.amount = Decimal.parse(
           gen(Transaction.maxIntegerPartDigits - 2)
       );
-      expect(data.regex.hasMatch(data.amount.toString()), true);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), true);
     });
     test('Appropriate integer part with extra decimal part', () {
-      data.currency = Currency.won;
+      final currency = Currency.instance(decimalPoint: 0);
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits - 2)}.${gen(Transaction.maxDecimalPartDigits + 2)}"
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
     test('Appropriate integer part with appropriate decimal part', () {
-      data.currency = Currency.won;
+      final currency = Currency.instance(decimalPoint: 0);
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits - 2)}.${gen(Transaction.maxDecimalPartDigits - 1)}"
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
   });
   group("Transaction Amount Verification Test (Integer part with decimal part currency)", () {
@@ -131,50 +131,50 @@ void main() {
       return List.generate(length, (index) => index % 9 + 1).join("");
     }
     test('Extra integer part with no decimal part', () {
-      data.currency = Currency.dollar;
+      final currency = Currency.unknown;
       data.amount = Decimal.parse(
           gen(Transaction.maxIntegerPartDigits + 2)
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
     test('Extra integer part with extra decimal part', () {
-      data.currency = Currency.dollar;
+      final currency = Currency.instance(decimalPoint: 2);
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits + 2)}.${gen(
               Transaction.maxDecimalPartDigits + 2)}"
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
     test('Extra integer part with appropriate decimal part', () {
-      data.currency = Currency.dollar;
+      final currency = Currency.instance(decimalPoint: 2);
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits + 2)}.${gen(
               Transaction.maxDecimalPartDigits - 1)}"
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
     test('Appropriate integer part with no decimal part', () {
-      data.currency = Currency.dollar;
+      final currency = Currency.instance(decimalPoint: 2);
       data.amount = Decimal.parse(
           gen(Transaction.maxIntegerPartDigits - 2)
       );
-      expect(data.regex.hasMatch(data.amount.toString()), true);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), true);
     });
     test('Appropriate integer part with extra decimal part', () {
-      data.currency = Currency.dollar;
+      final currency = Currency.instance(decimalPoint: 2);
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits - 2)}.${gen(
               Transaction.maxDecimalPartDigits + 2)}"
       );
-      expect(data.regex.hasMatch(data.amount.toString()), false);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), false);
     });
     test('Appropriate integer part with appropriate decimal part', () {
-      data.currency = Currency.dollar;
+      final currency = Currency.instance(decimalPoint: 2);
       data.amount = Decimal.parse(
           "${gen(Transaction.maxIntegerPartDigits - 2)}.${gen(
               Transaction.maxDecimalPartDigits - 1)}"
       );
-      expect(data.regex.hasMatch(data.amount.toString()), true);
+      expect(Transaction.getAmountRegex(currency).hasMatch(data.amount.toString()), true);
     });
   });
   // Preference

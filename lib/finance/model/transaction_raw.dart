@@ -4,14 +4,14 @@ import 'package:my_api/finance/model/transaction.dart';
 class RawTransaction extends Transaction {
 
   static const List<String> columns = [
-    ModelKeys.keyPid,
+    ModelKeys.keyUuid,
     ModelKeys.keyType,
     ModelKeys.keyCategoryName,
     ModelKeys.keyAccountName,
     ModelKeys.keyPaymentName,
-    ModelKeys.keyCurrency,
+    ModelKeys.keyCurrencyId,
     ModelKeys.keyAmount,
-    ModelKeys.keyAltCurrency,
+    ModelKeys.keyAltCurrencyId,
     ModelKeys.keyAltAmount,
     ModelKeys.keyPaidDate,
     ModelKeys.keyCalculatedDate,

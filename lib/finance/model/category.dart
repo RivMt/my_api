@@ -8,7 +8,7 @@ import 'package:my_api/finance/model/transaction.dart';
 class Category extends FinanceModel {
 
   static final Category unknown = Category({
-    ModelKeys.keyPid: -1,
+    ModelKeys.keyUuid: -1,
     ModelKeys.keyType: TransactionType.expense.code,
     ModelKeys.keyIncluded: true,
     ModelKeys.keyIcon: -1,
@@ -20,7 +20,7 @@ class Category extends FinanceModel {
   /// Is this valid or not
   bool get isValid {
     // Pid
-    if (map.containsKey(ModelKeys.keyPid) && pid < 0) {
+    if (uuid == "") {
       return false;
     }
     // Type
@@ -56,11 +56,6 @@ class Category extends FinanceModel {
   CategorySymbol get icon => CategorySymbol.fromId(getValue(ModelKeys.keyIcon, CategorySymbol.unknown.id));
 
   set icon(CategorySymbol icon) => map[ModelKeys.keyIcon] = icon.id;
-
-  /// Name
-  String get name => getValue(ModelKeys.keyName, "");
-
-  set name(String value) => map[ModelKeys.keyName] = value;
 
 }
 

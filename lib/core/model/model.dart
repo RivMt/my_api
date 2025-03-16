@@ -2,7 +2,6 @@ library my_api;
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:my_api/core/model/model_keys.dart';
 
 /// Superclass of all API models.
 abstract class Model {
@@ -43,15 +42,15 @@ abstract class Model {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is int);
-    final utc = DateTime.fromMillisecondsSinceEpoch(map[key], isUtc: true);
+    assert(map[key] is String);
+    final utc = DateTime.parse(map[key]);
     return DateTime(utc.year, utc.month, utc.day, utc.hour, utc.minute, utc.second, utc.millisecond, utc.microsecond);
   }
 
   /// Set date [value] to [key]
   void setDate(String key, DateTime value) {
     final local = DateTime(value.year, value.month, value.day).add(value.timeZoneOffset).toUtc();
-    map[key] = local.millisecondsSinceEpoch;
+    map[key] = local.toIso8601String();
   }
 
   /// Get [DateTime] from [key]
@@ -61,13 +60,13 @@ abstract class Model {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is int);
-    return DateTime.fromMillisecondsSinceEpoch(map[key]);
+    assert(map[key] is String);
+    return DateTime.parse(map[key]);
   }
 
   /// Set [value] to [key]
   void setDateTime(String key, DateTime value) {
-    map[key] = value.millisecondsSinceEpoch;
+    map[key] = value.toIso8601String();
   }
 
   /// Get [List] from [key]
@@ -135,58 +134,7 @@ abstract class Model {
     map[key] = color.value;
   }
 
-  /// ID (Read-only)
-  int get id => getValue(ModelKeys.keyId, -1);
-
-  /// PID (Read-only)
-  int get pid => getValue(ModelKeys.keyPid, -1);
-
-  /// [DateTime] of lastly used (Read-only)
-  ///
-  /// There is no problem when edit it manually, however, server will be update
-  /// this when request update. Therefore, it is useless editing [lastUsed]
-  /// property.
-  DateTime get lastUsed => getDateTime(ModelKeys.keyLastUsed, DateTime.fromMillisecondsSinceEpoch(0));
-
-  /// UID of owner
-  String get owner => getValue(ModelKeys.keyOwner, "");
-
-  set owner(String id) => throw UnimplementedError();
-
-  /// List of editor UID
-  List<String> get editors => getList(ModelKeys.keyEditors, []);
-
-  set editors(List<String> list) => setList(ModelKeys.keyEditors, list);
-
-  /// List of viewers UID
-  List<String> get viewers => getList(ModelKeys.keyViewers, []);
-
-  set viewers(List<String> list) => setList(ModelKeys.keyViewers, list);
-
-  /// Descriptions of this object
-  String get descriptions => getValue(ModelKeys.keyDescriptions, "");
-
-  set descriptions(String desc) => map[ModelKeys.keyDescriptions] = desc;
-
-  /// Is this object deleted or not
-  bool get deleted => getValue(ModelKeys.keyDeleted, false);
-
-  set deleted(bool value) => map[ModelKeys.keyDeleted] = value;
-
   @override
   String toString() => map.toString();
-
-  @override
-  bool operator ==(Object other) {
-    if (other is Model) {
-      return pid == other.pid;
-    }
-    return super==(other);
-  }
-
-  @override
-  int get hashCode {
-    return toString().hashCode;
-  }
 }
 

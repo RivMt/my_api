@@ -11,7 +11,7 @@ import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/finance/model/transaction.dart';
 
 final initFinancePreference = {
-  PreferenceKeys.defaultCurrency: Currency.unknown.value,
+  PreferenceKeys.defaultCurrency: Currency.unknownUuid,
   PreferenceKeys.pieChartMaxEntries: 5,
   PreferenceKeys.budgets: {},
   PreferenceKeys.targetBalance: {},
@@ -64,7 +64,7 @@ void refreshCategories(WidgetRef ref) {
     ApiQuery.keySortField: [
       ModelKeys.keyDeleted,
       ModelKeys.keyIncluded,
-      ModelKeys.keyPid
+      ModelKeys.keyUuid
     ],
     ApiQuery.keySortOrder: [
       SortOrder.asc,
@@ -74,12 +74,44 @@ void refreshCategories(WidgetRef ref) {
   });
 }
 
-Currency getDefaultCurrency(ref) {
-  return Currency.fromValue(core_provider.getPreference<int>(ref, PreferenceKeys.defaultCurrency));
+final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>((ref) {
+  return ModelsState<Currency>(ref);
+});
+
+void refreshCurrencies(WidgetRef ref) {
+  ref.read(currencies.notifier).request({
+    ApiQuery.keySortField: [
+      ModelKeys.keyUuid,
+    ],
+    ApiQuery.keySortOrder: [
+      SortOrder.asc,
+    ]
+  });
 }
 
-void setDefaultCurrency(WidgetRef ref, Currency value) {
-  core_provider.setPreference(ref, PreferenceKeys.defaultCurrency, value.value);
+final currencyMap = Provider<Map<String, Currency>>((ref) {
+  final list = ref.watch(currencies);
+  final map = <String, Currency>{};
+  for (Currency item in list) {
+    map[item.uuid] = item;
+  }
+  return map;
+});
+
+Currency getCurrency(WidgetRef ref, String? uuid) {
+  final map = ref.watch(currencyMap);
+  if (uuid == null || !map.containsKey(uuid)) {
+    return Currency.unknown;
+  }
+  return map[uuid]!;
+}
+
+Currency getDefaultCurrency(ref) {
+  return getCurrency(ref, core_provider.getPreference<String>(ref, PreferenceKeys.defaultCurrency));
+}
+
+void setDefaultCurrency(WidgetRef ref, Currency currency) {
+  core_provider.setPreference(ref, PreferenceKeys.defaultCurrency, currency.uuid);
 }
 
 final transactionTypeFilter = StateNotifierProvider<ModelState<TransactionType>, TransactionType>((ref) {

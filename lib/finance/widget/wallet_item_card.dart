@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/theme.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/payment.dart';
+import 'package:my_api/finance/provider.dart' as finance_provider;
 
 class WalletItemIcon extends StatelessWidget {
 
@@ -118,7 +120,7 @@ class WalletItemCard extends StatelessWidget {
   }
 }
 
-class AccountCard extends StatelessWidget {
+class AccountCard extends ConsumerWidget {
   const AccountCard({
     super.key,
     required this.data,
@@ -153,10 +155,11 @@ class AccountCard extends StatelessWidget {
   final Function(bool)? onHover;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currency = finance_provider.getCurrency(ref, data.currencyId);
     return WalletItemCard(
       title: showBalance
-          ? data.currency.format(data.balance)
+          ? currency.format(data.balance)
           : data.descriptions,
       subtitle: showBalance
           ? data.descriptions

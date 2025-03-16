@@ -8,9 +8,11 @@ import 'package:my_api/finance/model/wallet_item.dart';
 
 class Account extends WalletItem {
 
+  static const String unknownUuid = "-1";
+
   /// Unknown account
   static final Account unknown = Account({
-    ModelKeys.keyPid: -1,
+    ModelKeys.keyUuid: unknownUuid,
     ModelKeys.keyDescriptions: "Unknown",
   });
 
@@ -19,7 +21,7 @@ class Account extends WalletItem {
   /// Value of this model is valid or not
   bool get isValid {
     // Pid
-    if (map.containsKey(ModelKeys.keyPid) && pid < 0) {
+    if (uuid == "") {
       return false;
     }
     // Description
@@ -27,15 +29,12 @@ class Account extends WalletItem {
       return false;
     }
     // Currency
-    if (currency == Currency.unknown) {
+    if (currencyId == Currency.unknownUuid) {
       return false;
     }
     // Otherwise
     return true;
   }
-
-  /// [RegExp] for verify [amount] and [altAmount]
-  RegExp get regex => WalletItem.getAmountRegex(currency);
 
   /// Index of icon
   AccountSymbol get icon => AccountSymbol.fromId(getValue(ModelKeys.keyIcon, AccountSymbol.account.id));

@@ -9,6 +9,10 @@ import 'package:my_api/finance/model/wallet_item.dart';
 
 class Payment extends WalletItem {
 
+  static const String unknownUuid = "-1";
+
+  static const String noneUuid = "0";
+
   /// Minimum day of payment day
   static const int payDayMin = 1;
 
@@ -19,20 +23,21 @@ class Payment extends WalletItem {
 
   /// Unknown payment
   static final Payment unknown = Payment({
-    ModelKeys.keyCurrency: Currency.unknown.value,
+    ModelKeys.keyUuid: unknownUuid,
+    ModelKeys.keyCurrencyId: Currency.unknownUuid,
   });
 
   /// No payment
   static final Payment none = Payment({
-    ModelKeys.keyPid: 0,
-    ModelKeys.keyCurrency: Currency.unknown.value,
+    ModelKeys.keyUuid: noneUuid,
+    ModelKeys.keyCurrencyId: Currency.unknownUuid,
   });
 
   Payment(super.map);
 
   bool get isValid {
     // Pid
-    if (map.containsKey(ModelKeys.keyPid) && pid < 0) {
+    if (uuid == "") {
       return false;
     }
     // Description
@@ -40,7 +45,7 @@ class Payment extends WalletItem {
       return false;
     }
     // Currency
-    if (currency == Currency.unknown) {
+    if (currencyId == Currency.unknownUuid) {
       return false;
     }
     // Pay range
@@ -55,9 +60,6 @@ class Payment extends WalletItem {
     // Otherwise
     return true;
   }
-
-  /// [RegExp] for verify [amount] and [altAmount]
-  RegExp get regex => WalletItem.getAmountRegex(currency);
 
   /// Is this account handled as cash or not
   bool get isCredit => getValue(ModelKeys.keyIsCredit, false);

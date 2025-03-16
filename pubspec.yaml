@@ -19,6 +19,7 @@ dependencies:
   fl_chart:
   oidc: ^0.9.0+1
   oidc_default_store: ^0.2.0+12
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   collection:

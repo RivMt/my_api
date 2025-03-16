@@ -22,7 +22,7 @@ class Transaction extends FinanceModel {
 
   /// Get amount verification [RegExp] by given [currency]
   static RegExp getAmountRegex(Currency currency) {
-    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalDigits));
+    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalPoint));
   }
 
   Transaction([super.map]);
@@ -35,7 +35,7 @@ class Transaction extends FinanceModel {
   /// Check data is valid
   bool get isValid {
     // PID
-    if (map.containsKey(ModelKeys.keyPid) && pid <= 0) {
+    if (uuid == "") {
       return false;
     }
     // Category
@@ -43,15 +43,15 @@ class Transaction extends FinanceModel {
       return false;
     }
     // Account
-    if (accountId <= 0) {
+    if (accountId == "") {
       return false;
     }
     // Payment
-    if (paymentId < 0) {
+    if (paymentId == "-1") {
       return false;
     }
     // Currency
-    if (currency == Currency.unknown) {
+    if (currencyId == Currency.unknownUuid) {
       return false;
     }
     // Amount
@@ -59,9 +59,9 @@ class Transaction extends FinanceModel {
       return false;
     }
     // Alt
-    if ((altCurrency != null && altAmount == null) ||
-        (altCurrency == null && altAmount != null) ||
-        (altCurrency == Currency.unknown) ||
+    if ((altCurrencyId != null && altAmount == null) ||
+        (altCurrencyId == null && altAmount != null) ||
+        (altCurrencyId == Currency.unknownUuid) ||
         (altAmount != null && altAmount! <= Decimal.zero)
     ) {
       return false;
@@ -84,9 +84,9 @@ class Transaction extends FinanceModel {
   /// Category
   ///
   /// Default value is `0`
-  int get category => getValue(ModelKeys.keyCategory, 0);
+  int get category => getValue(ModelKeys.keyCategoryId, 0);
 
-  set category(int value) => map[ModelKeys.keyCategory] = value;
+  set category(int value) => map[ModelKeys.keyCategoryId] = value;
 
   /// [DateTime] of this transaction paid
   DateTime get paidDate => getDate(ModelKeys.keyPaidDate, DateTime.now());
@@ -98,37 +98,37 @@ class Transaction extends FinanceModel {
   }
 
   /// PID of [Account] this transaction occurred
-  int get accountId => getValue(ModelKeys.keyAccountID, 0);
+  String get accountId => getValue(ModelKeys.keyAccountId, "");
 
-  set accountId(int pid) => map[ModelKeys.keyAccountID] = pid;
+  set accountId(String uuid) => map[ModelKeys.keyAccountId] = uuid;
 
-  /// Set [accountId] and [currency] according to [account]
+  /// Set [accountId] and [currencyId] according to [account]
   void setAccount(Account account) {
-    accountId = account.pid;
-    currency = account.currency;
+    accountId = account.uuid;
+    currencyId = account.currencyId;
   }
 
   /// PID of [Payment] this transaction handled
-  int get paymentId => getValue(ModelKeys.keyPaymentID, 0);
+  String get paymentId => getValue(ModelKeys.keyPaymentId, "");
 
-  set paymentId(int pid) => map[ModelKeys.keyPaymentID] = pid;
+  set paymentId(String uuid) => map[ModelKeys.keyPaymentId] = uuid;
 
-  /// Set [paymentId], [altCurrency], and [altAmount] according to [payment]
+  /// Set [paymentId], [altCurrencyId], and [altAmount] according to [payment]
   void setPayment(Payment payment) {
-    paymentId = payment.pid;
-    if (payment.currency != Currency.unknown && payment.currency != currency) {
-      altCurrency = payment.currency;
+    paymentId = payment.uuid;
+    if (payment.currencyId != Currency.unknownUuid && payment.currencyId != currencyId) {
+      altCurrencyId = payment.currencyId;
       altAmount = Decimal.zero;
     } else {
-      altCurrency = null;
+      altCurrencyId = null;
       altAmount = null;
     }
   }
 
   /// ID of currency
-  Currency get currency => getCurrency(ModelKeys.keyCurrency, Currency.unknown);
+  String get currencyId => getValue(ModelKeys.keyCurrencyId, "");
 
-  set currency(Currency currency) => setCurrency(ModelKeys.keyCurrency, currency);
+  set currencyId(String uuid) => map[ModelKeys.keyCurrencyId] = uuid;
 
   /// Amount of this transaction
   Decimal get amount => Decimal.parse(getValue(ModelKeys.keyAmount, "0"));
@@ -139,20 +139,14 @@ class Transaction extends FinanceModel {
   ///
   /// This is used for foreign currency transaction. For example, transaction
   /// is paid by Euro, and money withdrew (or will withdraw) from Dollar
-  /// account, [altCurrency] is Euro, and [currency] is Dollar.
-  Currency? get altCurrency {
-    final value = getValue(ModelKeys.keyAltCurrency, null);
-    if (value == null) {
-      return null;
-    }
-    return Currency.fromValue(value);
-  }
+  /// account, [altCurrencyId] is `EUR`, and [currencyId] is `USD`.
+  String? get altCurrencyId => getValue(ModelKeys.keyAltCurrencyId, null);
 
-  set altCurrency(Currency? currency) {
-    if (currency != null) {
-      map[ModelKeys.keyAltCurrency] = currency.value;
+  set altCurrencyId(String? uuid) {
+    if (uuid != null) {
+      map[ModelKeys.keyAltCurrencyId] = uuid;
     } else {
-      map[ModelKeys.keyAltCurrency] = null;
+      map[ModelKeys.keyAltCurrencyId] = null;
     }
   }
 
@@ -207,9 +201,6 @@ class Transaction extends FinanceModel {
   int get folderId => getValue(ModelKeys.keyFolder, 0);
 
   set folderId(int value) => map[ModelKeys.keyFolder] = value;
-
-  /// [RegExp] for verify [amount] and [altAmount]
-  RegExp get regex => getAmountRegex(currency);
 }
 
 

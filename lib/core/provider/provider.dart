@@ -37,5 +37,5 @@ final maxPriorityFilter = StateNotifierProvider<ModelState<int>, int>((ref) {
 });
 
 final sortFilter = StateNotifierProvider<ModelState<String>, String>((ref) {
-  return ModelState<String>(ref, ModelKeys.keyPid);
+  return ModelState<String>(ref, ModelKeys.keyUuid);
 });

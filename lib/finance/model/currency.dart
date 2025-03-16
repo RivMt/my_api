@@ -1,60 +1,65 @@
 import 'package:decimal/decimal.dart';
-import 'package:decimal/intl.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_api/finance/icon/currency_symbol_icons.dart';
+import 'package:my_api/core/model/model.dart';
+import 'package:my_api/core/model/model_keys.dart';
 
-enum Currency {
-  unknown(-1, "¤", "uKn", 2, CurrencySymbol.sign),
-  won(0, "￦", "KRW", 0, CurrencySymbol.krw),
-  yen(1, "￥", "JPY", 0, CurrencySymbol.jpy),
-  dollar(2, "＄", "USD", 2, CurrencySymbol.usd),
-  euro(3, "€", "EUR", 2, CurrencySymbol.eur),
-  poundSterling(4, "￡", "GBP", 2, CurrencySymbol.gbp),
-  yuanRenminbi(5, "¥", "CNY", 2, CurrencySymbol.cny);
+class Currency extends Model {
 
-  const Currency(this.value, this.symbol, this.code, this.decimalDigits, this.icon);
+  static const String unknownUuid = "XXX";
 
-  /// Unique value of currency
-  final int value;
+  static const String unknownRegionCode = "XX";
 
-  /// Single letter symbol of currency
-  final String symbol;
+  static const String unknownCurrencyCode = "X";
 
-  /// 3 letter code of currency
-  final String code;
+  static const String unknownSymbol = "¤";
 
-  /// Number of decimal part digits
-  final int decimalDigits;
+  static const int defaultDecimalPoint = 2;
 
-  /// [IconData] of symbol
-  final IconData icon;
+  static final Currency unknown = Currency.instance(
+    uuid: unknownUuid,
+    symbol: unknownSymbol,
+    decimalPoint: defaultDecimalPoint,
+  );
 
-  /// Find [Currency] using [value]
-  factory Currency.fromValue(int? value) {
-    switch(value) {
-      case 0:
-        return Currency.won;
-      case 1:
-        return Currency.yen;
-      case 2:
-        return Currency.dollar;
-      case 3:
-        return Currency.euro;
-      case 4:
-        return Currency.poundSterling;
-      case 5:
-        return Currency.yuanRenminbi;
-      default:
-        return Currency.unknown;
-    }
+  Currency([Map<String, dynamic>? map]) : super(map);
+
+  Currency.instance({
+    String uuid = unknownUuid,
+    String symbol = unknownSymbol,
+    int decimalPoint = defaultDecimalPoint,
+  }) {
+    map[ModelKeys.keyRegionCode] = uuid.substring(0, 2);
+    map[ModelKeys.keyCurrencyCode] = uuid.substring(2, 3);
+    map[ModelKeys.keySymbol] = symbol;
+    map[ModelKeys.keyDecimalPoint] = decimalPoint;
+  }
+
+  String get uuid {
+    final value = getValue(ModelKeys.keyUuid, unknownUuid);
+    final combination = "$regionCode$currencyCode";
+    return value == combination ? value : unknownUuid;
+  }
+
+  String get regionCode => getValue(ModelKeys.keyRegionCode, unknownRegionCode);
+
+  String get currencyCode => getValue(ModelKeys.keyCurrencyCode, unknownCurrencyCode);
+
+  String get symbol => getValue(ModelKeys.keySymbol, unknownSymbol);
+
+  String get iconUrl => getValue(ModelKeys.keyIconUrl, "");
+
+  int get decimalPoint => getValue(ModelKeys.keyDecimalPoint, defaultDecimalPoint);
+
+  /// Key for translation
+  String get key {
+    return "currencyType$uuid";
   }
 
   /// Format [amount] to current currency's
   String format(Decimal amount) {
     final currency = NumberFormat.currency(
       symbol: symbol,
-      decimalDigits: decimalDigits,
+      decimalDigits: decimalPoint,
     );
     return currency.format(amount);
   }
@@ -70,12 +75,4 @@ enum Currency {
     final regex = RegExp(r"[^\d.]");
     return Decimal.parse(str.replaceAll(regex, ""));
   }
-
-  /// Key for translation
-  String get key {
-    return "currencyType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
-  }
-
-  /// List of all currencies without [unknown]
-  static List<Currency> get validValues => values.sublist(1, values.length);
 }

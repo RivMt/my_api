@@ -1,8 +1,7 @@
 /// Constant class of keys
 abstract class ModelKeys {
 
-  static const String keyId = "id";
-  static const String keyPid = "pid";
+  static const String keyUuid = "uuid";
   static const String keyLastUsed = "last_used";
   static const String keyOwner = "owner_id";
   static const String keyEditors = "editors_id";
@@ -12,7 +11,7 @@ abstract class ModelKeys {
 
   static const String keyPriority = "priority";
   static const String keyLimitation = "limitation";
-  static const String keyCurrency = "currency";
+  static const String keyCurrencyId = "currency_id";
   static const String keySerialNumber = "serial_number";
   static const String keyForeground = "foreground";
   static const String keyBackground = "background";
@@ -40,18 +39,24 @@ abstract class ModelKeys {
   static const String keyPassword = "user_password";
 
   static const String keyType = "type";
-  static const String keyCategory = "category";
+  static const String keyCategoryId = "category_id";
   static const String keyPaidDate = "paid_date";
-  static const String keyAccountID = "account_id";
-  static const String keyPaymentID = "payment_id";
+  static const String keyAccountId = "account_id";
+  static const String keyPaymentId = "payment_id";
   static const String keyAmount = "amount";
-  static const String keyAltCurrency = "alt_currency";
+  static const String keyAltCurrencyId = "alt_currency_id";
   static const String keyAltAmount = "alt_amount";
   static const String keyCalculatedDate = "calculated_date";
   static const String keyIncluded = "included";
   static const String keyUtilityEnd = "utility_end";
   static const String keyName = "name";
   static const String keyDate = "date";
+
+  static const String keyRegionCode = "region_code";
+  static const String keyCurrencyCode = "currency_code";
+  static const String keySymbol = "symbol";
+  static const String keyIconUrl = "icon_url";
+  static const String keyDecimalPoint = "decimalPoint";
 
   static const String keyTable = "table";
   static const String keyAccountName = "account_name";

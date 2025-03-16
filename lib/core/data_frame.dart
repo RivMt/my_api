@@ -1,9 +1,9 @@
 import 'package:my_api/core/log.dart';
-import 'package:my_api/core/model/model.dart';
+import 'package:my_api/core/model/base_model.dart';
 
 const _tag = "DataFrame";
 
-class DataFrame<T extends Model> {
+class DataFrame<T extends BaseModel> {
 
   DataFrame({
     this.columns = const [],
@@ -52,7 +52,7 @@ class DataFrame<T extends Model> {
             value = conversions[key]!(value);
           }
         } else {
-          Log.e(_tag, "$key does not exist in ${item.pid}");
+          Log.e(_tag, "$key does not exist in ${item.uuid}");
           value = "";
         }
         return _toValidCsvField(

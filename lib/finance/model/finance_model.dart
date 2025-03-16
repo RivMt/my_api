@@ -1,5 +1,4 @@
-import 'package:my_api/core/model/model.dart';
-import 'package:my_api/finance/model/currency.dart';
+import 'package:my_api/core/model/base_model.dart';
 
 enum FinanceModelType {
   account,
@@ -9,7 +8,7 @@ enum FinanceModelType {
 }
 
 /// Superclass of all Finance API related models.
-abstract class FinanceModel extends Model {
+abstract class FinanceModel extends BaseModel {
 
 
   /// Regular expression for check [Decimal] number
@@ -32,18 +31,4 @@ abstract class FinanceModel extends Model {
 
   /// Create object using [map]
   FinanceModel([super.map]);
-
-  /// Get [Currency] from [key]
-  Currency getCurrency(String key, Currency value) {
-    if (!map.containsKey(key)) {
-      return value;
-    }
-    assert(map[key] is int);
-    return Currency.fromValue(map[key]);
-  }
-
-  /// Set [Currency] to [key]
-  void setCurrency(String key, Currency value) {
-    map[key] = value.value;
-  }
 }

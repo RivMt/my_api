@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/model/currency.dart';
 
@@ -29,7 +30,7 @@ class CurrencyCard extends StatelessWidget {
     return DataCard(
       color: Colors.transparent,
       leading: CurrencyIcon(
-        icon: data.icon,
+        iconUrl: data.iconUrl,
         selected: selected,
         background: useIconBackground
             ? Theme.of(context).primaryColor
@@ -62,13 +63,13 @@ class CurrencyIcon extends StatelessWidget {
   const CurrencyIcon({
     super.key,
     required this.background,
-    required this.icon,
+    required this.iconUrl,
     this.selected = false,
   });
 
   final Color background;
 
-  final IconData icon;
+  final String iconUrl;
 
   final bool selected;
 
@@ -86,9 +87,7 @@ class CurrencyIcon extends StatelessWidget {
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(4),
         ),
-        child: Icon(
-          icon,
-        ),
+        child: SvgPicture.network(iconUrl),
       ),
     );
   }
