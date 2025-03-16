@@ -39,7 +39,7 @@ class Transaction extends FinanceModel {
       return false;
     }
     // Category
-    if (category < 0) {
+    if (categoryId == "") {
       return false;
     }
     // Account
@@ -84,9 +84,9 @@ class Transaction extends FinanceModel {
   /// Category
   ///
   /// Default value is `0`
-  int get category => getValue(ModelKeys.keyCategoryId, 0);
+  String get categoryId => getValue(ModelKeys.keyCategoryId, 0);
 
-  set category(int value) => map[ModelKeys.keyCategoryId] = value;
+  set categoryId(String value) => map[ModelKeys.keyCategoryId] = value;
 
   /// [DateTime] of this transaction paid
   DateTime get paidDate => getDate(ModelKeys.keyPaidDate, DateTime.now());

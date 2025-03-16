@@ -15,7 +15,7 @@ class RoutePath {
 
   static final RoutePath unknown = RoutePath("404");
 
-  RoutePath(String path, [this.pid, this.queries, this.anchor]) {
+  RoutePath(String path, [this.uuid, this.queries, this.anchor]) {
     this.path = path.replaceAll("/", "");
   }
 
@@ -30,7 +30,7 @@ class RoutePath {
         break;
       case 2:
         path = uri.pathSegments[0];
-        pid = int.tryParse(uri.pathSegments[1]);
+        uuid = uri.pathSegments[1];
         queries = uri.queryParameters;
         anchor = uri.fragment;
     }
@@ -38,9 +38,9 @@ class RoutePath {
 
   late String path;
 
-  late int? pid;
+  late String? uuid;
 
-  bool get isDetails => pid != null;
+  bool get isDetails => uuid != null;
 
   late Map<String, dynamic>? queries;
 
@@ -52,9 +52,9 @@ class RoutePath {
     buffer.write("/");
     buffer.write(path);
     // Secondary path
-    if (pid != null) {
+    if (uuid != null) {
       buffer.write("/");
-      buffer.write(pid);
+      buffer.write(uuid);
     }
     // Query string
     if (queries != null) {
@@ -71,21 +71,21 @@ class RoutePath {
     return buffer.toString();
   }
 
-  RoutePath details(int pid) => RoutePath(path, pid);
+  RoutePath details(String uuid) => RoutePath(path, uuid);
 
   RoutePath extend({
     int? pid,
     Map<String, dynamic>? queries,
     String? anchor,
-  }) => RoutePath(path, pid, queries, anchor);
+  }) => RoutePath(path, uuid, queries, anchor);
 
   RoutePath previous() {
     // Anchor
     if (anchor != null) {
-      return RoutePath(path, pid, queries);
+      return RoutePath(path, uuid, queries);
     }
     // Secondary Path
-    if (pid != null) {
+    if (uuid != null) {
       return RoutePath(path, null, queries);
     }
     // Home

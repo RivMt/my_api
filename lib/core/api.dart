@@ -312,6 +312,10 @@ class ApiQuery {
 
   static const String keySortOrder = "sort_order";
 
+  static const String keyQueryRangeBegin = "begin_";
+
+  static const String keyQueryRangeEnd = "end_";
+
   final Map<String, dynamic>? conditions;
 
   const ApiQuery(this.conditions);
