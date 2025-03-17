@@ -3,9 +3,11 @@ import 'dart:convert';
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
+import 'package:my_api/core/provider/provider.dart' as provider;
 import 'package:my_api/core/oidc.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
@@ -69,29 +71,28 @@ class ApiClient {
   ///   "test": TEST-SERVER-ADDRESS
   /// }
   /// ```
-  Future<void> init({
-    required Function() onLoginRequired,
-    required Map<String, dynamic> preferences,
-  }) async {
-    _uri = preferences["apiUri"];
-    final serverUri = preferences["authUri"];
-    final clientId = preferences["clientId"];
-    final clientSecret = preferences["clientSecret"];
-    final redirectUri = preferences["redirectUri"];
+  void init(Map<String, String> preferences) {
+    _uri = preferences["apiUri"] ?? "";
+    final serverUri = preferences["authUri"] ?? "";
+    final clientId = preferences["clientId"] ?? "";
+    final clientSecret = preferences["clientSecret"] ?? "";
+    final redirectUri = preferences["redirectUri"] ?? "";
     // Initialize
-    Log.v(_tag, "Trying to connect: $serverUri");
     oidc.init(
       serverUri: serverUri,
       clientId: clientId,
       clientSecret: clientSecret,
       redirectUri: redirectUri,
     );
-    Log.i(_tag, "Connected: $serverUri");
+    Log.i(_tag, "Initialized: $serverUri");
     return;
   }
 
-  Future<User> login() async {
-    return await oidc.login();
+  Future<User> login(WidgetRef ref) async {
+    final user = await oidc.login();
+    provider.login(ref, user);
+    Log.i(_tag, "Logged in: ${user.email}");
+    return user;
   }
 
   /// Send API request

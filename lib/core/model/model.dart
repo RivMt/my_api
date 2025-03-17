@@ -13,12 +13,12 @@ abstract class Model {
   static final DateTime minDate = DateTime(1970, 1, 1);
 
   /// Raw data of this object
-  Map<String, dynamic> map = {};
+  final Map<String, dynamic> map = {};
 
   /// Constructor
   Model([Map<String, dynamic>? map]) {
     if (map != null) {
-      this.map = map;
+      this.map.addAll(map);
     }
   }
 

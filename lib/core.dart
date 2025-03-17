@@ -10,7 +10,6 @@ export 'package:my_api/core/theme.dart';
 export 'package:my_api/core/screen_planner.dart';
 export 'package:my_api/core/widget/group_card.dart';
 export 'package:my_api/core/widget/data_card.dart';
-export 'package:my_api/core/widget/login_page.dart';
 export 'package:my_api/core/widget/message_box.dart';
 export 'package:my_api/core/widget/modal.dart';
 export 'package:my_api/core/widget/list_tail_button.dart';

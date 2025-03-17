@@ -2,8 +2,11 @@ import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_api/core/log.dart';
 import 'package:my_api/core/widget/data_card.dart';
 import 'package:my_api/finance/model/currency.dart';
+
+const String _tag = "CurrencyCard";
 
 class CurrencyCard extends StatelessWidget {
   const CurrencyCard({
@@ -30,7 +33,7 @@ class CurrencyCard extends StatelessWidget {
     return DataCard(
       color: Colors.transparent,
       leading: CurrencyIcon(
-        iconUrl: data.iconUrl,
+        data,
         selected: selected,
         background: useIconBackground
             ? Theme.of(context).primaryColor
@@ -60,16 +63,15 @@ class CurrencyCard extends StatelessWidget {
 
 class CurrencyIcon extends StatelessWidget {
 
-  const CurrencyIcon({
+  const CurrencyIcon(this.currency, {
     super.key,
-    required this.background,
-    required this.iconUrl,
+    this.background = Colors.transparent,
     this.selected = false,
   });
 
   final Color background;
 
-  final String iconUrl;
+  final Currency currency;
 
   final bool selected;
 
@@ -87,7 +89,14 @@ class CurrencyIcon extends StatelessWidget {
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(4),
         ),
-        child: SvgPicture.network(iconUrl),
+        child: SvgPicture.network(
+          currency.iconUrl,
+          semanticsLabel: currency.uuid,
+          errorBuilder: (context, o, s) {
+            Log.e(_tag, "Unable to currency icon\n$s");
+            return Text(currency.symbol);
+          },
+        ),
       ),
     );
   }

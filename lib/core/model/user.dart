@@ -4,6 +4,8 @@ import 'package:oidc/oidc.dart';
 
 class User extends Model {
 
+  static final User unknown = User();
+
   User([super.map]);
 
   User.fromOidc(OidcUser user) {
@@ -11,6 +13,8 @@ class User extends Model {
     map[ModelKeys.keyEmail] = user.userInfo[ModelKeys.keyEmail] ?? "";
     map[ModelKeys.keyName] = user.userInfo[ModelKeys.keyName] ?? "";
   }
+
+  bool get isValid => userId.isNotEmpty;
 
   /// Unique identification code (Read-only)
   String get userId => getValue(ModelKeys.keyUserId, "");

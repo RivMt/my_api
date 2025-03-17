@@ -13,11 +13,7 @@ abstract class BaseModel extends Model {
   static final DateTime minDate = DateTime(1970, 1, 1);
 
   /// Constructor
-  BaseModel([Map<String, dynamic>? map]) {
-    if (map != null) {
-      this.map = map;
-    }
-  }
+  BaseModel([Map<String, dynamic>? map]) : super(map);
 
   /// UUID (Read-only)
   String get uuid => getValue(ModelKeys.keyUuid, "");
