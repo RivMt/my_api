@@ -1,7 +1,10 @@
 import 'dart:js_interop';
 
+import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:oidc/oidc.dart';
+
+const String _tag = "OIDC";
 
 class OpenIDConnect {
 
@@ -23,24 +26,46 @@ class OpenIDConnect {
     required String clientSecret,
     required String redirectUri,
   }) async {
+    final redirect = Uri.parse(redirectUri);
+    redirect.replace(
+        queryParameters: {
+          ...redirect.queryParameters,
+          'requestType': 'front-channel-logout'
+        }
+    );
     _manager = OidcUserManager.lazy(
-      discoveryDocumentUri: Uri.parse(serverUri),
-      clientCredentials: OidcClientAuthentication.clientSecretJwt(
+      discoveryDocumentUri: OidcUtils.getOpenIdConfigWellKnownUri(
+        Uri.parse(serverUri),
+      ),
+      clientCredentials: OidcClientAuthentication.clientSecretBasic(
         clientId: clientId,
-        clientAssertion: clientSecret,
+        clientSecret: clientSecret,
       ),
       store: OidcMemoryStore(),
-      settings: OidcUserManagerSettings(redirectUri: Uri.parse(redirectUri)),
+      settings: OidcUserManagerSettings(
+        redirectUri: redirect,
+        scope: [
+          "openid",
+          "email"
+        ]
+      ),
     );
     await _manager.init();
+    if (!_manager.didInit) {
+      Log.e(_tag, "Unable to initialize OIDC manager");
+    }
   }
 
   Future<User> login() async {
-    final user = await _manager.loginAuthorizationCodeFlow();
+    final user = await _manager.loginAuthorizationCodeFlow(
+      extraTokenParameters: {
+        "client_secret": _manager.clientCredentials.clientSecret
+      }
+    );
     if (user == null) {
       throw NullRejectionException(true);
     }
-    _idToken = user.idToken;
+    _idToken = user.token.idToken!;
     return User.fromOidc(user);
   }
 

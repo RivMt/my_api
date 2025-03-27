@@ -71,7 +71,7 @@ class ApiClient {
   ///   "test": TEST-SERVER-ADDRESS
   /// }
   /// ```
-  void init(Map<String, String> preferences) {
+  void init(Map<String, dynamic> preferences) {
     _uri = preferences["apiUri"] ?? "";
     final serverUri = preferences["authUri"] ?? "";
     final clientId = preferences["clientId"] ?? "";
@@ -84,7 +84,7 @@ class ApiClient {
       clientSecret: clientSecret,
       redirectUri: redirectUri,
     );
-    Log.i(_tag, "Initialized: $serverUri");
+    Log.i(_tag, "Initialized\nAPI: $_uri\nOIDC: $serverUri");
     return;
   }
 
@@ -107,7 +107,16 @@ class ApiClient {
       Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $uri/$endpoint");
       return ApiResponse.failed({});
     }
-    final url = Uri.https(uri, endpoint, queries?.queries);
+    final split = uri.split(":");
+    final host = split[0];
+    final port = (split.length > 1) ? int.parse(split[1]) : null;
+    final url = Uri(
+      scheme: kDebugMode ? "http" : "https",
+      host: host,
+      port: port,
+      path: endpoint,
+      queryParameters: queries?.queries,
+    );
     // Headers
     final Map<String, String> headers = {
       "Content-Type": "application/json",
@@ -184,7 +193,7 @@ class ApiClient {
       case Category:
         return "api/finance/categories";
       case Preference:
-        return "preferences";
+        return "api/core/preferences";
       case FinanceSearchResult:
         return "search";
       case RawTransaction:
