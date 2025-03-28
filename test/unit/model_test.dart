@@ -1,7 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_api/core/model/preference.dart';
+import 'package:my_api/core/model/preference_element.dart';
+import 'package:my_api/core/model/preference_root.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
@@ -180,62 +181,63 @@ void main() {
   // Preference
   group('Preferences Test', () {
     const key = "test";
+    final root = PreferenceRoot("test");
     test('Integer', () {
       const value = 0;
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
       expect(pref.value, value);
     });
     test('String', () {
       const value = "TEST";
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
       expect(pref.value, value);
     });
     test('Decimal', () {
       final value = Decimal.parse("1.52");
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
       expect(pref.value, value);
     });
     test('double', () {
       const value = 0.5;
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
       expect(pref.value, value);
     });
     test('Bool', () {
       const value = false;
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
       expect(pref.value, value);
     });
     test('List', () {
       const value = ["A", "B", "C"];
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
       expect(pref.value, value);
     });
     test('Nested List', () {
       const value = [["A", 1, ["N!=1"]], "B", ",,,,,"];
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
       expect(pref.value, value);
     });
     test('Map', () {
       final value = {
         "A": 0,
         "B": Decimal.zero,
-        0: "Hi"
+        "0": "Hi"
       };
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
-      expect(pref.value, value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
+      expect(pref.map, value);
     });
     test('Nested Map', () {
       final value = {
         "A": {
-          1: "one",
+          "1": "one",
           "Two": 2,
-          Decimal.one: "Data"
+          "Decimal.one": "Data"
         },
         "B": [1, 2, "::::"],
-        0: "Hi"
+        "0": "Hi"
       };
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
-      expect(const DeepCollectionEquality().equals(pref.value, value), true);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
+      expect(pref.map, value);
     });
     test('Complex Structure', () {
       final value = {
@@ -244,12 +246,12 @@ void main() {
         "M{L[0]:L[1]}": {[0]: [1]},
         "L[M{I0:I0}]": [{0:1}],
       };
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
-      expect(const DeepCollectionEquality().equals(pref.value, value), true);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
+      expect(pref.rawValue, Preference.encode(value));
     });
     test('DateTime', () {
       final value = DateTime.now();
-      final Preference pref = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement pref = PreferenceElement(parent: root, key: key, value: value);
       expect(pref.value.year, value.year);
       expect(pref.value.month, value.month);
       expect(pref.value.day, value.day);
@@ -261,9 +263,31 @@ void main() {
     });
     test('Equality', () {
       const value = 0;
-      final Preference a = Preference.fromKV({}, key: key, value: value);
-      final Preference b = Preference.fromKV({}, key: key, value: value);
+      final PreferenceElement a = PreferenceElement(parent: root, key: key, value: value);
+      final PreferenceElement b = PreferenceElement(parent: root, key: key, value: value);
       expect(a, b);
+    });
+    test('Root conversion', () {
+      final root = PreferenceRoot("abc");
+      const raw = [
+        {
+          "section": "abc",
+          "owner_id": "",
+          "key": "key1",
+          "value": "I0"
+        }, {
+          "section": "abc",
+          "owner_id": "",
+          "key": "key2",
+          "value": "Btrue"
+        }
+      ];
+      root.apply(raw);
+      final children = [];
+      for (var child in root.children) {
+        children.add(child.rawValue);
+      }
+      expect(root.rawChildren(""), raw);
     });
   });
 }

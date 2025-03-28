@@ -1,14 +1,21 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/model/model_keys.dart';
+import 'package:my_api/core/model/preference_element.dart';
 import 'package:my_api/core/model/preference_keys.dart';
+import 'package:my_api/core/model/preference_root.dart';
 import 'package:my_api/core/provider/model_state.dart';
+import 'package:my_api/core/provider/preference_state.dart';
 import 'package:my_api/core/provider/provider.dart' as core_provider;
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/finance/model/transaction.dart';
+
+final financePreference = StateNotifierProvider<PreferenceState, PreferenceRoot>((ref) {
+  return PreferenceState(ref, "finance");
+});
 
 final initFinancePreference = {
   PreferenceKeys.defaultCurrency: Currency.unknownUuid,
@@ -107,9 +114,17 @@ Currency getCurrency(WidgetRef ref, String? uuid) {
 }
 
 Currency getDefaultCurrency(WidgetRef ref) {
-  return getCurrency(ref, core_provider.getPreference<String>(ref, PreferenceKeys.defaultCurrency));
+  final root = ref.watch(financePreference);
+  final uuid = root.get<String>(PreferenceKeys.defaultCurrency, Currency.unknownUuid).value;
+  return getCurrency(ref, uuid);
 }
 
 void setDefaultCurrency(WidgetRef ref, Currency currency) {
-  core_provider.setPreference(ref, PreferenceKeys.defaultCurrency, currency.uuid);
+  final root = ref.watch(financePreference);
+  root.set(PreferenceElement(
+    parent: root,
+    key: PreferenceKeys.defaultCurrency,
+    value: currency.uuid,
+  ));
+  setPreference(ref, financePreference, root);
 }

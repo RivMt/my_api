@@ -1,10 +1,9 @@
 import 'package:decimal/decimal.dart';
-import 'package:my_api/core/model/model.dart';
-import 'package:my_api/core/model/model_keys.dart';
+import 'package:my_api/core/model/preference_element.dart';
 
-class Preference extends Model {
+abstract class Preference<T> {
 
-  static final Preference unknown = Preference({});
+  static const String endpoint = "api/core/preferences";
 
   static const String tokenEscape = "\\";
 
@@ -47,16 +46,6 @@ class Preference extends Model {
     tokenMapOpener,
     tokenMapCloser,
   ];
-
-  Preference(super.map);
-
-  Preference.fromKV(super.map, {
-    required String key,
-    required dynamic value,
-  }) {
-    this.key = key;
-    this.value = value;
-  }
 
   /// Encode raw [value] to string-style data
   static String encode(dynamic value) {
@@ -109,7 +98,7 @@ class Preference extends Model {
       return null;
     }
     // Check type
-    final String type = data.substring(0,1);
+    final String type = data.substring(0, 1);
     switch(type) {
       case tokenInteger: // Integer
         return int.parse(data.substring(1, data.length));
@@ -185,36 +174,49 @@ class Preference extends Model {
     }
   }
 
-  /// Section of this preference located
-  String get section => getValue(ModelKeys.keySection, "");
+  Preference();
 
-  set section(String value) => map[ModelKeys.keySection] = value;
+  Preference.fromMap(Map<String, dynamic> map);
 
-  /// Key of preference
-  String get key => getValue(ModelKeys.keyKey, "");
+  /// Child preferences
+  final Map<String, PreferenceElement> _children = {};
 
-  set key(String key) => map[ModelKeys.keyKey] = key;
+  /// Child preferences
+  Iterable<PreferenceElement> get children => _children.values;
 
-  /// Value of preference
-  dynamic get value => decode(getValue(ModelKeys.keyValue, ""));
+  /// List of child preferences keys
+  Iterable<String> get keys => _children.keys;
 
-  set value(dynamic value) => map[ModelKeys.keyValue] = encode(value);
+  /// Check preference contains [key]
+  bool containsKey(String key) => _children.containsKey(key);
 
-  /// Raw value of preference
-  String get rawValue => getValue(ModelKeys.keyValue, "");
+  /// Set child
+  void set(PreferenceElement element) => _children[element.key] = element;
 
-  @override
-  String toString() => "(Pref) $key = $rawValue";
-
-  @override
-  int get hashCode => value.hashCode;
-
-  @override
-  bool operator ==(Object other) {
-    if (other is Preference) {
-      return (key == other.key && value == other.value) || (key == other.key);
+  /// Get child by [key]
+  ///
+  /// If [key] is not contained, set new [PreferenceElement] with [key], [value]
+  PreferenceElement get<V>(String key, V value) {
+    if (!containsKey(key)) {
+      set(PreferenceElement<V>(
+        parent: this,
+        key: key,
+        value: value,
+      ));
     }
-    return super==(other);
+    return _children[key]!;
   }
+
+  /// Convert [children] to map
+  Map<String, dynamic> get map {
+    final Map<String, dynamic> map = {};
+    for(PreferenceElement child in children) {
+      map[child.key] = (child.isLeaf) ? child.value : child.map;
+    }
+    return map;
+  }
+
+  @override
+  String toString() => "[Pref] $_children";
 
 }

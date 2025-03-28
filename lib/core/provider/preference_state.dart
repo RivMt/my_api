@@ -1,89 +1,96 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/log.dart';
+import 'package:my_api/core/provider/provider.dart' as core_provider;
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference.dart';
+import 'package:my_api/core/model/preference_root.dart';
 
 const String _tag = "Prefs";
 
-class PreferenceState extends StateNotifier<Map<String, Preference>> {
+void fetchPreferences(WidgetRef ref, StateNotifierProvider<PreferenceState, PreferenceRoot> preference) {
+  ref.read(preference.notifier).fetch();
+}
 
-  PreferenceState(this.ref) : super(<String, Preference>{});
+void pullPreferences(WidgetRef ref, StateNotifierProvider<PreferenceState, PreferenceRoot> preference, [Map<String, dynamic>? init]) {
+  if (init != null) {
+    ref.read(preference.notifier).init(init);
+  }
+  ref.read(preference.notifier).push();
+}
+
+void setPreference(WidgetRef ref, StateNotifierProvider<PreferenceState, PreferenceRoot> preference, PreferenceRoot root) {
+  ref.read(preference.notifier).set(root);
+}
+
+class PreferenceState extends StateNotifier<PreferenceRoot> {
+
+  PreferenceState(this.ref, this.section) : super(PreferenceRoot(section));
 
   final Ref ref;
 
+  final String section;
+
   /// Clear state
-  void clear() => state = {};
+  void clear() => state = PreferenceRoot(section);
   
   /// Keys
   List<String> get keys => state.keys.toList(growable: false);
 
-  /// Set [state] as [settings]
-  void setDefaults(Map<String, dynamic> settings) {
-    Map<String, Preference> map = Map.from(state);
-    for(String key in settings.keys) {
-      if (!map.containsKey(key)) {
-        map[key] = Preference.fromKV({}, key: key, value: settings[key]);
-      }
-    }
-    state = map;
+  /// Apple default settings
+  void init(Map<String, dynamic> settings) {
+    PreferenceRoot root = PreferenceRoot(section);
+    root.addAll(settings);
+    state = root;
   }
 
-  /// Set value about key
-  ///
-  /// It request to save [pref] to server. If it failed, don't save to local
-  /// storage. It only save [pref] to local storage when request succeed.
-  ///
-  /// This process is required to idealize local and server.
-  Future<bool> set(Preference pref) async {
-    // Save in server first
-    var response = await ApiClient().create<Preference>(pref.map);
-    if (response.result != ApiResultCode.success) {
-      // If failed, return false
-      Log.w(_tag, "Preference update/creation failed: $pref");
-      return false;
+  /// Set preference as [root]
+  Future<bool> set(PreferenceRoot root) async {
+    final result = await push(root);
+    if (result) {
+      state = root;
     }
-    // After success, apply to state
-    Map<String, Preference> map = Map.from(state);
-    map[pref.key] = pref;
-    state = map;
-    return true;
+    return result;
   }
 
-  /// Delete preference as [key]
-  Future<bool> delete(String key) async {
-    // Try from server first
-    final response = await ApiClient().delete(key);
-    if (response.result != ApiResultCode.success || response.data.length != 1) {
-      return false;
-    }
-    // After success, remove from state
-    Map<String, Preference> map = Map.from(state);
-    map.remove(key);
-    state = map;
-    return true;
-  }
-
-  /// Request [Preference]s filtered by [keys]
-  Future<bool> sync([Map<String, dynamic>? settings]) async {
-    // Apply keys
-    if (settings != null) {
-      setDefaults(settings);
-    }
+  /// Fetch [Preference]s from server
+  Future<bool> fetch() async {
+    final owner = ref.watch(core_provider.currentUser).userId;
     // Request
     final client = ApiClient();
-    final ApiResponse<List<Preference>> response = await client.read<Preference>();
+    final response = await client.send<Map<String, String>>(HttpMethod.get, Preference.endpoint, null, ApiQuery({
+      ModelKeys.keySection: state.section,
+      ModelKeys.keyOwner: owner,
+    }));
     if (response.result != ApiResultCode.success) {
-      Log.e(_tag, "Failed to request preferences");
+      Log.e(_tag, "Failed to fetch ${state.section} preferences");
       clear();
       return false;
     }
     // Apply
-    Map<String, Preference> map = Map.from(state);
-    for(Preference pref in response.data) {
-      Log.i(_tag, "Request completed: $pref");
-      map[pref.key] = pref;
+    PreferenceRoot root = PreferenceRoot(section);
+    root.apply(response.data);
+    state = root;
+    return true;
+  }
+
+  /// Push [Preference]s to server
+  ///
+  /// Push [state] if [root] is null
+  Future<bool> push([PreferenceRoot? root]) async {
+    final target = root ?? state;
+    final owner = ref.watch(core_provider.currentUser).userId;
+    final data = target.rawChildren(owner);
+    final client = ApiClient();
+    for(Map<String, String> map in data) {
+      final response = await client.send<Map<String, dynamic>>(
+          HttpMethod.put, Preference.endpoint, map);
+      if (response.result != ApiResultCode.success) {
+        Log.e(_tag, "Failed to pull ${target.section} preferences");
+        clear();
+        return false;
+      }
     }
-    state = map;
     return true;
   }
 }

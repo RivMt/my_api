@@ -9,13 +9,6 @@ import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:my_api/core/provider/provider.dart' as provider;
 import 'package:my_api/core/oidc.dart';
-import 'package:my_api/finance/model/account.dart';
-import 'package:my_api/finance/model/category.dart';
-import 'package:my_api/finance/model/finance_search_result.dart';
-import 'package:my_api/finance/model/payment.dart';
-import 'package:my_api/core/model/preference.dart';
-import 'package:my_api/finance/model/transaction.dart';
-import 'package:my_api/finance/model/transaction_raw.dart';
 
 const String _tag = "API";
 
