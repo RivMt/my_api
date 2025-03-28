@@ -96,16 +96,17 @@ class ApiClient {
   }
 
   /// Send API request
-  Future<ApiResponse> send(
+  Future<ApiResponse> send<T>(
     HttpMethod method,
     String endpoint, [
     dynamic body,
     ApiQuery? queries,
   ]) async {
+    final defaultValue = (method == HttpMethod.get) ? <T>[] : {};
     // Check host name is defined
     if (uri == "") {
       Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $uri/$endpoint");
-      return ApiResponse.failed({});
+      return ApiResponse.failed(defaultValue);
     }
     final split = uri.split(":");
     final host = split[0];
@@ -163,15 +164,12 @@ class ApiClient {
       }
     } on SocketException catch(e, s) {
       Log.e(_tag, "Connection failed to $url", e, s);
-      return ApiResponse.failed({});
+      return ApiResponse.failed(defaultValue);
     }
     // Check response
     if (response.statusCode != 200) {
       Log.w(_tag, "${response.statusCode} ${method.name.toUpperCase()} $url");
-      return ApiResponse(
-        result: ApiResultCode.failed,
-        data: {},
-      );
+      return ApiResponse.failed(defaultValue);
     }
     // If exception does not thrown
     Log.v(_tag, "${response.statusCode} ${method.name.toUpperCase()} $url");
@@ -233,25 +231,25 @@ class ApiClient {
 
   /// Create [body] from [link]
   Future<ApiResponse<T>> create<T>(Map<String, dynamic> body) async {
-    final result = await send(HttpMethod.post, endpoint<T>(), body);
+    final result = await send<T>(HttpMethod.post, endpoint<T>(), body);
     return result.convert<T>(result.data);
   }
 
   /// Read [data] from [link]
   Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? queries]) async {
-    final result = await send(HttpMethod.get, endpoint<T>(), null, ApiQuery(queries));
+    final result = await send<T>(HttpMethod.get, endpoint<T>(), null, ApiQuery(queries));
     return result.converts<T>(result.data);
   }
 
   /// Update [body] from [link]
   Future<ApiResponse<T>> update<T>(Map<String, dynamic> body) async {
-    final result = await send(HttpMethod.put, endpoint<T>(), body);
+    final result = await send<T>(HttpMethod.put, endpoint<T>(), body);
     return result.convert<T>(result.data);
   }
 
   /// Delete [body] from [link]
   Future<ApiResponse<T>> delete<T>(String uuid) async {
-    final result = await send(HttpMethod.delete, "${endpoint<T>()}/$uuid");
+    final result = await send<T>(HttpMethod.delete, "${endpoint<T>()}/$uuid");
     return result.convert<T>(result.data);
   }
 
