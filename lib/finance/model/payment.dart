@@ -9,6 +9,8 @@ import 'package:my_api/finance/model/wallet_item.dart';
 
 class Payment extends WalletItem {
 
+  static const String endpoint = "api/finance/payments";
+
   static const String unknownUuid = "-1";
 
   static const String noneUuid = "0";

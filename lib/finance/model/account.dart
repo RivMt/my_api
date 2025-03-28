@@ -8,6 +8,8 @@ import 'package:my_api/finance/model/wallet_item.dart';
 
 class Account extends WalletItem {
 
+  static const String endpoint = "api/finance/accounts";
+
   static const String unknownUuid = "-1";
 
   /// Unknown account

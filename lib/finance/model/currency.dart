@@ -5,6 +5,8 @@ import 'package:my_api/core/model/model_keys.dart';
 
 class Currency extends Model {
 
+  static const String endpoint = "api/finance/currencies";
+
   static const String unknownUuid = "XXX";
 
   static const String unknownRegionCode = "XX";

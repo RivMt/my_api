@@ -11,6 +11,8 @@ import 'package:my_api/finance/model/payment.dart';
 
 class Transaction extends FinanceModel {
 
+  static const String endpoint = "api/finance/transactions";
+
   /// Maximum digits of integer part of [amount]
   static const int maxIntegerPartDigits = 20;
 

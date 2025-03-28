@@ -8,11 +8,14 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
   static const _tag = "CalculateValueState";
 
   CalculateValueState(this.ref, {
+    required this.endpoint,
     required this.conditions,
     required this.type,
   }) : super(Decimal.zero);
 
   final Ref ref;
+
+  final String endpoint;
 
   final Map<String, dynamic> conditions;
 
@@ -24,7 +27,7 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {
   /// Request [T] items fit to [conditions] and filter by [options]
   Future<void> request() async {
     final client = ApiClient();
-    final ApiResponse<Map<String, Decimal>> response = await client.stat<T>(ApiQuery(conditions));
+    final ApiResponse<Map<String, Decimal>> response = await client.stat<T>(endpoint, ApiQuery(conditions));
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to request $conditions");
       state = Decimal.parse("0");

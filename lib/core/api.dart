@@ -179,83 +179,33 @@ class ApiClient {
     );
   }
 
-  /// Get path from [T]
-  static String endpoint<T>() {
-    switch(T) {
-      case Account:
-        return "api/finance/accounts";
-      case Payment:
-        return "api/finance/payments";
-      case Transaction:
-        return "api/finance/transactions";
-      case Category:
-        return "api/finance/categories";
-      case Preference:
-        return "api/core/preferences";
-      case FinanceSearchResult:
-        return "search";
-      case RawTransaction:
-        return "raw";
-      default:
-        throw UnimplementedError();
-    }
-  }
-
-  /// Covert [map] to [T]
-  dynamic convert<T>(Map<String, dynamic> map, [String key = "data"]) {
-    final data = (key == "") ? map : map[key];
-    switch(T) {
-      case Decimal:
-        if (data is! String) {
-          return Decimal.zero;
-        }
-        return Decimal.parse(data);
-      case Account:
-        return Account(data);
-      case Payment:
-        return Payment(data);
-      case Transaction:
-        return Transaction(data);
-      case Category:
-        return Category(data);
-      case Preference:
-        return Preference(data);
-      case FinanceSearchResult:
-        return FinanceSearchResult(data);
-      case RawTransaction:
-        return RawTransaction(data);
-      default:
-        throw UnimplementedError();
-    }
-  }
-
   /// Create [body] from [link]
-  Future<ApiResponse<T>> create<T>(Map<String, dynamic> body) async {
-    final result = await send<T>(HttpMethod.post, endpoint<T>(), body);
+  Future<ApiResponse<T>> create<T>(String endpoint, Map<String, dynamic> body) async {
+    final result = await send<T>(HttpMethod.post, endpoint, body);
     return result.convert<T>(result.data);
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? queries]) async {
-    final result = await send<T>(HttpMethod.get, endpoint<T>(), null, ApiQuery(queries));
+  Future<ApiResponse<List<T>>> read<T>(String endpoint, [Map<String, dynamic>? queries]) async {
+    final result = await send<T>(HttpMethod.get, endpoint, null, ApiQuery(queries));
     return result.converts<T>(result.data);
   }
 
   /// Update [body] from [link]
-  Future<ApiResponse<T>> update<T>(Map<String, dynamic> body) async {
-    final result = await send<T>(HttpMethod.put, endpoint<T>(), body);
+  Future<ApiResponse<T>> update<T>(String endpoint, Map<String, dynamic> body) async {
+    final result = await send<T>(HttpMethod.put, endpoint, body);
     return result.convert<T>(result.data);
   }
 
   /// Delete [body] from [link]
-  Future<ApiResponse<T>> delete<T>(String uuid) async {
-    final result = await send<T>(HttpMethod.delete, "${endpoint<T>()}/$uuid");
+  Future<ApiResponse<T>> delete<T>(String endpoint, String uuid) async {
+    final result = await send<T>(HttpMethod.delete, "$endpoint/$uuid");
     return result.convert<T>(result.data);
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<Map<String, Decimal>>> stat<T>([ApiQuery? queries]) async {
-    final result = await send(HttpMethod.get, "${endpoint<T>()}/stat", null, queries);
+  Future<ApiResponse<Map<String, Decimal>>> stat<T>(String endpoint, [ApiQuery? queries]) async {
+    final result = await send(HttpMethod.get, "$endpoint/stat", null, queries);
     final Map<String, Decimal> data = {};
     for (String key in result.data) {
       try {

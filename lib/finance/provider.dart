@@ -18,7 +18,7 @@ final initFinancePreference = {
 };
 
 final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
-  return ModelsState<Account>(ref);
+  return ModelsState<Account>(ref, Account.endpoint);
 });
 
 void refreshAccounts(WidgetRef ref) {
@@ -29,7 +29,7 @@ void refreshAccounts(WidgetRef ref) {
 }
 
 final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref) {
-  return ModelsState<Payment>(ref);
+  return ModelsState<Payment>(ref, Payment.endpoint);
 });
 
 void refreshPayments(WidgetRef ref) {
@@ -46,7 +46,7 @@ void refreshPayments(WidgetRef ref) {
 }
 
 final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transaction>>((ref) {
-  return ModelsState<Transaction>(ref);
+  return ModelsState<Transaction>(ref, Transaction.endpoint);
 });
 
 void fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) async {
@@ -56,7 +56,7 @@ void fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) async {
 }
 
 final categories = StateNotifierProvider<ModelsState<Category>, List<Category>>((ref) {
-  return ModelsState<Category>(ref);
+  return ModelsState<Category>(ref, Category.endpoint);
 });
 
 void refreshCategories(WidgetRef ref) {
@@ -75,7 +75,7 @@ void refreshCategories(WidgetRef ref) {
 }
 
 final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>((ref) {
-  return ModelsState<Currency>(ref);
+  return ModelsState<Currency>(ref, Currency.endpoint);
 });
 
 void refreshCurrencies(WidgetRef ref) {
@@ -106,18 +106,10 @@ Currency getCurrency(WidgetRef ref, String? uuid) {
   return map[uuid]!;
 }
 
-Currency getDefaultCurrency(ref) {
+Currency getDefaultCurrency(WidgetRef ref) {
   return getCurrency(ref, core_provider.getPreference<String>(ref, PreferenceKeys.defaultCurrency));
 }
 
 void setDefaultCurrency(WidgetRef ref, Currency currency) {
   core_provider.setPreference(ref, PreferenceKeys.defaultCurrency, currency.uuid);
 }
-
-final transactionTypeFilter = StateNotifierProvider<ModelState<TransactionType>, TransactionType>((ref) {
-  return ModelState<TransactionType>(ref, TransactionType.expense);
-});
-
-final transactionIncludedFilter = StateNotifierProvider<ModelState<bool?>, bool?>((ref) {
-  return ModelState<bool?>(ref, true);
-});

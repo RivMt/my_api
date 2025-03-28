@@ -7,6 +7,8 @@ import 'package:my_api/finance/model/transaction.dart';
 
 class Category extends FinanceModel {
 
+  static const String endpoint = "api/finance/categories";
+
   static final Category unknown = Category({
     ModelKeys.keyUuid: -1,
     ModelKeys.keyType: TransactionType.expense.code,

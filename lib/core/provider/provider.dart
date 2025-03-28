@@ -30,21 +30,9 @@ Future<bool> deletePreference(ref, String key) {
 }
 
 final currentUser = StateNotifierProvider<ModelState<User>, User>((ref) {
-  return ModelState<User>(ref, User.unknown);
+  return ModelState<User>(ref, "", User.unknown);
 });
 
 void login(WidgetRef ref, User user) {
   ref.read(currentUser.notifier).set(user);
 }
-
-final minPriorityFilter = StateNotifierProvider<ModelState<int>, int>((ref) {
-  return ModelState<int>(ref, 0);
-});
-
-final maxPriorityFilter = StateNotifierProvider<ModelState<int>, int>((ref) {
-  return ModelState<int>(ref, 1000);
-});
-
-final sortFilter = StateNotifierProvider<ModelState<String>, String>((ref) {
-  return ModelState<String>(ref, ModelKeys.keyUuid);
-});
