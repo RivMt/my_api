@@ -105,7 +105,7 @@ final currencyMap = Provider<Map<String, Currency>>((ref) {
   return map;
 });
 
-Currency getCurrency(WidgetRef ref, String? uuid) {
+Currency getCurrency(ref, String? uuid) {
   final map = ref.watch(currencyMap);
   if (uuid == null || !map.containsKey(uuid)) {
     return Currency.unknown;
@@ -113,11 +113,11 @@ Currency getCurrency(WidgetRef ref, String? uuid) {
   return map[uuid]!;
 }
 
-Currency getDefaultCurrency(WidgetRef ref) {
+final defaultCurrency = Provider<Currency>((ref) {
   final root = ref.watch(financePreference);
   final uuid = root.get<String>(PreferenceKeys.defaultCurrency, Currency.unknownUuid).value;
   return getCurrency(ref, uuid);
-}
+});
 
 void setDefaultCurrency(WidgetRef ref, Currency currency) {
   final root = ref.watch(financePreference);

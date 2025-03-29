@@ -10,7 +10,7 @@ class Category extends FinanceModel {
   static const String endpoint = "api/finance/categories";
 
   static final Category unknown = Category({
-    ModelKeys.keyUuid: -1,
+    ModelKeys.keyUuid: "-1",
     ModelKeys.keyType: TransactionType.expense.code,
     ModelKeys.keyIncluded: true,
     ModelKeys.keyIcon: -1,

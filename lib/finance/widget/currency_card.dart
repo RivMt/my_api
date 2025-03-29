@@ -93,7 +93,7 @@ class CurrencyIcon extends StatelessWidget {
           currency.iconUrl,
           semanticsLabel: currency.uuid,
           errorBuilder: (context, o, s) {
-            Log.e(_tag, "Unable to currency icon\n$s");
+            Log.e(_tag, "Unable to draw currency icon: ${currency.uuid} (${currency.iconUrl})");
             return Text(currency.symbol);
           },
         ),

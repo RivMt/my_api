@@ -63,7 +63,7 @@ class Currency extends Model {
       symbol: symbol,
       decimalDigits: decimalPoint,
     );
-    return currency.format(amount);
+    return currency.format(amount.toDouble());
   }
 
   /// Format [amount] to current currency's format without symbol

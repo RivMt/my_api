@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:convert';
-
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,6 +8,11 @@ import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:my_api/core/provider/provider.dart' as provider;
 import 'package:my_api/core/oidc.dart';
+import 'package:my_api/finance/model/account.dart';
+import 'package:my_api/finance/model/category.dart';
+import 'package:my_api/finance/model/currency.dart';
+import 'package:my_api/finance/model/payment.dart';
+import 'package:my_api/finance/model/transaction.dart';
 
 const String _tag = "API";
 
@@ -172,28 +176,55 @@ class ApiClient {
     );
   }
 
+  /// Covert [map] to [T]
+  dynamic cast<T>(Map<String, dynamic> data) {
+    switch(T) {
+      case Account:
+        return Account(data);
+      case Payment:
+        return Payment(data);
+      case Transaction:
+        return Transaction(data);
+      case Category:
+        return Category(data);
+      case Currency:
+        return Currency(data);
+      default:
+        throw UnimplementedError();
+    }
+  }
+
+  /// Covert multiple items in [map] to [T]
+  List<T> casts<T>(List list) {
+    final data = <T>[];
+    for (Map<String, dynamic> map in list) {
+      data.add(cast<T>(map));
+    }
+    return data;
+  }
+
   /// Create [body] from [link]
   Future<ApiResponse<T>> create<T>(String endpoint, Map<String, dynamic> body) async {
     final result = await send<T>(HttpMethod.post, endpoint, body);
-    return result.convert<T>(result.data);
+    return result.cast<T>(cast<T>(result.data));
   }
 
   /// Read [data] from [link]
   Future<ApiResponse<List<T>>> read<T>(String endpoint, [Map<String, dynamic>? queries]) async {
     final result = await send<T>(HttpMethod.get, endpoint, null, ApiQuery(queries));
-    return result.converts<T>(result.data);
+    return result.casts<T>(casts<T>(result.data));
   }
 
   /// Update [body] from [link]
   Future<ApiResponse<T>> update<T>(String endpoint, Map<String, dynamic> body) async {
     final result = await send<T>(HttpMethod.put, endpoint, body);
-    return result.convert<T>(result.data);
+    return result.cast<T>(cast<T>(result.data));
   }
 
   /// Delete [body] from [link]
   Future<ApiResponse<T>> delete<T>(String endpoint, String uuid) async {
     final result = await send<T>(HttpMethod.delete, "$endpoint/$uuid");
-    return result.convert<T>(result.data);
+    return result.cast<T>(cast<T>(result.data));
   }
 
   /// Read [data] from [link]
@@ -245,13 +276,13 @@ class ApiResponse<T> {
   ]);
 
   /// Covert item in [data] and return new [ApiResponse]
-  ApiResponse<E> convert<E>(E data) => ApiResponse<E>(
+  ApiResponse<E> cast<E>(E data) => ApiResponse<E>(
     result: result,
     data: data,
   );
 
   /// Covert item in [data] and return new [ApiResponse]
-  ApiResponse<List<E>> converts<E>(List<E> data) => ApiResponse<List<E>>(
+  ApiResponse<List<E>> casts<E>(List<E> data) => ApiResponse<List<E>>(
     result: result,
     data: data,
   );
