@@ -35,7 +35,7 @@ abstract class WalletItem extends FinanceModel {
   set limitation(Decimal value) => setDecimal(ModelKeys.keyLimitation, value);
 
   /// ID of currency
-  String get currencyId => getValue(ModelKeys.keyCurrencyId, "");
+  String get currencyId => getValue(ModelKeys.keyCurrencyId, Currency.unknownUuid);
 
   set currencyId(String uuid) => map[ModelKeys.keyCurrencyId] = uuid;
 

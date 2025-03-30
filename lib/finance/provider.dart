@@ -6,7 +6,6 @@ import 'package:my_api/core/model/preference_keys.dart';
 import 'package:my_api/core/model/preference_root.dart';
 import 'package:my_api/core/provider/model_state.dart';
 import 'package:my_api/core/provider/preference_state.dart';
-import 'package:my_api/core/provider/provider.dart' as core_provider;
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/currency.dart';
@@ -85,7 +84,7 @@ final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>(
   return ModelsState<Currency>(ref);
 });
 
-void refreshCurrencies(WidgetRef ref) {
+void fetchCurrencies(WidgetRef ref) {
   ref.read(currencies.notifier).request({
     ApiQuery.keySortField: [
       ModelKeys.keyUuid,

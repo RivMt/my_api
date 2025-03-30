@@ -16,7 +16,7 @@ class RawTransaction extends Transaction {
     ModelKeys.keyPaidDate,
     ModelKeys.keyCalculatedDate,
     ModelKeys.keyUtilityEnd,
-    ModelKeys.keyDescriptions,
+    ModelKeys.keyDescription,
     ModelKeys.keyIncluded,
   ];
 

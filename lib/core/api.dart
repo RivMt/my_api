@@ -175,7 +175,7 @@ class ApiClient {
     Log.v(_tag, "${response.statusCode} ${method.name.toUpperCase()} $url");
     return ApiResponse(
       result: ApiResultCode.success,
-      data: json.decode(response.body),
+      data: json.decode(utf8.decode(response.bodyBytes)),
     );
   }
 
@@ -213,6 +213,7 @@ class ApiClient {
       case Payment: return Payment.endpoint;
       case Transaction: return Transaction.endpoint;
       case Category: return Category.endpoint;
+      case Currency: return Currency.endpoint;
       case PreferenceElement: return Preference.endpoint;
       default: throw UnimplementedError();
     }

@@ -6,7 +6,7 @@ abstract class ModelKeys {
   static const String keyOwner = "owner_id";
   static const String keyEditors = "editors_id";
   static const String keyViewers = "viewers_id";
-  static const String keyDescriptions = "descriptions";
+  static const String keyDescription = "description";
   static const String keyDeleted = "deleted";
 
   static const String keyPriority = "priority";

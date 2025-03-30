@@ -49,9 +49,9 @@ abstract class BaseModel extends Model {
   set name(String name) => map[ModelKeys.keyName] = name;
 
   /// Descriptions of this object
-  String get descriptions => getValue(ModelKeys.keyDescriptions, "");
+  String get descriptions => getValue(ModelKeys.keyDescription, "");
 
-  set descriptions(String desc) => map[ModelKeys.keyDescriptions] = desc;
+  set descriptions(String desc) => map[ModelKeys.keyDescription] = desc;
 
   /// Is this object deleted or not
   bool get deleted => getValue(ModelKeys.keyDeleted, false);

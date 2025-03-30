@@ -14,7 +14,7 @@ class Account extends WalletItem {
   /// Unknown account
   static final Account unknown = Account({
     ModelKeys.keyUuid: BaseModel.unknownUuid,
-    ModelKeys.keyDescriptions: "Unknown",
+    ModelKeys.keyDescription: "Unknown",
   });
 
   Account([super.map]);

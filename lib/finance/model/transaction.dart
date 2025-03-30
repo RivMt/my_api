@@ -42,15 +42,15 @@ class Transaction extends FinanceModel {
       return false;
     }
     // Category
-    if (categoryId == "") {
+    if (categoryId == BaseModel.unknownUuid) {
       return false;
     }
     // Account
-    if (accountId == "") {
+    if (accountId == BaseModel.unknownUuid) {
       return false;
     }
     // Payment
-    if (paymentId == "-1") {
+    if (paymentId == BaseModel.unknownUuid) {
       return false;
     }
     // Currency
@@ -87,7 +87,7 @@ class Transaction extends FinanceModel {
   /// Category
   ///
   /// Default value is `0`
-  String get categoryId => getValue(ModelKeys.keyCategoryId, 0);
+  String get categoryId => getValue(ModelKeys.keyCategoryId, BaseModel.unknownUuid);
 
   set categoryId(String value) => map[ModelKeys.keyCategoryId] = value;
 
@@ -101,7 +101,7 @@ class Transaction extends FinanceModel {
   }
 
   /// PID of [Account] this transaction occurred
-  String get accountId => getValue(ModelKeys.keyAccountId, "");
+  String get accountId => getValue(ModelKeys.keyAccountId, BaseModel.unknownUuid);
 
   set accountId(String uuid) => map[ModelKeys.keyAccountId] = uuid;
 
@@ -112,7 +112,7 @@ class Transaction extends FinanceModel {
   }
 
   /// PID of [Payment] this transaction handled
-  String get paymentId => getValue(ModelKeys.keyPaymentId, "");
+  String get paymentId => getValue(ModelKeys.keyPaymentId, Payment.noneUuid);
 
   set paymentId(String uuid) => map[ModelKeys.keyPaymentId] = uuid;
 
@@ -129,7 +129,7 @@ class Transaction extends FinanceModel {
   }
 
   /// ID of currency
-  String get currencyId => getValue(ModelKeys.keyCurrencyId, "");
+  String get currencyId => getValue(ModelKeys.keyCurrencyId, Currency.unknownUuid);
 
   set currencyId(String uuid) => map[ModelKeys.keyCurrencyId] = uuid;
 
