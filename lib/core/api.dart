@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/preference_element.dart';
+import 'package:my_api/core/model/preference_root.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:my_api/core/provider/provider.dart' as provider;
 import 'package:my_api/core/oidc.dart';
@@ -192,6 +193,8 @@ class ApiClient {
         return Category(data);
       case Currency:
         return Currency(data);
+      case PreferenceElement:
+        return PreferenceElement.fromMap(PreferenceDummy(), data);
       default:
         throw UnimplementedError();
     }

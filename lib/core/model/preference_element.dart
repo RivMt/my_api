@@ -20,11 +20,11 @@ class PreferenceElement<T> extends Preference {
 
   /// Construct from JSON map
   PreferenceElement.fromMap(this.parent, Map<String, dynamic> map) : super.fromMap(map) {
-    key = map[ModelKeys.keyKey]!;
-    final data = Preference.decode(map[ModelKeys.keyValue]!);
+    key = map[ModelKeys.keyPreferenceKey]!;
+    final data = Preference.decode(map[ModelKeys.keyPreferenceValue]!);
     if (data is Map<String, dynamic>) {
       for(String key in data.keys) {
-        set(key, Preference.decode(data[key]!));
+        set(key, data[key]!);
       }
       return;
     }
@@ -49,17 +49,17 @@ class PreferenceElement<T> extends Preference {
     value: Preference.decode(rawValue),
   );
 
-  final Preference parent;
+  Preference parent;
 
   /// Key of preference
   String key = "";
 
-  /// Value of preference (Read-only)
+  /// Value of preference
   T? get value => _value;
 
   set value(T? v) {
-    if (!isLeaf) {
-      throw UnsupportedError("Assigning value to parent preference is not supported");
+    if (isStem) {
+      throw UnsupportedError("Assigning value to parent preference is not supported: $key");
     }
     _value = v;
   }
@@ -67,21 +67,24 @@ class PreferenceElement<T> extends Preference {
   T? _value;
 
   /// Check this node is leaf or not
-  bool get isLeaf => children.isEmpty;
+  bool get isLeaf => value != null;
+
+  /// Check this node is stem or not
+  bool get isStem => children.isNotEmpty;
 
   /// Raw value of preference
   String get rawValue => Preference.encode(isLeaf ? value : map);
 
   @override
-  void addChild(PreferenceElement element) {
-    if (value != null) {
-      throw UnsupportedError("Appending child to leaf node preference is not supported");
+  void setChild(PreferenceElement element) {
+    if (isLeaf) {
+      throw UnsupportedError("Appending child to leaf node preference is not supported: $key = $value");
     }
-    super.addChild(element);
+    super.setChild(element);
   }
 
   @override
-  String toString() => "[Pref] $key = ${isLeaf ? value : map}";
+  String toString() => isLeaf ? "$key = $value" : key;
 
   @override
   int get hashCode => key.hashCode;
@@ -93,5 +96,15 @@ class PreferenceElement<T> extends Preference {
     }
     return super==(other);
   }
+
+}
+
+class PreferenceDummy extends Preference {
+
+  static final PreferenceDummy _instance = PreferenceDummy._();
+
+  factory PreferenceDummy() => _instance;
+
+  PreferenceDummy._();
 
 }

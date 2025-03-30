@@ -4,8 +4,10 @@ import 'package:my_api/core/model/user.dart';
 import 'package:my_api/core/provider/model_state.dart';
 import 'package:my_api/core/provider/preference_state.dart';
 
+final initCorePreference = <String, dynamic>{};
+
 final corePreferences = StateNotifierProvider<PreferenceState, PreferenceRoot>((ref) {
-  return PreferenceState(ref, "core");
+  return PreferenceState(ref, "core", initCorePreference);
 });
 
 final currentUser = StateNotifierProvider<ModelState<User>, User>((ref) {

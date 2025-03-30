@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:decimal/decimal.dart';
 import 'package:my_api/core/model/preference_element.dart';
 
@@ -140,7 +142,7 @@ abstract class Preference<T> {
         assert(data[1] == tokenMapOpener);
         assert(data[data.length-1] == tokenMapCloser);
         final primitives = data.substring(2, data.length-1);
-        final Map map = {};
+        final Map<String, dynamic> map = {};
         int cursor = 0, depth = 0, anchor = 0, connector = -1;
         while(cursor < primitives.length) {
           int r = cursor+1 == primitives.length ? 1 : -1; // Split when value is bigger than -1
@@ -174,6 +176,14 @@ abstract class Preference<T> {
     }
   }
 
+  /// Check the [value] is processable map
+  static bool checkMap(value) {
+    return (value is Map<String, dynamic>)
+        || (value is HashMap<String, dynamic>)
+        || (value is SplayTreeMap<String, dynamic>)
+        || (value is LinkedHashMap<String, dynamic>);
+  }
+
   Preference();
 
   Preference.fromMap(Map<String, dynamic> map);
@@ -190,14 +200,25 @@ abstract class Preference<T> {
   /// Check preference contains [key]
   bool containsKey(String key) => _children.containsKey(key);
 
-  /// Add child
-  void addChild(PreferenceElement element) => _children[element.key] = element;
-
-  void set<V>(String key, V value) => addChild(PreferenceElement<V>(
+  /// Set child [value] by [key]
+  void set<V>(String key, V value) => setChild(PreferenceElement<V>(
     parent: this,
     key: key,
     value: value,
   ));
+
+  /// Set single child
+  void setChild(PreferenceElement element) {
+    element.parent = this;
+    _children[element.key] = element;
+  }
+
+  /// Set children
+  void setChildren(Iterable<PreferenceElement> elements) {
+    for(PreferenceElement element in elements) {
+      setChild(element);
+    }
+  }
 
   /// Get child by [key]
   ///
@@ -207,6 +228,14 @@ abstract class Preference<T> {
       set<V>(key, value);
     }
     return _children[key]!;
+  }
+
+  /// Remove child by [key]
+  PreferenceElement? remove(String key) {
+    if (!containsKey(key)) {
+      return null;
+    }
+    return _children.remove(key);
   }
 
   /// Convert [children] to map

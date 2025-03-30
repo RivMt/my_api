@@ -58,6 +58,9 @@ abstract class ModelKeys {
   static const String keyIconUrl = "icon_url";
   static const String keyDecimalPoint = "decimalPoint";
 
+  static const String keyPreferenceKey = "pref_key";
+  static const String keyPreferenceValue = "pref_value";
+
   static const String keyTable = "table";
   static const String keyAccountName = "account_name";
   static const String keyPaymentName = "payment_name";

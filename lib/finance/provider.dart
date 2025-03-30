@@ -1,8 +1,6 @@
-import 'package:decimal/decimal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/model/model_keys.dart';
-import 'package:my_api/core/model/preference_element.dart';
 import 'package:my_api/core/model/preference_keys.dart';
 import 'package:my_api/core/model/preference_root.dart';
 import 'package:my_api/core/provider/model_state.dart';
@@ -21,15 +19,8 @@ final initFinancePreference = {
 };
 
 final financePreference = StateNotifierProvider<PreferenceState, PreferenceRoot>((ref) {
-  return PreferenceState(ref, "finance");
+  return PreferenceState(ref, "finance", initFinancePreference);
 });
-
-void addTargetBalance(WidgetRef ref, DateTime date, Currency currency, Decimal amount) {
-  final root = ref.watch(financePreference);
-  final targets = root.get(PreferenceKeys.targetBalance, null).get(currency.uuid, null);
-  targets.set<Decimal>(date.toIso8601String(), amount);
-  setPreference(ref, financePreference, root);
-}
 
 final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
   return ModelsState<Account>(ref);
