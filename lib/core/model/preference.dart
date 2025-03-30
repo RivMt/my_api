@@ -190,19 +190,21 @@ abstract class Preference<T> {
   /// Check preference contains [key]
   bool containsKey(String key) => _children.containsKey(key);
 
-  /// Set child
-  void set(PreferenceElement element) => _children[element.key] = element;
+  /// Add child
+  void addChild(PreferenceElement element) => _children[element.key] = element;
+
+  void set<V>(String key, V value) => addChild(PreferenceElement<V>(
+    parent: this,
+    key: key,
+    value: value,
+  ));
 
   /// Get child by [key]
   ///
   /// If [key] is not contained, set new [PreferenceElement] with [key], [value]
   PreferenceElement get<V>(String key, V value) {
     if (!containsKey(key)) {
-      set(PreferenceElement<V>(
-        parent: this,
-        key: key,
-        value: value,
-      ));
+      set<V>(key, value);
     }
     return _children[key]!;
   }

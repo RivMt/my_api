@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/model/model_keys.dart';
@@ -12,16 +13,23 @@ import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/finance/model/transaction.dart';
 
-final financePreference = StateNotifierProvider<PreferenceState, PreferenceRoot>((ref) {
-  return PreferenceState(ref, "finance");
-});
-
 final initFinancePreference = {
   PreferenceKeys.defaultCurrency: Currency.unknownUuid,
   PreferenceKeys.pieChartMaxEntries: 5,
   PreferenceKeys.budgets: {},
   PreferenceKeys.targetBalance: {},
 };
+
+final financePreference = StateNotifierProvider<PreferenceState, PreferenceRoot>((ref) {
+  return PreferenceState(ref, "finance");
+});
+
+void addTargetBalance(WidgetRef ref, DateTime date, Currency currency, Decimal amount) {
+  final root = ref.watch(financePreference);
+  final targets = root.get(PreferenceKeys.targetBalance, null).get(currency.uuid, null);
+  targets.set<Decimal>(date.toIso8601String(), amount);
+  setPreference(ref, financePreference, root);
+}
 
 final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
   return ModelsState<Account>(ref);
@@ -120,10 +128,6 @@ final defaultCurrency = Provider<Currency>((ref) {
 
 void setDefaultCurrency(WidgetRef ref, Currency currency) {
   final root = ref.watch(financePreference);
-  root.set(PreferenceElement(
-    parent: root,
-    key: PreferenceKeys.defaultCurrency,
-    value: currency.uuid,
-  ));
+  root.set(PreferenceKeys.defaultCurrency, currency.uuid);
   setPreference(ref, financePreference, root);
 }

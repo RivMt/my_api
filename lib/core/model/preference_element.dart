@@ -11,11 +11,7 @@ class PreferenceElement<T> extends Preference {
     this.key = key;
     if (value is Map<String, dynamic>) {
       for(String key in value.keys) {
-        set(PreferenceElement(
-          parent: this,
-          key: key,
-          value: value[key]!,
-        ));
+        set(key, value[key]!);
       }
       return;
     }
@@ -28,11 +24,7 @@ class PreferenceElement<T> extends Preference {
     final data = Preference.decode(map[ModelKeys.keyValue]!);
     if (data is Map<String, dynamic>) {
       for(String key in data.keys) {
-        set(PreferenceElement(
-          parent: this,
-          key: key,
-          value: Preference.decode(data[key]!),
-        ));
+        set(key, Preference.decode(data[key]!));
       }
       return;
     }
@@ -81,11 +73,11 @@ class PreferenceElement<T> extends Preference {
   String get rawValue => Preference.encode(isLeaf ? value : map);
 
   @override
-  void set(PreferenceElement element) {
+  void addChild(PreferenceElement element) {
     if (value != null) {
       throw UnsupportedError("Appending child to leaf node preference is not supported");
     }
-    super.set(element);
+    super.addChild(element);
   }
 
   @override

@@ -12,18 +12,14 @@ class PreferenceRoot extends Preference {
   /// Apply from received data
   void apply(List<Map<String, String>> raw) {
     for(Map<String, String> map in raw) {
-      set(PreferenceElement.fromMap(this, map));
+      addChild(PreferenceElement.fromMap(this, map));
     }
   }
 
   /// Add all from map
   void addAll(Map<String, dynamic> map) {
     for(String key in map.keys) {
-      set(PreferenceElement(
-        parent: this,
-        key: key,
-        value: map[key],
-      ));
+      set(key, map[key]);
     }
   }
 
