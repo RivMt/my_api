@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/log.dart';
+import 'package:my_api/core/model/preference_element.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:my_api/core/provider/provider.dart' as provider;
 import 'package:my_api/core/oidc.dart';
@@ -13,6 +14,8 @@ import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/finance/model/transaction.dart';
+
+import 'model/preference.dart';
 
 const String _tag = "API";
 
@@ -99,7 +102,7 @@ class ApiClient {
     dynamic body,
     ApiQuery? queries,
   ]) async {
-    final defaultValue = (method == HttpMethod.get) ? <T>[] : {};
+    final defaultValue = (method == HttpMethod.get) ? <T>[] : <String, dynamic>{};
     // Check host name is defined
     if (uri == "") {
       Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $uri/$endpoint");
@@ -203,33 +206,60 @@ class ApiClient {
     return data;
   }
 
+  /// Parse endpoint from generic type
+  String endpoint<T>() {
+    switch(T) {
+      case Account: return Account.endpoint;
+      case Payment: return Payment.endpoint;
+      case Transaction: return Transaction.endpoint;
+      case Category: return Category.endpoint;
+      case PreferenceElement: return Preference.endpoint;
+      default: throw UnimplementedError();
+    }
+  }
+
   /// Create [body] from [link]
-  Future<ApiResponse<T>> create<T>(String endpoint, Map<String, dynamic> body) async {
-    final result = await send<T>(HttpMethod.post, endpoint, body);
+  Future<ApiResponse<T>> create<T>(Map<String, dynamic> body) async {
+    if (T == dynamic) {
+      throw TypeError();
+    }
+    final result = await send<T>(HttpMethod.post, endpoint<T>(), body);
     return result.cast<T>(cast<T>(result.data));
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<List<T>>> read<T>(String endpoint, [Map<String, dynamic>? queries]) async {
-    final result = await send<T>(HttpMethod.get, endpoint, null, ApiQuery(queries));
+  Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? queries]) async {
+    if (T == dynamic) {
+      throw TypeError();
+    }
+    final result = await send<T>(HttpMethod.get, endpoint<T>(), null, ApiQuery(queries));
     return result.casts<T>(casts<T>(result.data));
   }
 
   /// Update [body] from [link]
-  Future<ApiResponse<T>> update<T>(String endpoint, Map<String, dynamic> body) async {
-    final result = await send<T>(HttpMethod.put, endpoint, body);
+  Future<ApiResponse<T>> update<T>(Map<String, dynamic> body) async {
+    if (T == dynamic) {
+      throw TypeError();
+    }
+    final result = await send<T>(HttpMethod.put, endpoint<T>(), body);
     return result.cast<T>(cast<T>(result.data));
   }
 
   /// Delete [body] from [link]
-  Future<ApiResponse<T>> delete<T>(String endpoint, String uuid) async {
-    final result = await send<T>(HttpMethod.delete, "$endpoint/$uuid");
+  Future<ApiResponse<T>> delete<T>(String uuid) async {
+    if (T == dynamic) {
+      throw TypeError();
+    }
+    final result = await send<T>(HttpMethod.delete, "${endpoint<T>()}/$uuid");
     return result.cast<T>(cast<T>(result.data));
   }
 
   /// Read [data] from [link]
-  Future<ApiResponse<Map<String, Decimal>>> stat<T>(String endpoint, [ApiQuery? queries]) async {
-    final result = await send(HttpMethod.get, "$endpoint/stat", null, queries);
+  Future<ApiResponse<Map<String, Decimal>>> stat<T>([ApiQuery? queries]) async {
+    if (T == dynamic) {
+      throw TypeError();
+    }
+    final result = await send(HttpMethod.get, "${endpoint<T>()}/stat", null, queries);
     final Map<String, Decimal> data = {};
     for (String key in result.data) {
       try {

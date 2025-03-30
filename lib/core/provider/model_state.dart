@@ -6,11 +6,9 @@ const String _tag = "ModelProvider";
 
 class ModelsState<T> extends StateNotifier<List<T>> {
 
-  ModelsState(this.ref, this.endpoint) : super([]);
+  ModelsState(this.ref) : super([]);
 
   final Ref ref;
-
-  final String endpoint;
 
   /// Clear state
   void clear() => state = [];
@@ -20,7 +18,7 @@ class ModelsState<T> extends StateNotifier<List<T>> {
   /// This method overrides [state]
   Future<void> request(Map<String, dynamic>? queries) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(endpoint, queries);
+    final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to request $queries");
       state = [];
@@ -34,7 +32,7 @@ class ModelsState<T> extends StateNotifier<List<T>> {
   /// This method append/update data to [state]
   Future<void> fetch(Map<String, dynamic>? queries) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(endpoint, queries);
+    final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to request $queries");
       return;
@@ -55,11 +53,9 @@ class ModelsState<T> extends StateNotifier<List<T>> {
 
 class ModelState<T> extends StateNotifier<T> {
 
-  ModelState(this.ref, this.endpoint, this.unknown) : super(unknown);
+  ModelState(this.ref, this.unknown) : super(unknown);
 
   final Ref ref;
-
-  final String endpoint;
 
   final T unknown;
 
@@ -69,7 +65,7 @@ class ModelState<T> extends StateNotifier<T> {
   /// Request [T] item fit to [condition] and filter by [options]
   Future<void> request(Map<String, dynamic>? queries) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(endpoint, queries);
+    final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success || response.data.isEmpty) {
       Log.e(_tag, "Failed to request $queries");
       state = unknown;

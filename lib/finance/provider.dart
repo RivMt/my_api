@@ -25,7 +25,7 @@ final initFinancePreference = {
 };
 
 final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
-  return ModelsState<Account>(ref, Account.endpoint);
+  return ModelsState<Account>(ref);
 });
 
 void refreshAccounts(WidgetRef ref) {
@@ -36,7 +36,7 @@ void refreshAccounts(WidgetRef ref) {
 }
 
 final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref) {
-  return ModelsState<Payment>(ref, Payment.endpoint);
+  return ModelsState<Payment>(ref);
 });
 
 void refreshPayments(WidgetRef ref) {
@@ -53,7 +53,7 @@ void refreshPayments(WidgetRef ref) {
 }
 
 final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transaction>>((ref) {
-  return ModelsState<Transaction>(ref, Transaction.endpoint);
+  return ModelsState<Transaction>(ref);
 });
 
 void fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) async {
@@ -63,7 +63,7 @@ void fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) async {
 }
 
 final categories = StateNotifierProvider<ModelsState<Category>, List<Category>>((ref) {
-  return ModelsState<Category>(ref, Category.endpoint);
+  return ModelsState<Category>(ref);
 });
 
 void refreshCategories(WidgetRef ref) {
@@ -82,7 +82,7 @@ void refreshCategories(WidgetRef ref) {
 }
 
 final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>((ref) {
-  return ModelsState<Currency>(ref, Currency.endpoint);
+  return ModelsState<Currency>(ref);
 });
 
 void refreshCurrencies(WidgetRef ref) {

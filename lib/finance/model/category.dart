@@ -1,6 +1,7 @@
 library my_api;
 
 import 'package:flutter/material.dart';
+import 'package:my_api/core/model/base_model.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/transaction.dart';
@@ -10,7 +11,7 @@ class Category extends FinanceModel {
   static const String endpoint = "api/finance/categories";
 
   static final Category unknown = Category({
-    ModelKeys.keyUuid: "-1",
+    ModelKeys.keyUuid: BaseModel.unknownUuid,
     ModelKeys.keyType: TransactionType.expense.code,
     ModelKeys.keyIncluded: true,
     ModelKeys.keyIcon: -1,
@@ -22,7 +23,7 @@ class Category extends FinanceModel {
   /// Is this valid or not
   bool get isValid {
     // Pid
-    if (uuid == "") {
+    if (uuid == BaseModel.unknownUuid) {
       return false;
     }
     // Type

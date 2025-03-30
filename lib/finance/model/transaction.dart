@@ -3,6 +3,7 @@ library my_api;
 import 'dart:math';
 
 import 'package:decimal/decimal.dart';
+import 'package:my_api/core/model/base_model.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/currency.dart';
@@ -37,7 +38,7 @@ class Transaction extends FinanceModel {
   /// Check data is valid
   bool get isValid {
     // PID
-    if (uuid == "") {
+    if (uuid == BaseModel.unknownUuid) {
       return false;
     }
     // Category

@@ -2,6 +2,7 @@ library my_api;
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:my_api/core/model/base_model.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
@@ -10,11 +11,9 @@ class Account extends WalletItem {
 
   static const String endpoint = "api/finance/accounts";
 
-  static const String unknownUuid = "-1";
-
   /// Unknown account
   static final Account unknown = Account({
-    ModelKeys.keyUuid: unknownUuid,
+    ModelKeys.keyUuid: BaseModel.unknownUuid,
     ModelKeys.keyDescriptions: "Unknown",
   });
 
@@ -22,8 +21,8 @@ class Account extends WalletItem {
 
   /// Value of this model is valid or not
   bool get isValid {
-    // Pid
-    if (uuid == "") {
+    // UUID
+    if (uuid == BaseModel.unknownUuid) {
       return false;
     }
     // Description

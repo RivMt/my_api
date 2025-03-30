@@ -9,7 +9,7 @@ final corePreferences = StateNotifierProvider<PreferenceState, PreferenceRoot>((
 });
 
 final currentUser = StateNotifierProvider<ModelState<User>, User>((ref) {
-  return ModelState<User>(ref, "", User.unknown);
+  return ModelState<User>(ref, User.unknown);
 });
 
 void login(WidgetRef ref, User user) {

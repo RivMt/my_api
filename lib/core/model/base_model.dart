@@ -6,6 +6,9 @@ import 'package:my_api/core/model/model_keys.dart';
 /// Superclass of all API models.
 abstract class BaseModel extends Model {
 
+  /// Unknown UUID
+  static const String unknownUuid = "-1";
+
   /// Maximum date
   static final DateTime maxDate = DateTime(2100, 12, 31);
 

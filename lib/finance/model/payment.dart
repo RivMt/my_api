@@ -3,6 +3,7 @@ library my_api;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:my_api/core/model/base_model.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
@@ -10,8 +11,6 @@ import 'package:my_api/finance/model/wallet_item.dart';
 class Payment extends WalletItem {
 
   static const String endpoint = "api/finance/payments";
-
-  static const String unknownUuid = "-1";
 
   static const String noneUuid = "0";
 
@@ -25,7 +24,7 @@ class Payment extends WalletItem {
 
   /// Unknown payment
   static final Payment unknown = Payment({
-    ModelKeys.keyUuid: unknownUuid,
+    ModelKeys.keyUuid: BaseModel.unknownUuid,
     ModelKeys.keyCurrencyId: Currency.unknownUuid,
   });
 
@@ -39,7 +38,7 @@ class Payment extends WalletItem {
 
   bool get isValid {
     // Pid
-    if (uuid == "") {
+    if (uuid == BaseModel.unknownUuid) {
       return false;
     }
     // Description
