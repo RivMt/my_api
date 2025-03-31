@@ -55,7 +55,7 @@ class HomeCard extends StatelessWidget {
               ),
             ),
             IndexedStack(
-              index: state.code,
+              index: state.code.level,
               children: [
                 // Ready
                 Column(

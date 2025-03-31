@@ -1,16 +1,27 @@
+enum StatefulDataStateLevel {
+  ready(0),
+  loading(1),
+  error(2);
+
+  final int level;
+
+  const StatefulDataStateLevel(this.level);
+
+}
+
 class StatefulDataState {
 
   StatefulDataState._(this.code, this.message);
 
-  static StatefulDataState ready = StatefulDataState._(0, "");
+  static StatefulDataState ready = StatefulDataState._(StatefulDataStateLevel.ready, "");
 
-  static StatefulDataState loading = StatefulDataState._(1, "");
+  static StatefulDataState loading = StatefulDataState._(StatefulDataStateLevel.loading, "");
 
   static error(String message) {
-    return StatefulDataState._(2, message);
+    return StatefulDataState._(StatefulDataStateLevel.error, message);
   }
 
-  final int code;
+  final StatefulDataStateLevel code;
 
   final String message;
 }
