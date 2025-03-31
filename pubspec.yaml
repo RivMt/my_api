@@ -30,8 +30,3 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
 
-flutter:
-  fonts:
-    - family: CurrencySymbol
-      fonts:
-        - asset: lib/fonts/CurrencySymbol.ttf

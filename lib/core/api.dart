@@ -231,7 +231,7 @@ class ApiClient {
     return result.cast<T>(cast<T>(result.data));
   }
 
-  /// Read [data] from [link]
+  /// Read [currency] from [link]
   Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? queries]) async {
     if (T == dynamic) {
       throw TypeError();
@@ -258,7 +258,7 @@ class ApiClient {
     return result.cast<T>(cast<T>(result.data));
   }
 
-  /// Read [data] from [link]
+  /// Read [currency] from [link]
   Future<ApiResponse<Map<String, Decimal>>> stat<T>([ApiQuery? queries]) async {
     if (T == dynamic) {
       throw TypeError();
