@@ -1,5 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference.dart';
 import 'package:my_api/core/model/preference_element.dart';
 import 'package:my_api/core/model/preference_root.dart';
@@ -271,21 +272,19 @@ void main() {
       final root = PreferenceRoot("abc", {});
       const raw = [
         {
-          "section": "abc",
-          "owner_id": "",
-          "key": "key1",
-          "value": "I0"
+          ModelKeys.keySection: "abc",
+          ModelKeys.keyOwner: "",
+          ModelKeys.keyPreferenceKey: "key1",
+          ModelKeys.keyPreferenceValue: "I0"
         }, {
-          "section": "abc",
-          "owner_id": "",
-          "key": "key2",
-          "value": "Btrue"
+          ModelKeys.keySection: "abc",
+          ModelKeys.keyOwner: "",
+          ModelKeys.keyPreferenceKey: "key2",
+          ModelKeys.keyPreferenceValue: "Btrue"
         }
       ];
-      //root.apply(raw);
-      final children = [];
-      for (var child in root.children) {
-        children.add(child.rawValue);
+      for(Map<String, dynamic> map in raw) {
+        root.setChild(PreferenceElement.fromMap(root, map));
       }
       expect(root.rawChildren(""), raw);
     });
