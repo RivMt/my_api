@@ -25,6 +25,9 @@ class User extends Model {
   /// Name
   String get name => getValue(ModelKeys.keyName, "");
 
+  @override
+  String toString() => "$name ($email)";
+
 }
 
 class UserGender {

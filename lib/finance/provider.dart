@@ -26,19 +26,8 @@ final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref
   return ModelsState<Account>(ref);
 });
 
-void refreshAccounts(WidgetRef ref) {
-  ref.read(accounts.notifier).request({
-    ApiQuery.keySortField: [ModelKeys.keyIcon],
-    ApiQuery.keySortOrder: [ModelKeys.keyLastUsed]
-  });
-}
-
-final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref) {
-  return ModelsState<Payment>(ref);
-});
-
-void refreshPayments(WidgetRef ref) {
-  ref.read(payments.notifier).request({
+Future<void> fetchAccounts(WidgetRef ref) async {
+  await ref.read(accounts.notifier).fetch({
     ApiQuery.keySortField: [
       ModelKeys.keyIcon,
       ModelKeys.keyLastUsed
@@ -50,22 +39,81 @@ void refreshPayments(WidgetRef ref) {
   });
 }
 
+Future<bool> createAccount(WidgetRef ref, Account account) async {
+  return ref.read(accounts.notifier).create(account);
+}
+
+Future<bool> updateAccount(WidgetRef ref, Account account) async {
+  return ref.read(accounts.notifier).update(account);
+}
+
+Future<bool> deleteAccount(WidgetRef ref, Account account) async {
+  return ref.read(accounts.notifier).delete(account);
+}
+
+final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref) {
+  return ModelsState<Payment>(ref);
+});
+
+Future<void> fetchPayments(WidgetRef ref) async {
+  await ref.read(payments.notifier).fetch({
+    ApiQuery.keySortField: [
+      ModelKeys.keyIcon,
+      ModelKeys.keyLastUsed
+    ],
+    ApiQuery.keySortOrder: [
+      SortOrder.asc,
+      SortOrder.desc
+    ]
+  });
+}
+
+Future<bool> createPayment(WidgetRef ref, Payment payment) async {
+  return ref.read(payments.notifier).create(payment);
+}
+
+Future<bool> updatePayment(WidgetRef ref, Payment payment) async {
+  return ref.read(payments.notifier).update(payment);
+}
+
+Future<bool> deletePayment(WidgetRef ref, Payment payment) async {
+  return ref.read(payments.notifier).delete(payment);
+}
+
 final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transaction>>((ref) {
   return ModelsState<Transaction>(ref);
 });
 
-void fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) async {
+Future<void> fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) async {
   condition[ApiQuery.keySortField] = [ModelKeys.keyPaidDate];
   condition[ApiQuery.keySortOrder] = [SortOrder.desc];
-  ref.read(transactions.notifier).fetch(condition);
+  await ref.read(transactions.notifier).append(condition);
+}
+
+Future<bool> createTransaction(WidgetRef ref, Transaction transaction) async {
+  final result = ref.read(transactions.notifier).create(transaction);
+  await fetchAccounts(ref);
+  return result;
+}
+
+Future<bool> updateTransaction(WidgetRef ref, Transaction transaction) async {
+  final result = ref.read(transactions.notifier).update(transaction);
+  await fetchAccounts(ref);
+  return result;
+}
+
+Future<bool> deleteTransaction(WidgetRef ref, Transaction transaction) async {
+  final result = ref.read(transactions.notifier).delete(transaction);
+  await fetchAccounts(ref);
+  return result;
 }
 
 final categories = StateNotifierProvider<ModelsState<Category>, List<Category>>((ref) {
   return ModelsState<Category>(ref);
 });
 
-void refreshCategories(WidgetRef ref) {
-  ref.read(categories.notifier).request({
+Future<void> fetchCategories(WidgetRef ref) async {
+  await ref.read(categories.notifier).fetch({
     ApiQuery.keySortField: [
       ModelKeys.keyDeleted,
       ModelKeys.keyIncluded,
@@ -79,19 +127,24 @@ void refreshCategories(WidgetRef ref) {
   });
 }
 
+Future<bool> createCategory(WidgetRef ref, Category category) async {
+  return ref.read(categories.notifier).create(category);
+}
+
+Future<bool> updateCategory(WidgetRef ref, Category category) async {
+  return ref.read(categories.notifier).update(category);
+}
+
+Future<bool> deleteCategory(WidgetRef ref, Category category) async {
+  return ref.read(categories.notifier).delete(category);
+}
+
 final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>((ref) {
   return ModelsState<Currency>(ref);
 });
 
-void fetchCurrencies(WidgetRef ref) {
-  ref.read(currencies.notifier).request({
-    ApiQuery.keySortField: [
-      ModelKeys.keyUuid,
-    ],
-    ApiQuery.keySortOrder: [
-      SortOrder.asc,
-    ]
-  });
+Future<void> fetchCurrencies(WidgetRef ref) async {
+  await ref.read(currencies.notifier).fetch();
 }
 
 final currencyMap = Provider<Map<String, Currency>>((ref) {

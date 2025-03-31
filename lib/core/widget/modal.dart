@@ -53,6 +53,10 @@ class _ModalState extends State<Modal> {
     if (!result) {
       progressing = false;
     }
+    if (!mounted) {
+      return;
+    }
+    Navigator.pop(context);
   }
 
   /// Triggers on negative button pressed
@@ -62,6 +66,10 @@ class _ModalState extends State<Modal> {
     if (!result) {
       progressing = false;
     }
+    if (!mounted) {
+      return;
+    }
+    Navigator.pop(context);
   }
 
   @override

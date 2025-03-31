@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/log.dart';
+import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference_element.dart';
-import 'package:my_api/core/model/preference_root.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:my_api/core/provider/provider.dart' as provider;
 import 'package:my_api/core/oidc.dart';
@@ -15,6 +15,7 @@ import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/finance/model/transaction.dart';
+import 'package:oidc/oidc.dart';
 
 import 'model/preference.dart';
 
@@ -72,28 +73,36 @@ class ApiClient {
   ///   "test": TEST-SERVER-ADDRESS
   /// }
   /// ```
-  void init(Map<String, dynamic> preferences) {
+  Future<void> init(Map<String, dynamic> preferences) async {
     _uri = preferences["apiUri"] ?? "";
     final serverUri = preferences["authUri"] ?? "";
     final clientId = preferences["clientId"] ?? "";
     final clientSecret = preferences["clientSecret"] ?? "";
     final redirectUri = preferences["redirectUri"] ?? "";
     // Initialize
-    oidc.init(
+    await oidc.init(
       serverUri: serverUri,
       clientId: clientId,
       clientSecret: clientSecret,
       redirectUri: redirectUri,
     );
-    Log.i(_tag, "Initialized\nAPI: $_uri\nOIDC: $serverUri");
+    Log.i(_tag, "API Client initialized");
     return;
   }
 
-  Future<User> login(WidgetRef ref) async {
+  Future<User> login() async {
     final user = await oidc.login();
-    provider.login(ref, user);
     Log.i(_tag, "Logged in: ${user.email}");
     return user;
+  }
+
+  void onUserChanges(Function(User) listener) {
+    oidc.manager.userChanges().listen((OidcUser? user) {
+      if (user == null) {
+        return;
+      }
+      listener(User.fromOidc(user));
+    });
   }
 
   /// Send API request
@@ -250,9 +259,13 @@ class ApiClient {
   }
 
   /// Delete [body] from [link]
-  Future<ApiResponse<T>> delete<T>(String uuid) async {
+  Future<ApiResponse<T>> delete<T>(Map<String, dynamic> body) async {
     if (T == dynamic) {
       throw TypeError();
+    }
+    final uuid = body[ModelKeys.keyUuid];
+    if (uuid == null || uuid == "") {
+      throw UnsupportedError("Unable to retrieve UUID: $body");
     }
     final result = await send<T>(HttpMethod.delete, "${endpoint<T>()}/$uuid");
     return result.cast<T>(cast<T>(result.data));
@@ -328,9 +341,9 @@ class ApiQuery {
 
   static const String keySortOrder = "sort_order";
 
-  static const String keyQueryRangeBegin = "begin_";
+  static const String keyQueryRangeBegin = "begin";
 
-  static const String keyQueryRangeEnd = "end_";
+  static const String keyQueryRangeEnd = "end";
 
   final Map<String, dynamic>? conditions;
 

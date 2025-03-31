@@ -43,13 +43,15 @@ class PreferenceState extends StateNotifier<PreferenceRoot> {
 
   /// Fetch [Preference]s from server
   Future<bool> fetch() async {
-    final owner = ref.watch(core_provider.currentUser).userId;
     // Request
     final client = ApiClient();
     final response = await client.read<PreferenceElement>({
       ModelKeys.keySection: state.section,
-      ModelKeys.keyOwner: owner,
     });
+    if (!mounted) {
+      Log.w(_tag, "State used after disposed");
+      return false;
+    }
     if (response.result != ApiResultCode.success) {
       Log.e(_tag, "Failed to fetch ${state.section} preferences");
       return false;

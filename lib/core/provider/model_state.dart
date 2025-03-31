@@ -1,10 +1,11 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/log.dart';
+import 'package:my_api/core/model/model.dart';
 
-const String _tag = "ModelProvider";
+class ModelsState<T extends Model> extends StateNotifier<List<T>> {
 
-class ModelsState<T> extends StateNotifier<List<T>> {
+  static const String _tag = "ModelsState";
 
   ModelsState(this.ref) : super([]);
 
@@ -13,14 +14,14 @@ class ModelsState<T> extends StateNotifier<List<T>> {
   /// Clear state
   void clear() => state = [];
 
-  /// Request [T] items fit to [condition] and filter by [options]
+  /// Fetch [T] items fit to [condition] and filter by [options]
   ///
   /// This method overrides [state]
-  Future<void> request(Map<String, dynamic>? queries) async {
+  Future<void> fetch([Map<String, dynamic>? queries]) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success) {
-      Log.e(_tag, "Failed to request $queries");
+      Log.e(_tag, "Failed to fetch: $queries");
       state = [];
       return;
     }
@@ -30,11 +31,11 @@ class ModelsState<T> extends StateNotifier<List<T>> {
   /// Get [T] items fit to [condition] and filter by [options]
   ///
   /// This method append/update data to [state]
-  Future<void> fetch(Map<String, dynamic>? queries) async {
+  Future<void> append(Map<String, dynamic>? queries) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success) {
-      Log.e(_tag, "Failed to request $queries");
+      Log.e(_tag, "Failed to append: $queries");
       return;
     }
     // Apply fetched data
@@ -49,9 +50,55 @@ class ModelsState<T> extends StateNotifier<List<T>> {
     }
     state = list;
   }
+
+  /// Create [data] to server
+  Future<bool> create(T data) async {
+    final result = await ApiClient().create<T>(data.map);
+    if (result.result != ApiResultCode.success) {
+      Log.e(_tag, "Failed to create: ${data.map}");
+      return false;
+    }
+    state = [...state, result.data];
+    return true;
+  }
+
+  /// Update [data] to server
+  Future<bool> update(T data) async {
+    final result = await ApiClient().update<T>(data.map);
+    if (result.result != ApiResultCode.success) {
+      Log.e(_tag, "Failed to update: ${data.map}");
+      return false;
+    }
+    final list = state;
+    final removed = list.remove(data);
+    if (!removed) {
+      Log.w(_tag, "Updated data does not included in state: $data");
+    }
+    state = [...list, result.data];
+    return true;
+  }
+
+  /// Delete [data] to server
+  Future<bool> delete(T data) async {
+    final result = await ApiClient().delete<T>(data.map);
+    if (result.result != ApiResultCode.success) {
+      Log.e(_tag, "Failed to update: ${data.map}");
+      return false;
+    }
+    final list = state;
+    final removed = list.remove(data);
+    if (!removed) {
+      Log.w(_tag, "Updated data does not included in state: $data");
+    }
+    state = List.from(list);
+    return true;
+  }
+
 }
 
 class ModelState<T> extends StateNotifier<T> {
+
+  static const String _tag = "ModelState";
 
   ModelState(this.ref, this.unknown) : super(unknown);
 
@@ -62,12 +109,12 @@ class ModelState<T> extends StateNotifier<T> {
   /// Clear state
   void clear() => state = unknown;
 
-  /// Request [T] item fit to [condition] and filter by [options]
-  Future<void> request(Map<String, dynamic>? queries) async {
+  /// Fetch [T] item fit to [condition] and filter by [options]
+  Future<void> fetch([Map<String, dynamic>? queries]) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(queries);
     if (response.result != ApiResultCode.success || response.data.isEmpty) {
-      Log.e(_tag, "Failed to request $queries");
+      Log.e(_tag, "Failed to request: $queries");
       state = unknown;
       return;
     }

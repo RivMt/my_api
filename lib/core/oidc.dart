@@ -14,11 +14,9 @@ class OpenIDConnect {
 
   OpenIDConnect._();
 
-  late OidcUserManager _manager;
+  late OidcUserManager manager;
 
-  String _idToken = "";
-
-  String get idToken => _idToken;
+  String get idToken => manager.currentUser?.idToken ?? "";
 
   Future<void> init({
     required String serverUri,
@@ -33,7 +31,7 @@ class OpenIDConnect {
           'requestType': 'front-channel-logout'
         }
     );
-    _manager = OidcUserManager.lazy(
+    manager = OidcUserManager.lazy(
       discoveryDocumentUri: OidcUtils.getOpenIdConfigWellKnownUri(
         Uri.parse(serverUri),
       ),
@@ -50,28 +48,29 @@ class OpenIDConnect {
         ]
       ),
     );
-    await _manager.init();
-    if (!_manager.didInit) {
+    await manager.init();
+    if (!manager.didInit) {
       Log.e(_tag, "Unable to initialize OIDC manager");
+    } else {
+      Log.i(_tag, "OIDC user manager initialized");
     }
   }
 
   Future<User> login() async {
-    final user = await _manager.loginAuthorizationCodeFlow(
+    final user = await manager.loginAuthorizationCodeFlow(
       extraTokenParameters: {
-        "client_secret": _manager.clientCredentials.clientSecret
+        "client_secret": manager.clientCredentials.clientSecret
       }
     );
     if (user == null) {
-      throw NullRejectionException(true);
+      Log.e(_tag, "Failed to authenticate");
+      return User.unknown;
     }
-    _idToken = user.token.idToken!;
     return User.fromOidc(user);
   }
 
   Future<void> logout() async {
-    _idToken = "";
-    await _manager.logout();
+    await manager.logout();
   }
 
 }
