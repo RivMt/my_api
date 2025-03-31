@@ -53,9 +53,7 @@ class Currency extends Model {
   int get decimalPoint => getValue(ModelKeys.keyDecimalPoint, defaultDecimalPoint);
 
   /// Key for translation
-  String get key {
-    return "currencyType$uuid";
-  }
+  String get key => "currencyType$uuid";
 
   /// Format [amount] to current currency's
   String format(Decimal amount) {
@@ -77,4 +75,7 @@ class Currency extends Model {
     final regex = RegExp(r"[^\d.]");
     return Decimal.parse(str.replaceAll(regex, ""));
   }
+
+  @override
+  String toString() => uuid;
 }
