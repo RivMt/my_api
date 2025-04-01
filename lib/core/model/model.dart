@@ -61,12 +61,12 @@ abstract class Model {
       return value;
     }
     assert(map[key] is String);
-    return DateTime.parse(map[key]);
+    return DateTime.parse(map[key]).toLocal();
   }
 
   /// Set [value] to [key]
   void setDateTime(String key, DateTime value) {
-    map[key] = value.toIso8601String();
+    map[key] = value.toUtc().toIso8601String();
   }
 
   /// Get [List] from [key]

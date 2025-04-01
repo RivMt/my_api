@@ -112,7 +112,7 @@ class Transaction extends FinanceModel {
   }
 
   /// PID of [Payment] this transaction handled
-  String get paymentId => getValue(ModelKeys.keyPaymentId, Payment.noneUuid);
+  String get paymentId => getValue(ModelKeys.keyPaymentId, BaseModel.unknownUuid);
 
   set paymentId(String uuid) => map[ModelKeys.keyPaymentId] = uuid;
 

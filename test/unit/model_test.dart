@@ -78,6 +78,18 @@ void main() {
       t.utilityDays = 3;
       assert(DateTime(t.utilityEnd.year, t.utilityEnd.month, t.utilityEnd.day) == DateTime(2022, 10, 3));
     });
+    test('Date', () {
+      final t = Transaction();
+      final local = DateTime(2001, 1, 1, 12, 30, 15);
+      t.paidDate = local;
+      assert(t.paidDate == DateTime(local.year, local.month, local.day));
+    });
+    test('DateTime', () {
+      final t = Transaction();
+      final local = DateTime(2001, 1, 1, 12, 30, 15);
+      t.setDateTime(ModelKeys.keyLastUsed, local);
+      assert(t.lastUsed == local);
+    });
   });
   group("Transaction Amount Verification Test (Integer part only currency)", () {
     final data = Transaction({});

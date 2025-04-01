@@ -23,6 +23,7 @@ export 'package:my_api/core/widget/value_edit_modal.dart';
 export 'package:my_api/core/widget/home_card.dart';
 
 // Model
+export 'package:my_api/core/model/base_model.dart';
 export 'package:my_api/core/model/model.dart';
 export 'package:my_api/core/model/model_keys.dart';
 export 'package:my_api/core/model/preference.dart';
