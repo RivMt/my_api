@@ -1,3 +1,4 @@
+import 'package:my_api/core/model/model.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/search_result.dart';
 import 'package:my_api/finance/model/finance_model.dart';
@@ -23,5 +24,8 @@ class FinanceSearchResult extends SearchResult {
         throw UnsupportedError("$value is not defined class");
     }
   }
+
+  @override
+  bool isEquivalent(Model other) => this==other;
 
 }

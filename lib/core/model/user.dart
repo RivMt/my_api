@@ -26,6 +26,14 @@ class User extends Model {
   String get name => getValue(ModelKeys.keyName, "");
 
   @override
+  bool isEquivalent(Model other) {
+    if (other is User) {
+      return userId == other.userId;
+    }
+    return this==other;
+  }
+
+  @override
   String toString() => "$name ($email)";
 
 }

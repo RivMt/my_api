@@ -134,6 +134,12 @@ abstract class Model {
     map[key] = color.value;
   }
 
+  /// Check [other] is equivalent or not
+  ///
+  /// This method is distinct to operator `==`. `==` is compare all variables,
+  /// however, this compares only representative value such as `uuid`.
+  bool isEquivalent(Model other);
+
   @override
   String toString() => map.toString();
 }

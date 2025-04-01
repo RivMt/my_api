@@ -59,9 +59,17 @@ abstract class BaseModel extends Model {
   set deleted(bool value) => map[ModelKeys.keyDeleted] = value;
 
   @override
-  bool operator ==(Object other) {
+  bool isEquivalent(Model other) {
     if (other is BaseModel) {
       return uuid == other.uuid;
+    }
+    return this==other;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is BaseModel) {
+      return map == other.map;
     }
     return super==(other);
   }

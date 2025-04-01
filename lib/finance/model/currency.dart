@@ -77,5 +77,13 @@ class Currency extends Model {
   }
 
   @override
+  bool isEquivalent(Model other) {
+    if (other is Currency) {
+      return uuid == other.uuid;
+    }
+    return this==other;
+  }
+
+  @override
   String toString() => uuid;
 }

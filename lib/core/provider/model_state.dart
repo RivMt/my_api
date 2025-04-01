@@ -41,7 +41,7 @@ class ModelsState<T extends Model> extends StateNotifier<List<T>> {
     // Apply fetched data
     final list = List<T>.from(state);
     for (T item in response.data) {
-      int index = list.indexOf(item);
+      final index = list.indexWhere((element) => element.isEquivalent(item));
       if (index < 0 || index >= list.length) {
         list.add(item);
       } else {
@@ -70,11 +70,12 @@ class ModelsState<T extends Model> extends StateNotifier<List<T>> {
       return false;
     }
     final list = state;
-    final removed = list.remove(data);
-    if (!removed) {
+    final index = list.indexWhere((element) => element.isEquivalent(data));
+    if (index < 0) {
       Log.w(_tag, "Updated data does not included in state: $data");
     }
-    state = [...list, result.data];
+    list[index] = result.data;
+    state = List.from(list);
     return true;
   }
 
@@ -86,10 +87,11 @@ class ModelsState<T extends Model> extends StateNotifier<List<T>> {
       return false;
     }
     final list = state;
-    final removed = list.remove(data);
-    if (!removed) {
+    final index = list.indexWhere((element) => element.isEquivalent(data));
+    if (index < 0) {
       Log.w(_tag, "Updated data does not included in state: $data");
     }
+    list.removeAt(index);
     state = List.from(list);
     return true;
   }

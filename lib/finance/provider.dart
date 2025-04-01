@@ -26,29 +26,33 @@ final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref
   return ModelsState<Account>(ref);
 });
 
-Future<void> fetchAccounts(WidgetRef ref) async {
-  await ref.read(accounts.notifier).fetch({
-    ApiQuery.keySortField: [
+Future<void> fetchAccounts(WidgetRef ref, [Map<String, dynamic>? query]) async {
+  final Map<String, dynamic> q = query ?? {};
+  if (!q.containsKey(ApiQuery.keySortField)) {
+    q[ApiQuery.keySortField] = [
       ModelKeys.keyIcon,
       ModelKeys.keyLastUsed
-    ],
-    ApiQuery.keySortOrder: [
+    ];
+  }
+  if (!q.containsKey(ApiQuery.keySortOrder)) {
+    q[ApiQuery.keySortOrder] = [
       SortOrder.asc,
       SortOrder.desc
-    ]
-  });
+    ];
+  }
+  await ref.read(accounts.notifier).fetch(q);
 }
 
 Future<bool> createAccount(WidgetRef ref, Account account) async {
-  return ref.read(accounts.notifier).create(account);
+  return await ref.read(accounts.notifier).create(account);
 }
 
 Future<bool> updateAccount(WidgetRef ref, Account account) async {
-  return ref.read(accounts.notifier).update(account);
+  return await ref.read(accounts.notifier).update(account);
 }
 
 Future<bool> deleteAccount(WidgetRef ref, Account account) async {
-  return ref.read(accounts.notifier).delete(account);
+  return await ref.read(accounts.notifier).delete(account);
 }
 
 final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref) {
@@ -69,15 +73,15 @@ Future<void> fetchPayments(WidgetRef ref) async {
 }
 
 Future<bool> createPayment(WidgetRef ref, Payment payment) async {
-  return ref.read(payments.notifier).create(payment);
+  return await ref.read(payments.notifier).create(payment);
 }
 
 Future<bool> updatePayment(WidgetRef ref, Payment payment) async {
-  return ref.read(payments.notifier).update(payment);
+  return await ref.read(payments.notifier).update(payment);
 }
 
 Future<bool> deletePayment(WidgetRef ref, Payment payment) async {
-  return ref.read(payments.notifier).delete(payment);
+  return await ref.read(payments.notifier).delete(payment);
 }
 
 final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transaction>>((ref) {
@@ -91,20 +95,24 @@ Future<void> fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) as
 }
 
 Future<bool> createTransaction(WidgetRef ref, Transaction transaction) async {
-  final result = ref.read(transactions.notifier).create(transaction);
-  fetchAccounts(ref);
+  final result = await ref.read(transactions.notifier).create(transaction);
+  await fetchAccounts(ref, {
+    ModelKeys.keyUuid: transaction.accountId,
+  });
   return result;
 }
 
 Future<bool> updateTransaction(WidgetRef ref, Transaction transaction) async {
-  final result = ref.read(transactions.notifier).update(transaction);
-  fetchAccounts(ref);
+  final result = await ref.read(transactions.notifier).update(transaction);
+  await fetchAccounts(ref);
   return result;
 }
 
 Future<bool> deleteTransaction(WidgetRef ref, Transaction transaction) async {
-  final result = ref.read(transactions.notifier).delete(transaction);
-  fetchAccounts(ref);
+  final result = await ref.read(transactions.notifier).delete(transaction);
+  await fetchAccounts(ref, {
+    ModelKeys.keyUuid: transaction.accountId,
+  });
   return result;
 }
 
@@ -128,15 +136,15 @@ Future<void> fetchCategories(WidgetRef ref) async {
 }
 
 Future<bool> createCategory(WidgetRef ref, Category category) async {
-  return ref.read(categories.notifier).create(category);
+  return await ref.read(categories.notifier).create(category);
 }
 
 Future<bool> updateCategory(WidgetRef ref, Category category) async {
-  return ref.read(categories.notifier).update(category);
+  return await ref.read(categories.notifier).update(category);
 }
 
 Future<bool> deleteCategory(WidgetRef ref, Category category) async {
-  return ref.read(categories.notifier).delete(category);
+  return await ref.read(categories.notifier).delete(category);
 }
 
 final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>((ref) {
