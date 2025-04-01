@@ -174,6 +174,9 @@ class Transaction extends FinanceModel {
     }
   }
 
+  /// Value of alternative is available or not
+  bool get hasAlt => (altCurrencyId != null) || (altAmount != null);
+
   /// [DateTime] of this transaction calculated in LOCAL
   DateTime get calculatedDate => getDate(ModelKeys.keyCalculatedDate, defaultCalculatedDate);
 
@@ -204,6 +207,24 @@ class Transaction extends FinanceModel {
   int get folderId => getValue(ModelKeys.keyFolder, 0);
 
   set folderId(int value) => map[ModelKeys.keyFolder] = value;
+
+  @override
+  String toString() {
+    final StringBuffer buffer = StringBuffer();
+    buffer.write(descriptions);
+    buffer.write(" (");
+    if (hasAlt) {
+      buffer.write(altCurrencyId);
+      buffer.write(" ");
+      buffer.write(altAmount);
+      buffer.write(", ");
+    }
+    buffer.write(currencyId);
+    buffer.write(" ");
+    buffer.write(amount);
+    buffer.write(")");
+    return buffer.toString();
+  }
 }
 
 

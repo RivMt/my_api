@@ -52,6 +52,9 @@ class Account extends WalletItem {
 
   set isCash(bool value) => map[ModelKeys.keyIsCash] = value;
 
+  @override
+  String toString() => "$name ($currencyId $balance)";
+
 }
 
 enum AccountSymbol {

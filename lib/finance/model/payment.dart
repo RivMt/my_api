@@ -122,6 +122,9 @@ class Payment extends WalletItem {
     return DateTime(paidDate.year, paidDate.month + delta, min(payDate, last));
   }
 
+  @override
+  String toString() => "$name (${isCredit ? '${payBegin.code}-${payEnd.code}/$payDate' : 'now' })";
+
 }
 
 class PaymentRangePoint {

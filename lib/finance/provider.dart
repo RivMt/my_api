@@ -92,19 +92,19 @@ Future<void> fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) as
 
 Future<bool> createTransaction(WidgetRef ref, Transaction transaction) async {
   final result = ref.read(transactions.notifier).create(transaction);
-  await fetchAccounts(ref);
+  fetchAccounts(ref);
   return result;
 }
 
 Future<bool> updateTransaction(WidgetRef ref, Transaction transaction) async {
   final result = ref.read(transactions.notifier).update(transaction);
-  await fetchAccounts(ref);
+  fetchAccounts(ref);
   return result;
 }
 
 Future<bool> deleteTransaction(WidgetRef ref, Transaction transaction) async {
   final result = ref.read(transactions.notifier).delete(transaction);
-  await fetchAccounts(ref);
+  fetchAccounts(ref);
   return result;
 }
 

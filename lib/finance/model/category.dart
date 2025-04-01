@@ -60,6 +60,9 @@ class Category extends FinanceModel {
 
   set icon(CategorySymbol icon) => map[ModelKeys.keyIcon] = icon.id;
 
+  @override
+  String toString() => "$name (${type.name}, $isIncluded)";
+
 }
 
 enum CategorySymbol {

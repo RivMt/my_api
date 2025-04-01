@@ -67,8 +67,6 @@ abstract class BaseModel extends Model {
   }
 
   @override
-  int get hashCode {
-    return toString().hashCode;
-  }
+  int get hashCode => uuid.hashCode;
 }
 
