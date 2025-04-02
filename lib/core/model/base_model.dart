@@ -15,6 +15,9 @@ abstract class BaseModel extends Model {
   /// Minimum date
   static final DateTime minDate = DateTime(1970, 1, 1);
 
+  /// Maximum length of string field
+  static const int maxTextLength = 100;
+
   /// Constructor
   BaseModel([Map<String, dynamic>? map]) : super(map);
 
@@ -46,12 +49,22 @@ abstract class BaseModel extends Model {
   /// Name of this object
   String get name => getValue(ModelKeys.keyName, "");
 
-  set name(String name) => map[ModelKeys.keyName] = name;
+  set name(String text) {
+    if (text.length > maxTextLength) {
+      text = text.substring(0, maxTextLength);
+    }
+    map[ModelKeys.keyName] = text;
+  }
 
   /// Descriptions of this object
   String get descriptions => getValue(ModelKeys.keyDescription, "");
 
-  set descriptions(String desc) => map[ModelKeys.keyDescription] = desc;
+  set descriptions(String text) {
+    if (text.length > maxTextLength) {
+      text = text.substring(0, maxTextLength);
+    }
+    map[ModelKeys.keyDescription] = text;
+  }
 
   /// Is this object deleted or not
   bool get deleted => getValue(ModelKeys.keyDeleted, false);
