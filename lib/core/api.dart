@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:decimal/decimal.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/model_keys.dart';
@@ -54,6 +53,11 @@ class ApiClient {
     "Authorization": "Bearer ${oidc.idToken}",
   };
 
+  /// Value of current app is developer mode or not
+  bool get isDevelop => _isDevelop;
+
+  bool _isDevelop = false;
+
   /// Init
   ///
   /// Initiate server connection. If login is required, [onLoginRequired]
@@ -78,6 +82,7 @@ class ApiClient {
     final clientId = preferences["clientId"] ?? "";
     final clientSecret = preferences["clientSecret"] ?? "";
     final redirectUri = preferences["redirectUri"] ?? "";
+    _isDevelop = preferences["isDevelop"] ?? false;
     // Initialize
     await oidc.init(
       serverUri: serverUri,
@@ -110,7 +115,7 @@ class ApiClient {
     final host = split[0];
     final port = (split.length > 1) ? int.parse(split[1]) : null;
     return Uri(
-      scheme: kDebugMode ? "http" : "https",
+      scheme: isDevelop ? "http" : "https",
       host: host,
       port: port,
       path: endpoint,
