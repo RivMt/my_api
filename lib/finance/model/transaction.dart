@@ -223,6 +223,7 @@ class Transaction extends FinanceModel {
     buffer.write(" ");
     buffer.write(amount);
     buffer.write(")");
+    buffer.write(" [$uuid]");
     return buffer.toString();
   }
 }

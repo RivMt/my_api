@@ -34,6 +34,9 @@ class User extends Model {
   }
 
   @override
+  int get representativeCode => userId.hashCode;
+
+  @override
   String toString() => "$name ($email)";
 
 }

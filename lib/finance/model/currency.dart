@@ -85,5 +85,8 @@ class Currency extends Model {
   }
 
   @override
+  int get representativeCode => uuid.hashCode;
+
+  @override
   String toString() => uuid;
 }

@@ -90,6 +90,14 @@ void main() {
       t.setDateTime(ModelKeys.keyLastUsed, local);
       assert(t.lastUsed == local);
     });
+    test('UUID hashcode', () {
+      final a = Transaction();
+      final b = Transaction();
+      a.map[ModelKeys.keyUuid] = "abc";
+      b.map[ModelKeys.keyUuid] = "abc";
+      assert(a.representativeCode == b.representativeCode);
+      assert(a.isEquivalent(b));
+    });
   });
   group("Transaction Amount Verification Test (Integer part only currency)", () {
     final data = Transaction({});

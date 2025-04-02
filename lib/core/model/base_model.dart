@@ -67,14 +67,6 @@ abstract class BaseModel extends Model {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (other is BaseModel) {
-      return map == other.map;
-    }
-    return super==(other);
-  }
-
-  @override
-  int get hashCode => uuid.hashCode;
+  int get representativeCode => uuid.hashCode;
 }
 

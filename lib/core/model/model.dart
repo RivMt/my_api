@@ -136,11 +136,27 @@ abstract class Model {
 
   /// Check [other] is equivalent or not
   ///
-  /// This method is distinct to operator `==`. `==` is compare all variables,
+  /// This method is distinct to operator `==`. `==` returns identical or not,
   /// however, this compares only representative value such as `uuid`.
   bool isEquivalent(Model other);
 
+  /// Hash code of representative value
+  ///
+  /// If `isEquivalent` is `true`, both objects must have same `representativeCode`.
+  int get representativeCode;
+
   @override
   String toString() => map.toString();
+
+  @override
+  bool operator ==(Object other) {
+    if (other is Model) {
+      return map == other.map;
+    }
+    return super==(other);
+  }
+
+  @override
+  int get hashCode => map.hashCode;
 }
 
