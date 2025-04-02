@@ -58,6 +58,7 @@ class Currency extends Model {
   /// Format [amount] to current currency's
   String format(Decimal amount) {
     final currency = NumberFormat.currency(
+      name: uuid,
       symbol: symbol,
       decimalDigits: decimalPoint,
     );
