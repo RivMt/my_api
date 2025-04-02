@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/core/model/user.dart';
-
+import 'package:my_api/core/widget/user_icon.dart';
 
 class UserCard extends StatelessWidget {
   const UserCard({
@@ -18,9 +18,10 @@ class UserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const emptyPicture = Icon(Icons.account_circle_outlined);
     return ListTile(
-      leading: const Icon(Icons.account_circle_outlined),
-      title: Text(user.name),
+      leading: UserIcon(user),
+      title: Text(user.displayName),
       subtitle: Text(user.email),
       onTap: onTap,
       onLongPress: onLongPress,

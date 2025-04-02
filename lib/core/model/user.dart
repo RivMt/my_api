@@ -11,7 +11,13 @@ class User extends Model {
   User.fromOidc(OidcUser user) {
     map[ModelKeys.keyUserId] = user.uid ?? "";
     map[ModelKeys.keyEmail] = user.userInfo[ModelKeys.keyEmail] ?? "";
+    map[ModelKeys.keyEmailVerified] = user.userInfo[ModelKeys.keyEmailVerified] ?? false;
     map[ModelKeys.keyName] = user.userInfo[ModelKeys.keyName] ?? "";
+    map[ModelKeys.keyPreferredUserName] = user.userInfo[ModelKeys.keyPreferredUserName] ?? "";
+    map[ModelKeys.keyFamilyName] = user.userInfo[ModelKeys.keyFamilyName] ?? "";
+    map[ModelKeys.keyGivenName] = user.userInfo[ModelKeys.keyGivenName] ?? "";
+    map[ModelKeys.keyPicture] = user.userInfo[ModelKeys.keyPicture] ?? "";
+    map[ModelKeys.keyGroups] = user.userInfo[ModelKeys.keyGroups].join(",") ?? "";
   }
 
   bool get isValid => userId.isNotEmpty;
@@ -22,8 +28,32 @@ class User extends Model {
   /// Email
   String get email => getValue(ModelKeys.keyEmail, "");
 
+  /// Email is verified or not
+  bool get isEmailVerified => getValue(ModelKeys.keyEmailVerified, false);
+
   /// Name
   String get name => getValue(ModelKeys.keyName, "");
+
+  /// Preferred name
+  String get preferredName => getValue(ModelKeys.keyPreferredUserName, "");
+
+  /// Family name
+  String get familyName => getValue(ModelKeys.keyFamilyName, "");
+
+  /// Given name
+  String get givenName => getValue(ModelKeys.keyGivenName, "");
+
+  /// Display name
+  String get displayName {
+    if (preferredName.isNotEmpty) return preferredName;
+    return name;
+  }
+
+  /// Url of profile picture
+  String get picture => getValue(ModelKeys.keyPicture, "");
+
+  /// List of groups
+  List<String> get groups => getValue(ModelKeys.keyGroups, "").split(",");
 
   @override
   bool isEquivalent(Model other) {

@@ -30,13 +30,12 @@ abstract class ModelKeys {
 
   static const String keyUserId = "user_id";
   static const String keyEmail = "email";
-  static const String keyFirstName = "name_first";
-  static const String keyLastName = "name_second";
-  static const String keyBirthday = "birthday";
-  static const String keyGender = "gender";
-  static const String keyValidation = "validation";
-  static const String keyUserSecret = "user_secret";
-  static const String keyPassword = "user_password";
+  static const String keyEmailVerified = "email_verified";
+  static const String keyGroups = "groups";
+  static const String keyFamilyName = "family_name";
+  static const String keyGivenName = "given_name";
+  static const String keyPreferredUserName = "preferred_username";
+  static const String keyPicture = "picture";
 
   static const String keyType = "type";
   static const String keyCategoryId = "category_id";

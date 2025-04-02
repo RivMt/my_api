@@ -43,8 +43,9 @@ class OpenIDConnect {
       settings: OidcUserManagerSettings(
         redirectUri: redirect,
         scope: [
-          "openid",
-          "email"
+          "profile",
+          "email",
+          "groups",
         ]
       ),
     );

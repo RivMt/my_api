@@ -14,6 +14,7 @@ export 'package:my_api/core/widget/message_box.dart';
 export 'package:my_api/core/widget/modal.dart';
 export 'package:my_api/core/widget/list_tail_button.dart';
 export 'package:my_api/core/widget/user_card.dart';
+export 'package:my_api/core/widget/user_icon.dart';
 export 'package:my_api/core/widget/preference_widget.dart';
 export 'package:my_api/core/widget/no_glow_scroll_behavior.dart';
 export 'package:my_api/core/widget/date_button.dart';
