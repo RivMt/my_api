@@ -35,6 +35,7 @@ export 'package:my_api/core/model/stateful_data.dart';
 export 'package:my_api/core/provider/model_state.dart';
 export 'package:my_api/core/provider/calculate_value_state.dart';
 export 'package:my_api/core/provider/preference_state.dart';
+export 'package:my_api/core/provider/model_stream_notifier.dart';
 
 // Utils
 export 'package:my_api/core/data_frame.dart';

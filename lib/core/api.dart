@@ -2,13 +2,11 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference_element.dart';
 import 'package:my_api/core/model/user.dart';
-import 'package:my_api/core/provider/provider.dart' as provider;
 import 'package:my_api/core/oidc.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
@@ -32,19 +30,8 @@ const String _tag = "API";
 /// [ModelState] alternatively, to manage widgets' state easily.
 class ApiClient {
 
-  /// Default header
-  static const Map<String, String> headers = {
-    "Content-Type": "application/json",
-  };
-
   /// Header key for API key
   static const String keyApiKey = "X-API-Key";
-
-  final OpenIDConnect oidc = OpenIDConnect();
-
-  String _uri = "";
-
-  String get uri => _uri;
 
   /// Private instance for singleton pattern
   static final ApiClient _instance = ApiClient._();
@@ -54,6 +41,18 @@ class ApiClient {
 
   /// Factory constructor for singleton pattern
   factory ApiClient() => _instance;
+
+  final OpenIDConnect oidc = OpenIDConnect();
+
+  String _uri = "";
+
+  String get uri => _uri;
+
+  /// HTTP request headers
+  Map<String, String> get headers => {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer ${oidc.idToken}",
+  };
 
   /// Init
   ///
@@ -105,7 +104,49 @@ class ApiClient {
     });
   }
 
-  /// Send API request
+  /// Build uri
+  Uri buildUri(String endpoint, Map<String, dynamic>? queries) {
+    final split = uri.split(":");
+    final host = split[0];
+    final port = (split.length > 1) ? int.parse(split[1]) : null;
+    return Uri(
+      scheme: kDebugMode ? "http" : "https",
+      host: host,
+      port: port,
+      path: endpoint,
+      queryParameters: queries,
+    );
+  }
+
+  /// Request API
+  Future<ApiResponse<Stream>> request<T>({
+    required HttpMethod method,
+    required String endpoint,
+    dynamic body,
+    ApiQuery? query,
+  }) async {
+    final uri = buildUri(endpoint, query?.queries);
+    final client = http.Client();
+    final request = http.Request(method.name.toUpperCase(), uri);
+    for(String key in headers.keys) {
+      request.headers[key] = headers[key]!;
+    }
+    final response = await client.send(request);
+    if (response.statusCode != 200) {
+      Log.w(_tag, "${response.statusCode} ${method.name.toUpperCase()} $uri");
+      return ApiResponse.failed(const Stream.empty());
+    }
+    Log.v(_tag, "${response.statusCode} ${method.name.toUpperCase()} $uri");
+    return ApiResponse(
+      result: ApiResultCode.success,
+      data: response.stream
+          .transform(utf8.decoder)
+          .transform(const LineSplitter())
+          .map((line) => json.decode(line) as Map<String, dynamic>),
+    );
+  }
+
+  /// Send API call
   Future<ApiResponse> send<T>(
     HttpMethod method,
     String endpoint, [
@@ -118,21 +159,7 @@ class ApiClient {
       Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $uri/$endpoint");
       return ApiResponse.failed(defaultValue);
     }
-    final split = uri.split(":");
-    final host = split[0];
-    final port = (split.length > 1) ? int.parse(split[1]) : null;
-    final url = Uri(
-      scheme: kDebugMode ? "http" : "https",
-      host: host,
-      port: port,
-      path: endpoint,
-      queryParameters: queries?.queries,
-    );
-    // Headers
-    final Map<String, String> headers = {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer ${oidc.idToken}",
-    };
+    final url = buildUri(endpoint, queries?.queries);
     // Send request
     late http.Response response;
     try {
@@ -271,7 +298,7 @@ class ApiClient {
     return result.cast<T>(cast<T>(result.data));
   }
 
-  /// Read [currency] from [link]
+  /// Calculate value by [queries]
   Future<ApiResponse<Map<String, Decimal>>> stat<T>([ApiQuery? queries]) async {
     if (T == dynamic) {
       throw TypeError();
@@ -287,6 +314,24 @@ class ApiClient {
       }
     }
     return ApiResponse(result: result.result, data: data);
+  }
+
+  /// Search query
+  Future<ApiResponse<Stream<T>>> search<T>(String query) async {
+    if (T == dynamic) {
+      throw TypeError();
+    }
+    final result = await request(
+      method: HttpMethod.get,
+      endpoint: "${endpoint<T>()}/search",
+      query: ApiQuery({
+        ApiQuery.keyQueryString: query,
+      }),
+    );
+    return ApiResponse<Stream<T>>(
+      result: result.result,
+      data: result.data.map((data) => cast<T>(data)),
+    );
   }
 }
 
@@ -344,6 +389,8 @@ class ApiQuery {
   static const String keyQueryRangeBegin = "begin";
 
   static const String keyQueryRangeEnd = "end";
+
+  static const String keyQueryString = "q";
 
   final Map<String, dynamic>? conditions;
 
