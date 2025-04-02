@@ -160,9 +160,9 @@ class AccountCard extends ConsumerWidget {
     return WalletItemCard(
       title: showBalance
           ? currency.format(data.balance)
-          : data.descriptions,
+          : data.name,
       subtitle: showBalance
-          ? data.descriptions
+          ? data.name
           : data.serialNumber,
       foreground: data.foreground,
       background: data.background,
@@ -209,7 +209,7 @@ class PaymentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WalletItemCard(
-      title: data.descriptions,
+      title: data.name,
       subtitle: data.serialNumber,
       foreground: data.foreground,
       background: data.background,
