@@ -52,7 +52,8 @@ Future<bool> updateAccount(WidgetRef ref, Account account) async {
 }
 
 Future<bool> deleteAccount(WidgetRef ref, Account account) async {
-  return await ref.read(accounts.notifier).delete(account);
+  account.deleted = true;
+  return await ref.read(accounts.notifier).update(account);
 }
 
 final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref) {
@@ -81,7 +82,8 @@ Future<bool> updatePayment(WidgetRef ref, Payment payment) async {
 }
 
 Future<bool> deletePayment(WidgetRef ref, Payment payment) async {
-  return await ref.read(payments.notifier).delete(payment);
+  payment.deleted = true;
+  return await ref.read(payments.notifier).update(payment);
 }
 
 final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transaction>>((ref) {
@@ -109,7 +111,8 @@ Future<bool> updateTransaction(WidgetRef ref, Transaction transaction) async {
 }
 
 Future<bool> deleteTransaction(WidgetRef ref, Transaction transaction) async {
-  final result = await ref.read(transactions.notifier).delete(transaction);
+  transaction.deleted = true;
+  final result = await ref.read(transactions.notifier).update(transaction);
   await fetchAccounts(ref, {
     ModelKeys.keyUuid: transaction.accountId,
   });
@@ -144,7 +147,8 @@ Future<bool> updateCategory(WidgetRef ref, Category category) async {
 }
 
 Future<bool> deleteCategory(WidgetRef ref, Category category) async {
-  return await ref.read(categories.notifier).delete(category);
+  category.deleted = true;
+  return await ref.read(categories.notifier).update(category);
 }
 
 final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>((ref) {
