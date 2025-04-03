@@ -42,7 +42,7 @@ class Payment extends WalletItem {
       return false;
     }
     // Description
-    if (descriptions == "") {
+    if (name.isEmpty) {
       return false;
     }
     // Currency

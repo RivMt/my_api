@@ -26,7 +26,7 @@ class Account extends WalletItem {
       return false;
     }
     // Description
-    if (descriptions == "") {
+    if (name.isEmpty) {
       return false;
     }
     // Currency
