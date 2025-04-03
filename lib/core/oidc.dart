@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/user.dart';
 import 'package:oidc/oidc.dart';

@@ -2,10 +2,7 @@ import 'dart:collection';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
-import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/model.dart';
-
-const _tag = "StreamNotifier";
 
 class ModelStreamNotifier<T extends Model> extends StateNotifier<Set<T>> {
   ModelStreamNotifier(this.ref) : super(LinkedHashSet<T>(
