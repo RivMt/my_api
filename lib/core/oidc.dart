@@ -61,7 +61,14 @@ class OpenIDConnect {
     final user = await manager.loginAuthorizationCodeFlow(
       extraTokenParameters: {
         "client_secret": manager.clientCredentials.clientSecret
-      }
+      },
+      options: const OidcPlatformSpecificOptions(
+        web: OidcPlatformSpecificOptions_Web(
+          navigationMode: OidcPlatformSpecificOptions_Web_NavigationMode.popup,
+          popupWidth: 405,
+          popupHeight: 720,
+        )
+      )
     );
     if (user == null) {
       Log.e(_tag, "Failed to authenticate");
