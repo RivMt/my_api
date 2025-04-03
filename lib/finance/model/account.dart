@@ -63,7 +63,7 @@ enum AccountSymbol {
   cash(2, Icons.money),
   point(3, Icons.toll_outlined),
   limitedLoan(4, Icons.drive_file_move_outline),
-  transportationCard(5, Icons.toys_outlined),
+  transportationCard(5, Icons.train_outlined),
   shared(6, Icons.folder_shared_outlined),
   virtual(7, Icons.snippet_folder_outlined),
   investment(8, Icons.drive_folder_upload),
