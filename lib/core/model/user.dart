@@ -45,8 +45,9 @@ class User extends Model {
 
   /// Display name
   String get displayName {
+    if (name.isNotEmpty) return name;
     if (preferredName.isNotEmpty) return preferredName;
-    return name;
+    return email;
   }
 
   /// Url of profile picture

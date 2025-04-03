@@ -8,6 +8,7 @@ class UserCard extends StatelessWidget {
     required this.user,
     this.onTap,
     this.onLongPress,
+    this.size = 32,
   });
 
   final User user;
@@ -16,11 +17,12 @@ class UserCard extends StatelessWidget {
 
   final Function()? onLongPress;
 
+  final double size;
+
   @override
   Widget build(BuildContext context) {
-    const emptyPicture = Icon(Icons.account_circle_outlined);
     return ListTile(
-      leading: UserIcon(user),
+      leading: UserIcon(user, size: size),
       title: Text(user.displayName),
       subtitle: Text(user.email),
       onTap: onTap,

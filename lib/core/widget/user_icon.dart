@@ -6,20 +6,33 @@ const String _tag = "UserIcon";
 
 class UserIcon extends StatelessWidget {
 
-  const UserIcon(this.user, {super.key});
+  const UserIcon(this.user, {
+    super.key,
+    this.size = 24,
+  });
 
   final User user;
 
+  final double size;
+
   @override
   Widget build(BuildContext context) {
+    final icon = Icon(Icons.account_circle_outlined,
+      size: size,
+    );
     if (user.picture.isEmpty) {
-      return const Icon(Icons.account_circle_outlined);
+      return icon;
     }
-    return CircleAvatar(
-      backgroundImage: NetworkImage(user.picture),
-      onBackgroundImageError: (o, s) {
-        Log.e(_tag, "Unable to display profile picture: ${user.picture}");
-      },
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size/2),
+      child: Image.network(user.picture,
+        width: size,
+        height: size,
+        errorBuilder: (context, o, s) {
+          Log.e(_tag, "Unable to display profile picture: ${user.picture}");
+          return icon;
+        },
+      ),
     );
   }
 }
