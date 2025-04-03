@@ -40,7 +40,7 @@ Future<void> fetchAccounts(WidgetRef ref, [Map<String, dynamic>? query]) async {
       SortOrder.desc
     ];
   }
-  await ref.read(accounts.notifier).fetch(q);
+  await ref.read(accounts.notifier).append(q);
 }
 
 Future<bool> createAccount(WidgetRef ref, Account account) async {
