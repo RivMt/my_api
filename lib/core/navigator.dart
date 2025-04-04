@@ -196,6 +196,7 @@ abstract class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeN
   Future<void> setInitialRoutePath(RoutePath configuration) async {
     currentConfiguration = configuration;
     Log.v(_tag, "Set initial route to: $configuration");
+    setNewRoutePath(configuration);
     return;
   }
 
