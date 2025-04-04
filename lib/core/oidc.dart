@@ -63,8 +63,8 @@ class OpenIDConnect {
       options: const OidcPlatformSpecificOptions(
         web: OidcPlatformSpecificOptions_Web(
           navigationMode: OidcPlatformSpecificOptions_Web_NavigationMode.popup,
-          popupWidth: 405,
-          popupHeight: 720,
+          popupWidth: 600,
+          popupHeight: 600,
         )
       )
     );
