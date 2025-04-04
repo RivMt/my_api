@@ -48,7 +48,7 @@ class ModelsState<T extends Model> extends StateNotifier<List<T>> {
         list[index] = item;
       }
     }
-    state = list;
+    state = List<T>.from(list);
   }
 
   /// Create [data] to server
