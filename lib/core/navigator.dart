@@ -8,146 +8,143 @@ class RoutePath {
 
   static final RoutePath home = RoutePath("");
 
-  static final RoutePath login = RoutePath("login");
-
-  static final RoutePath register = RoutePath("register");
-
   static final RoutePath unknown = RoutePath("404");
 
-  RoutePath(String path, [this.uuid, this.queries, this.anchor]) {
-    this.path = path.replaceAll("/", "");
-  }
+  RoutePath(this.path, {
+    this.uuid,
+    this.queries,
+    this.anchor,
+    this.index = 0,
+  });
 
-  RoutePath.parse(String? name) {
-    final uri = Uri.parse(name ?? "");
-    switch(uri.pathSegments.length) {
-      case 0:
-        path = "";
-        break;
-      case 1:
-        path = uri.pathSegments[0];
-        break;
-      case 2:
-        path = uri.pathSegments[0];
-        uuid = uri.pathSegments[1];
-        queries = uri.queryParameters;
-        anchor = uri.fragment;
-    }
-  }
+  final String path;
 
-  late String path;
+  final String? uuid;
 
-  late String? uuid;
+  final Map<String, dynamic>? queries;
 
+  final String? anchor;
+
+  final int index;
+
+  /// Value of this route path is about details or not
   bool get isDetails => uuid != null;
 
-  late Map<String, dynamic>? queries;
-
-  late String? anchor;
-
-  String get location {
-    final StringBuffer buffer = StringBuffer();
-    // Primary path
-    buffer.write("/");
-    buffer.write(path);
-    // Secondary path
-    if (uuid != null) {
-      buffer.write("/");
-      buffer.write(uuid);
-    }
-    // Query string
-    if (queries != null) {
-      buffer.write("?");
-      buffer.write(List.generate(queries!.keys.length, (index) {
-        final String key = queries!.keys.toList(growable: false)[index];
-        return "$key=${queries![key]}";
-      }).join("&"));
-    }
-    // Anchor
-    if (anchor != null) {
-      buffer.write("#$anchor");
-    }
-    return buffer.toString();
+  /// List of path segments
+  List<String> get pathSegments {
+    final segments = <String>[];
+    segments.add("/$path");
+    if (uuid != null) segments.add(uuid!);
+    return segments;
   }
 
-  RoutePath details(String uuid) => RoutePath(path, uuid);
+  /// Depth of path
+  int get depth => pathSegments.length;
 
+  /// Current uri
+  Uri get uri {
+    return Uri(
+      pathSegments: pathSegments,
+      queryParameters: queries,
+      fragment: anchor,
+    );
+  }
+
+  /// Generate details uri from current
+  RoutePath details(String uuid) => RoutePath(path, uuid: uuid);
+
+  /// Generate complex uri from current
   RoutePath extend({
-    int? pid,
+    String? uuid,
     Map<String, dynamic>? queries,
     String? anchor,
-  }) => RoutePath(path, uuid, queries, anchor);
+  }) => RoutePath(path,
+    uuid: uuid,
+    queries: queries,
+    anchor: anchor,
+  );
 
+  /// Generate previous uri from current
   RoutePath previous() {
     // Anchor
     if (anchor != null) {
-      return RoutePath(path, uuid, queries);
+      return RoutePath(path,
+        uuid: uuid,
+        queries: queries,
+      );
     }
     // Secondary Path
     if (uuid != null) {
-      return RoutePath(path, null, queries);
+      return RoutePath(path,
+        uuid: null,
+        queries: queries,
+      );
     }
     // Home
     return RoutePath.home;
   }
 
   @override
-  String toString() => location;
+  String toString() => uri.toString();
 
   @override
   bool operator ==(Object other) {
     if (other is RoutePath) {
-      return location == other.location;
+      return uri == other.uri;
     }
     return super==(other);
   }
 
   @override
-  int get hashCode => location.hashCode;
+  int get hashCode => uri.hashCode;
 }
 
 class RouteParser extends RouteInformationParser<RoutePath> {
 
-  List<RoutePath> get d1 => [
-    RoutePath.login,
-    RoutePath.register,
-  ];
+  /// List of path segments does not have detail uri
+  List<RoutePath> get pathStandalone => [];
 
-  List<RoutePath> get d2 => [];
+  /// List of path segments which have detail uri
+  List<RoutePath> get pathDetails => [];
+
+  /// List of tab page by home index
+  List<RoutePath> get pathIndex => [];
 
   @override
   Future<RoutePath> parseRouteInformation(RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location ?? "");
-    Log.v(_tag, "Parsing uri: ${routeInformation.location}");
+    final uri = routeInformation.uri;
+    Log.v(_tag, "Parsing uri: $uri");
     // Home
     if (uri.pathSegments.isEmpty) {
       return RoutePath.home;
     }
     // Depth 1
-    if (uri.pathSegments.length == 1) {
-      // TODO: Convert to binary search
-      for(RoutePath route in d1) {
-        if (uri.pathSegments[0] == route.path) {
-          return route.extend(
-            queries: uri.queryParameters,
-            anchor: uri.fragment,
-          );
-        }
+    else if (uri.pathSegments.length == 1) {
+      // Single page
+      int index = pathStandalone.indexWhere((route) => route.path == uri.pathSegments[0]);
+      if (index >= 0) {
+        final route = pathStandalone[index];
+        return route.extend(
+          queries: uri.queryParameters,
+          anchor: uri.fragment,
+        );
+      }
+      // Tab page
+      index = pathIndex.indexWhere((route) => route.path == uri.pathSegments[0]);
+      if (index >= 0) {
+        return pathIndex[index];
       }
     }
     // Depth 2
-    if (uri.pathSegments.length == 2) {
-      final int? pid = int.tryParse(uri.pathSegments[1]);
-      if (pid != null) {
-        for (RoutePath route in d2) {
-          if (uri.pathSegments[0] == route.path) {
-            return route.extend(
-              pid: pid,
-              queries: uri.queryParameters,
-              anchor: uri.fragment,
-            );
-          }
-        }
+    else if (uri.pathSegments.length == 2) {
+      final String uuid = uri.pathSegments[1];
+      final index = pathDetails.indexWhere((route) => route.path == uri.pathSegments[0]);
+      if (index >= 0) {
+        return pathDetails[index].extend(
+          uuid: uuid,
+          queries: uri.queryParameters,
+          anchor: uri.fragment,
+        );
       }
     }
     // 404
@@ -156,11 +153,11 @@ class RouteParser extends RouteInformationParser<RoutePath> {
 
   @override
   RouteInformation restoreRouteInformation(RoutePath configuration) {
-    return RouteInformation(location: configuration.location);
+    return RouteInformation(uri: configuration.uri);
   }
 }
 
-class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeNotifier, PopNavigatorRouterDelegateMixin {
+abstract class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeNotifier, PopNavigatorRouterDelegateMixin {
 
   CoreRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
 
@@ -176,21 +173,21 @@ class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeNotifier, 
     // Append unknown page if path is equal to RoutePath.unknown
     if (currentConfiguration.path == RoutePath.unknown.path) {
       pages.add(MaterialPage(
-        key: ValueKey(RoutePath.unknown.location),
+        key: ValueKey(RoutePath.unknown.uri),
         child: const UnknownPage(),
       ));
     }
     return Navigator(
       key: navigatorKey,
       pages: pages,
-      onPopPage: onPopPage,
+      onDidRemovePage: onDidRemovePage,
     );
   }
 
   @override
   Future<void> setNewRoutePath(RoutePath configuration) async {
     currentConfiguration = configuration;
-    Log.v(_tag, "Move to ${configuration.location}");
+    Log.v(_tag, "Move to $configuration");
     notifyListeners();
     return;
   }
@@ -198,40 +195,30 @@ class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeNotifier, 
   @override
   Future<void> setInitialRoutePath(RoutePath configuration) async {
     currentConfiguration = configuration;
-    Log.v(_tag, "Set initial route to: ${configuration.location}");
+    Log.v(_tag, "Set initial route to: $configuration");
     return;
   }
 
-  Widget get home => throw UnimplementedError("home widget does not defined");
+  /// Widget of home page
+  Widget get home;
 
-  List<Page> get pages {
-    final List<Page> pages = [
-      MaterialPage(
-        key: ValueKey(RoutePath.home.location),
-        child: home,
-      ),
-    ];
-    final finds = findPage();
-    if (finds.isNotEmpty) {
-      pages.addAll(finds);
-    }
-    return pages;
-  }
+  /// Stack of pages to current uri
+  ///
+  /// This variable should returns pages from [home] to current.
+  ///
+  /// If current uri is `example.com/abc/def`, the stack should be like this:
+  /// ```dart
+  /// [
+  ///   "example.com/abc",
+  ///   "example.com/abc/def"
+  /// ];
+  /// ```
+  List<Page> get pages;
 
-  List<Page> findPage() {
-    Log.v(_tag, "Find page about: ${currentConfiguration.location}");
-    final List<Page> pages = [];
-    return pages;
-  }
-
-  bool onPopPage(Route route, dynamic result) {
-    if (!route.didPop(result)) {
-      return false;
-    }
-    // If details page, make pid as null
+  /// Move to previous page
+  void onDidRemovePage(Page page) {
     currentConfiguration = currentConfiguration.previous();
     notifyListeners();
-    return true;
   }
 
 }
