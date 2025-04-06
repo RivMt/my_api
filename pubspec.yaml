@@ -20,6 +20,8 @@ dependencies:
   oidc: ^0.9.0+1
   oidc_default_store: ^0.2.0+12
   flutter_svg: ^2.0.17
+  logger: ^2.5.0
+  easy_logger: ^0.0.2
 
 dev_dependencies:
   collection:

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'dart:math';
 import 'package:decimal/decimal.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/log.dart';
@@ -110,7 +111,7 @@ class ApiClient {
   }
 
   /// Build uri
-  Uri buildUri(String endpoint, Map<String, dynamic>? queries) {
+  Uri buildUri(String endpoint, Map<String, dynamic>? query) {
     final split = uri.split(":");
     final host = split[0];
     final port = (split.length > 1) ? int.parse(split[1]) : null;
@@ -119,29 +120,58 @@ class ApiClient {
       host: host,
       port: port,
       path: endpoint,
-      queryParameters: queries,
+      queryParameters: query,
     );
   }
 
-  /// Request API
-  Future<ApiResponse<Stream>> request<T>({
+  /// Make HTTP request
+  Future<http.StreamedResponse> _request({
     required HttpMethod method,
     required String endpoint,
-    dynamic body,
-    ApiQuery? query,
+    Object? body,
+    Map<String, dynamic>? query,
   }) async {
-    final uri = buildUri(endpoint, query?.queries);
-    final client = http.Client();
+    final uri = buildUri(endpoint, query);final client = http.Client();
     final request = http.Request(method.name.toUpperCase(), uri);
     for(String key in headers.keys) {
       request.headers[key] = headers[key]!;
     }
-    final response = await client.send(request);
+    if (body != null) {
+      request.body = json.encode(body);
+    }
+    try {
+      final response = await client.send(request);
+      final logMessage = "${response.statusCode} $method $uri";
+      if (response.statusCode != 200) {
+        Log.w(_tag, logMessage);
+      } else {
+        Log.v(_tag, logMessage);
+      }
+      return response;
+    } on SocketException catch (e, s) {
+      Log.e(_tag, "Socket Exception: $method $uri", e, s);
+    } on http.ClientException catch (e, s) {
+      Log.e(_tag, "Client Exception: $method $uri", e, s);
+    }
+    return http.StreamedResponse(const Stream.empty(), 400);
+  }
+
+  /// Request API Stream
+  Future<ApiResponse<Stream>> requestStream<T>({
+    required HttpMethod method,
+    required String endpoint,
+    Object? body,
+    ApiQuery? query,
+  }) async {
+    final response = await _request(
+      method: method,
+      endpoint: endpoint,
+      body: body,
+      query: query?.params,
+    );
     if (response.statusCode != 200) {
-      Log.w(_tag, "${response.statusCode} ${method.name.toUpperCase()} $uri");
       return ApiResponse.failed(const Stream.empty());
     }
-    Log.v(_tag, "${response.statusCode} ${method.name.toUpperCase()} $uri");
     return ApiResponse(
       result: ApiResultCode.success,
       data: response.stream
@@ -152,72 +182,26 @@ class ApiClient {
   }
 
   /// Send API call
-  Future<ApiResponse> send<T>(
-    HttpMethod method,
-    String endpoint, [
-    dynamic body,
-    ApiQuery? queries,
-  ]) async {
+  Future<ApiResponse> request<T>({
+    required HttpMethod method,
+    required String endpoint,
+    Object? body,
+    ApiQuery? query,
+  }) async {
     final defaultValue = (method == HttpMethod.get) ? <T>[] : <String, dynamic>{};
-    // Check host name is defined
-    if (uri == "") {
-      Log.w(_tag, "Host name is not defined yet: ${method.name.toUpperCase()} $uri/$endpoint");
-      return ApiResponse.failed(defaultValue);
-    }
-    final url = buildUri(endpoint, queries?.queries);
-    // Send request
-    late http.Response response;
-    try {
-      switch (method) {
-        case HttpMethod.get:
-          response = await http.get(
-            url,
-            headers: headers,
-          );
-          break;
-        case HttpMethod.post:
-          response = await http.post(
-            url,
-            headers: headers,
-            body: json.encode(body),
-          );
-          break;
-        case HttpMethod.put:
-          response = await http.put(
-            url,
-            headers: headers,
-            body: json.encode(body),
-          );
-          break;
-        case HttpMethod.patch:
-          response = await http.patch(
-            url,
-            headers: headers,
-            body: json.encode(body),
-          );
-          break;
-        case HttpMethod.delete:
-          response = await http.delete(
-            url,
-            headers: headers,
-            body: json.encode(body),
-          );
-          break;
-      }
-    } on SocketException catch(e, s) {
-      Log.e(_tag, "Connection failed to $url", e, s);
-      return ApiResponse.failed(defaultValue);
-    }
-    // Check response
+    final response = await _request(
+      method: method,
+      endpoint: endpoint,
+      body: body,
+      query: query?.params,
+    );
     if (response.statusCode != 200) {
-      Log.w(_tag, "${response.statusCode} ${method.name.toUpperCase()} $url");
       return ApiResponse.failed(defaultValue);
     }
-    // If exception does not thrown
-    Log.v(_tag, "${response.statusCode} ${method.name.toUpperCase()} $url");
+    final bytes = await response.stream.toBytes();
     return ApiResponse(
       result: ApiResultCode.success,
-      data: json.decode(utf8.decode(response.bodyBytes)),
+      data: json.decode(utf8.decode(bytes)),
     );
   }
 
@@ -268,16 +252,24 @@ class ApiClient {
     if (T == dynamic) {
       throw TypeError();
     }
-    final result = await send<T>(HttpMethod.post, endpoint<T>(), body);
+    final result = await request<T>(
+      method: HttpMethod.post,
+      endpoint: endpoint<T>(),
+      body: body,
+    );
     return result.cast<T>(cast<T>(result.data));
   }
 
   /// Read [currency] from [link]
-  Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? queries]) async {
+  Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? query]) async {
     if (T == dynamic) {
       throw TypeError();
     }
-    final result = await send<T>(HttpMethod.get, endpoint<T>(), null, ApiQuery(queries));
+    final result = await request<T>(
+      method: HttpMethod.get,
+      endpoint: endpoint<T>(),
+      query: ApiQuery(query),
+    );
     return result.casts<T>(casts<T>(result.data));
   }
 
@@ -286,7 +278,11 @@ class ApiClient {
     if (T == dynamic) {
       throw TypeError();
     }
-    final result = await send<T>(HttpMethod.put, endpoint<T>(), body);
+    final result = await request<T>(
+      method: HttpMethod.put,
+      endpoint: endpoint<T>(),
+      body: body,
+    );
     return result.cast<T>(cast<T>(result.data));
   }
 
@@ -299,16 +295,23 @@ class ApiClient {
     if (uuid == null || uuid == "") {
       throw UnsupportedError("Unable to retrieve UUID: $body");
     }
-    final result = await send<T>(HttpMethod.delete, "${endpoint<T>()}/$uuid");
+    final result = await request<T>(
+      method: HttpMethod.delete,
+      endpoint: "${endpoint<T>()}/$uuid",
+    );
     return result.cast<T>(cast<T>(result.data));
   }
 
-  /// Calculate value by [queries]
-  Future<ApiResponse<Map<String, Decimal>>> stat<T>([ApiQuery? queries]) async {
+  /// Calculate value by [query]
+  Future<ApiResponse<Map<String, Decimal>>> stat<T>([ApiQuery? query]) async {
     if (T == dynamic) {
       throw TypeError();
     }
-    final result = await send(HttpMethod.get, "${endpoint<T>()}/stat", null, queries);
+    final result = await request(
+      method: HttpMethod.get,
+      endpoint: "${endpoint<T>()}/stat",
+      query: query,
+    );
     final Map<String, Decimal> data = {};
     for (String key in result.data) {
       try {
@@ -326,7 +329,7 @@ class ApiClient {
     if (T == dynamic) {
       throw TypeError();
     }
-    final result = await request(
+    final result = await requestStream(
       method: HttpMethod.get,
       endpoint: "${endpoint<T>()}/search",
       query: ApiQuery({
@@ -346,7 +349,10 @@ enum HttpMethod {
   post,
   put,
   patch,
-  delete,
+  delete;
+
+  @override
+  String toString() => name.toUpperCase();
 }
 
 enum ApiResultCode {
@@ -401,7 +407,7 @@ class ApiQuery {
 
   const ApiQuery(this.conditions);
 
-  Map<String, String> get queries {
+  Map<String, String> get params {
     if (conditions == null) {
       return {};
     }
