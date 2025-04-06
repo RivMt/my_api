@@ -7,9 +7,14 @@ const String _tag = "CurrencySymbol";
 
 class CurrencySymbol extends StatelessWidget {
 
+  const CurrencySymbol(this.currency, {
+    super.key,
+    this.color,
+  });
+
   final Currency currency;
 
-  const CurrencySymbol(this.currency, {super.key});
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +22,7 @@ class CurrencySymbol extends StatelessWidget {
     if (currency.iconUrl.isEmpty) {
       return textSymbol;
     }
-    final color = Theme.of(context).textTheme.labelMedium?.color ?? Colors.black;
+    final color = this.color ?? Theme.of(context).textTheme.labelMedium?.color ?? Colors.black;
     return SvgPicture.network(
       currency.iconUrl,
       semanticsLabel: currency.uuid,
