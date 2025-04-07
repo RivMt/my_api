@@ -156,7 +156,10 @@ final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>(
 });
 
 Future<void> fetchCurrencies(WidgetRef ref) async {
-  await ref.read(currencies.notifier).fetch();
+  await ref.read(currencies.notifier).fetch({
+    ApiQuery.keySortField: [ModelKeys.keyUuid],
+    ApiQuery.keySortOrder: [SortOrder.asc],
+  });
 }
 
 final currencyMap = Provider<Map<String, Currency>>((ref) {
