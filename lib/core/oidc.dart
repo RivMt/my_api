@@ -56,20 +56,26 @@ class OpenIDConnect {
   }
 
   Future<User> login() async {
-    final user = await manager.loginAuthorizationCodeFlow(
-      extraTokenParameters: {
-        "client_secret": manager.clientCredentials.clientSecret
-      },
-      options: const OidcPlatformSpecificOptions(
-        web: OidcPlatformSpecificOptions_Web(
-          navigationMode: OidcPlatformSpecificOptions_Web_NavigationMode.popup,
-          popupWidth: 600,
-          popupHeight: 600,
-        )
-      )
-    );
+    OidcUser? user;
+    try {
+      user = await manager.loginAuthorizationCodeFlow(
+        extraTokenParameters: {
+          "client_secret": manager.clientCredentials.clientSecret
+        },
+        options: const OidcPlatformSpecificOptions(
+          web: OidcPlatformSpecificOptions_Web(
+            navigationMode: OidcPlatformSpecificOptions_Web_NavigationMode
+                .popup,
+            popupWidth: 600,
+            popupHeight: 600,
+          ),
+        ),
+      );
+    } catch (e, s) {
+      Log.e(_tag, "Login failed due to error", e, s);
+    }
     if (user == null) {
-      Log.e(_tag, "Failed to authenticate");
+      Log.w(_tag, "Failed to authenticate");
       return User.unknown;
     }
     return User.fromOidc(user);

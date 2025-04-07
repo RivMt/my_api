@@ -2,8 +2,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/model/preference_root.dart';
 import 'package:my_api/core/model/user.dart';
-import 'package:my_api/core/provider/model_state.dart';
 import 'package:my_api/core/provider/preference_state.dart';
+import 'package:my_api/core/provider/user_state_notifier.dart';
 
 final initCorePreference = <String, dynamic>{};
 
@@ -11,8 +11,8 @@ final corePreferences = StateNotifierProvider<PreferenceState, PreferenceRoot>((
   return PreferenceState(ref, "core", initCorePreference);
 });
 
-final currentUser = StateNotifierProvider<ModelState<User>, User>((ref) {
-  return ModelState<User>(ref, User.unknown);
+final currentUser = StateNotifierProvider<UserNotifier, UserState>((ref) {
+  return UserNotifier();
 });
 
 void setOnUserChanged(Function(User) listener) {
@@ -20,8 +20,10 @@ void setOnUserChanged(Function(User) listener) {
   client.onUserChanges(listener);
 }
 
-Future<void> login(WidgetRef ref, Function() onLogin) async {
-  final user = await ApiClient().login();
-  ref.read(currentUser.notifier).set(user);
-  onLogin();
+void login(WidgetRef ref, Function() onLogin) {
+  ref.read(currentUser.notifier).login(onLogin);
+}
+
+void logout(WidgetRef ref, Function() onLogout) {
+  ref.read(currentUser.notifier).login(onLogout);
 }

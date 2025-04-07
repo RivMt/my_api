@@ -101,6 +101,12 @@ class ApiClient {
     return user;
   }
 
+  Future<User> logout() async {
+    await oidc.logout();
+    Log.i(_tag, "Logged out");
+    return User.unknown;
+  }
+
   void onUserChanges(Function(User) listener) {
     oidc.manager.userChanges().listen((OidcUser? user) {
       if (user == null) {

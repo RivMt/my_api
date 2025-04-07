@@ -8,7 +8,12 @@ class User extends Model {
 
   User([super.map]);
 
-  User.fromOidc(OidcUser user) {
+  User.fromOidc(OidcUser? user) {
+    if (user == null) {
+      map.clear();
+      map.addAll(unknown.map);
+      return;
+    }
     map[ModelKeys.keyUserId] = user.uid ?? "";
     map[ModelKeys.keyEmail] = user.userInfo[ModelKeys.keyEmail] ?? "";
     map[ModelKeys.keyEmailVerified] = user.userInfo[ModelKeys.keyEmailVerified] ?? false;

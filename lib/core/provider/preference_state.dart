@@ -68,7 +68,7 @@ class PreferenceState extends StateNotifier<PreferenceRoot> {
   /// Push [state] if [root] is null
   Future<bool> push([PreferenceRoot? root]) async {
     final target = root ?? state;
-    final owner = ref.watch(core_provider.currentUser).userId;
+    final owner = ref.watch(core_provider.currentUser).user.userId;
     final data = target.rawChildren(owner);
     final client = ApiClient();
     for(Map<String, String> map in data) {
