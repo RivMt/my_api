@@ -32,6 +32,7 @@ class CurrencyCard extends StatelessWidget {
       leading: CurrencyIcon(
         currency,
         selected: selected,
+        foreground: Theme.of(context).textTheme.titleMedium?.color,
         background: useIconBackground
             ? Theme.of(context).primaryColor
             : Colors.transparent,

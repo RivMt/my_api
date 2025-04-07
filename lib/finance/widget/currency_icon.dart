@@ -6,9 +6,12 @@ class CurrencyIcon extends StatelessWidget {
 
   const CurrencyIcon(this.currency, {
     super.key,
+    this.foreground,
     this.background = Colors.transparent,
     this.selected = false,
   });
+
+  final Color? foreground;
 
   final Color background;
 
@@ -30,7 +33,9 @@ class CurrencyIcon extends StatelessWidget {
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(4),
         ),
-        child: CurrencySymbol(currency),
+        child: CurrencySymbol(currency,
+          color: foreground,
+        ),
       ),
     );
   }
