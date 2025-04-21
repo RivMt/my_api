@@ -6,10 +6,13 @@ import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/transaction.dart';
 
+/// A finance category class
 class Category extends FinanceModel {
 
+  /// Path of API server endpoint
   static const String endpoint = "api/finance/categories";
 
+  /// Unknown category instance
   static final Category unknown = Category({
     ModelKeys.keyUuid: BaseModel.unknownUuid,
     ModelKeys.keyType: TransactionType.expense.code,
@@ -18,9 +21,10 @@ class Category extends FinanceModel {
     ModelKeys.keyName: "unknown",
   });
 
-  Category(super.map);
+  /// Initialize from given [map]
+  Category([super.map]);
 
-  /// Is this valid or not
+  /// Whether this category is valid or not
   bool get isValid {
     // Pid
     if (uuid == BaseModel.unknownUuid) {
@@ -41,21 +45,23 @@ class Category extends FinanceModel {
     return true;
   }
 
-  /// Type
+  /// Type of this category
   ///
   /// Default value is [TransactionType.expense]
   TransactionType get type => TransactionType.fromCode(getValue(ModelKeys.keyType, 0));
 
   set type(TransactionType value) => map[ModelKeys.keyType] = value.code;
 
-  /// Included
+  /// Value of related transaction is included in statistics
   ///
   /// Default value is `true`
   bool get isIncluded => getValue(ModelKeys.keyIncluded, true);
 
   set isIncluded(bool value) => map[ModelKeys.keyIncluded] = value;
 
-  /// Icon
+  /// Icon of this category
+  ///
+  /// Default value is [CategorySymbol.unknown]
   CategorySymbol get icon => CategorySymbol.fromId(getValue(ModelKeys.keyIcon, CategorySymbol.unknown.id));
 
   set icon(CategorySymbol icon) => map[ModelKeys.keyIcon] = icon.id;
@@ -65,6 +71,7 @@ class Category extends FinanceModel {
 
 }
 
+/// A symbol of category
 enum CategorySymbol {
   unknown(-1, Icons.circle_outlined),
   arrowDown(0, Icons.arrow_downward_rounded),
@@ -144,15 +151,18 @@ enum CategorySymbol {
   upload(74, Icons.upload_outlined),
   food(75, Icons.restaurant_outlined);
 
+  /// Construct category symbol
   const CategorySymbol(this.id, this.icon);
 
-  /// Unique value
+  /// Unique value of this symbol
   final int id;
 
-  /// [IconData]
+  /// [IconData] of this symbol
   final IconData icon;
 
-  /// Find category icon using [id]
+  /// Find corresponding symbol from given [id]
+  ///
+  /// Default value is [CategorySymbol.unknown].
   factory CategorySymbol.fromId(int id) {
     // Check id value range
     if (id < -1 || id >= CategorySymbol.values.length-1) {

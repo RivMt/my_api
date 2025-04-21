@@ -3,6 +3,10 @@ import 'package:my_api/core/model/base_model.dart';
 
 const _tag = "DataFrame";
 
+
+/// A data frame for [BaseModel]
+///
+///
 class DataFrame<T extends BaseModel> {
 
   DataFrame({

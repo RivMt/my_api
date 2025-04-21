@@ -2,12 +2,20 @@ import 'package:my_api/core/model/model.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:oidc/oidc.dart';
 
+/// An user
+///
+/// All properties are read-only because user info only can be changed by server-side.
 class User extends Model {
 
+  /// An unknown user
   static final User unknown = User();
 
+  /// Initialize from [map]
   User([super.map]);
 
+  /// Initialize from [OidcUser]
+  ///
+  /// If [user] is `null`, initialize as [unknown].
   User.fromOidc(OidcUser? user) {
     if (user == null) {
       map.clear();
@@ -25,18 +33,19 @@ class User extends Model {
     map[ModelKeys.keyGroups] = user.userInfo[ModelKeys.keyGroups].join(",") ?? "";
   }
 
+  /// Whether this is valid user
   bool get isValid => userId.isNotEmpty;
 
-  /// Unique identification code (Read-only)
+  /// Unique identification code of this (Read-only)
   String get userId => getValue(ModelKeys.keyUserId, "");
 
-  /// Email
+  /// Email address
   String get email => getValue(ModelKeys.keyEmail, "");
 
-  /// Email is verified or not
+  /// Whether [email] is verified or not
   bool get isEmailVerified => getValue(ModelKeys.keyEmailVerified, false);
 
-  /// Name
+  /// Full name
   String get name => getValue(ModelKeys.keyName, "");
 
   /// Preferred name
@@ -49,6 +58,9 @@ class User extends Model {
   String get givenName => getValue(ModelKeys.keyGivenName, "");
 
   /// Display name
+  ///
+  /// The order of select is [name], [preferredName], and [email].
+  /// Next order of value will be selected if former is empty string.
   String get displayName {
     if (name.isNotEmpty) return name;
     if (preferredName.isNotEmpty) return preferredName;
@@ -59,7 +71,7 @@ class User extends Model {
   String get picture => getValue(ModelKeys.keyPicture, "");
 
   /// List of groups
-  List<String> get groups => getValue(ModelKeys.keyGroups, "").split(",");
+  List<String> get groups => getValue(ModelKeys.keyGroups, "").split(",");  // TODO: refactor
 
   @override
   bool isEquivalent(Model other) {
@@ -77,7 +89,7 @@ class User extends Model {
 
 }
 
-class UserGender {
+class UserGender {  // TODO: refactor
 
   /// Code for Gender OTHER
   static const int codeOther = -1;

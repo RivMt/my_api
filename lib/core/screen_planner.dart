@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
+/// A class for screen layout
 class ScreenPlanner {
 
   /// Threshold ratio of width per height to check wide screen
@@ -23,7 +24,7 @@ class ScreenPlanner {
     return _instance;
   }
 
-  /// [BuildContext] of [_instance] planning to.
+  /// [BuildContext] of screen [_instance] planning to.
   ///
   /// It is normally not `null`.
   static BuildContext? _context;
@@ -34,7 +35,7 @@ class ScreenPlanner {
   /// Width of each panel
   double get panelWidth => MediaQuery.of(_context!).size.width / panelNumber;
 
-  /// Calculate number of panels from [context]
+  /// Calculate number of panels based on [context]
   int get panelNumber {
     final double width, height;
     width = MediaQuery.of(_context!).size.width;

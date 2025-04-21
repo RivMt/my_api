@@ -4,18 +4,31 @@ import 'package:oidc/oidc.dart';
 
 const String _tag = "OIDC";
 
+/// A OIDC management class
 class OpenIDConnect {
 
+  /// Static instance for factory pattern
   static final _instance = OpenIDConnect._();
 
+  /// Factory constructor
   factory OpenIDConnect() => _instance;
 
+  /// Private constructor for factory pattern
   OpenIDConnect._();
 
+  /// [OidcUserManager] instance
   late OidcUserManager manager;
 
+  /// ID token of current user
+  ///
+  /// The value is `null` when any user logged in currently
   String get idToken => manager.currentUser?.idToken ?? "";
 
+  /// Init instance
+  ///
+  /// [serverUri] is URI of API server. [clientId] and [clientSecret] is issued
+  /// by OIDC server. [redirectUri] is URI of redirection receiving. This URI is
+  /// registered in OIDC server.
   Future<void> init({
     required String serverUri,
     required String clientId,
@@ -55,6 +68,12 @@ class OpenIDConnect {
     }
   }
 
+  /// Login via OIDC
+  ///
+  /// Popup windows will be opened to login. Returns [User] after logged in.
+  ///
+  /// If the platform is iOS, user should allow popup window to login. Because
+  /// iOS webkit block popup basically.
   Future<User> login() async {
     OidcUser? user;
     try {
@@ -81,6 +100,7 @@ class OpenIDConnect {
     return User.fromOidc(user);
   }
 
+  /// Logout current user
   Future<void> logout() async {
     await manager.logout();
   }

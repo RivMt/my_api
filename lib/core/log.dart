@@ -6,14 +6,21 @@ import 'package:easy_logger/easy_logger.dart';
 import 'package:logger/logger.dart';
 import 'package:intl/intl.dart';
 
+
+/// A log system inspired by Android logcat
 class Log {
 
-  static Level level = Level.trace;
+  /// Minimum level of log
+  static Level level = Level.trace;  // TODO: rename
 
+  /// Logger instance
   static final Logger _logger = Logger(
     printer: LogPrinter(),
   );
 
+  /// Print log message with [level], [tag], [msg], error [e], and stack trace [s]
+  ///
+  /// If [level] is lower than current level, ignores printing.
   static void _print(Level level, String? tag, Object? msg, [Object? e, StackTrace? s]) {
     final letter = level.name.substring(0, 1).toUpperCase();
     _logger.log(
@@ -24,22 +31,27 @@ class Log {
     );
   }
 
+  /// Print error message
   static void e([String? tag, Object? msg, Object? e, StackTrace? s]) {
     _print(Level.error, tag, msg, e, s);
   }
 
+  /// Print warning message
   static void w([String? tag, Object? msg, Object? e, StackTrace? s]) {
     _print(Level.warning, tag, msg, e, s);
   }
 
+  /// Print debug message
   static void d([String? tag, Object? msg, Object? e, StackTrace? s]) {
     _print(Level.debug, tag, msg, e, s);
   }
 
+  /// Print info message
   static void i([String? tag, Object? msg, Object? e, StackTrace? s]) {
     _print(Level.info, tag, msg, e, s);
   }
 
+  /// Print verbose message
   static void v([String? tag, Object? msg, Object? e, StackTrace? s]) {
     _print(Level.trace, tag, msg, e, s);
   }
@@ -64,12 +76,17 @@ class Log {
 
 }
 
+
+/// A log printer
 class LogPrinter extends PrettyPrinter {
 
+  /// Pattern of date time
   static const String datetimePattern = "yyyy-MM-dd hh:mm:ss SSS";
 
+  /// Date time formatter
   static final DateFormat dateFormat = DateFormat(datetimePattern, "en-US");
 
+  /// Initialize
   LogPrinter() : super(
     methodCount: 0,
     colors: true,
@@ -84,6 +101,7 @@ class LogPrinter extends PrettyPrinter {
     },
   );
 
+  /// Returns [AnsiColor] of corresponding [level]
   AnsiColor _getLevelColor(Level level) {
     AnsiColor? color;
     if (colors) {

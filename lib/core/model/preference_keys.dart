@@ -1,4 +1,5 @@
-class PreferenceKeys {
+/// A class contains key for preference
+abstract class PreferenceKeys {
 
   static const String defaultCurrency = "finance.default_currency";
 

@@ -3,7 +3,13 @@ library my_api;
 import 'package:my_api/core/model/model.dart';
 import 'package:my_api/core/model/model_keys.dart';
 
-/// Superclass of all API models.
+/// Superclass of all API models
+///
+/// This class is designed to map each database rows from the API server response.
+/// Member variables of this are common columns of all database.
+///
+/// There are some read-only variables, so it is **STRONGLY** not recommended
+/// to change its value.
 abstract class BaseModel extends Model {
 
   /// Unknown UUID
@@ -18,10 +24,15 @@ abstract class BaseModel extends Model {
   /// Maximum length of string field
   static const int maxTextLength = 100;
 
-  /// Constructor
+  /// Initialize class from given [map] (Optional)
   BaseModel([Map<String, dynamic>? map]) : super(map);
 
   /// UUID (Read-only)
+  ///
+  /// UUID only can be changed by API server. It is possible using [map] to change
+  /// its value, however, it is **STRONGLY** not recommended.
+  /// Unlike other read-only variables, this is used to identify each model on
+  /// whole system. So changing this value makes unpredictable and dangerous results.
   String get uuid => getValue(ModelKeys.keyUuid, "");
 
   /// [DateTime] of lastly used (Read-only)
@@ -31,22 +42,28 @@ abstract class BaseModel extends Model {
   /// property.
   DateTime get lastUsed => getDateTime(ModelKeys.keyLastUsed, DateTime.fromMillisecondsSinceEpoch(0));
 
-  /// UID of owner
+  /// UUID of owner
   String get owner => getValue(ModelKeys.keyOwner, "");
 
+  // TODO: Remove
   set owner(String id) => throw UnimplementedError();
 
-  /// List of editor UID
+  /// List of editors UUID
   List<String> get editors => getList(ModelKeys.keyEditors, []);
 
+  // TODO: Remove
   set editors(List<String> list) => setList(ModelKeys.keyEditors, list);
 
-  /// List of viewers UID
+  /// List of viewers UUID
   List<String> get viewers => getList(ModelKeys.keyViewers, []);
 
+  // TODO: Remove
   set viewers(List<String> list) => setList(ModelKeys.keyViewers, list);
 
-  /// Name of this object
+  /// Name
+  ///
+  /// If [text] is longer than [maxTextLength], cut first [maxTextLength] characters only,
+  /// and discard others.
   String get name => getValue(ModelKeys.keyName, "");
 
   set name(String text) {
@@ -56,7 +73,7 @@ abstract class BaseModel extends Model {
     map[ModelKeys.keyName] = text;
   }
 
-  /// Descriptions of this object
+  /// Descriptions
   String get descriptions => getValue(ModelKeys.keyDescription, "");
 
   set descriptions(String text) {
@@ -66,7 +83,7 @@ abstract class BaseModel extends Model {
     map[ModelKeys.keyDescription] = text;
   }
 
-  /// Is this object deleted or not
+  /// Whether this object deleted or not
   bool get deleted => getValue(ModelKeys.keyDeleted, false);
 
   set deleted(bool value) => map[ModelKeys.keyDeleted] = value;

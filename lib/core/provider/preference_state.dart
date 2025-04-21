@@ -9,30 +9,38 @@ import 'package:my_api/core/model/preference_root.dart';
 
 const String _tag = "Prefs";
 
+/// Fetch preferences by root [preference]
 void fetchPreferences(WidgetRef ref, StateNotifierProvider<PreferenceState, PreferenceRoot> preference) {
   ref.read(preference.notifier).fetch();
 }
 
+/// Pull preferences by root [preference]
 void pullPreferences(WidgetRef ref, StateNotifierProvider<PreferenceState, PreferenceRoot> preference) {
   ref.read(preference.notifier).push();
-}
+} // TODO: ???
 
+/// Set preferences by root [preference].
 void setPreference(WidgetRef ref, StateNotifierProvider<PreferenceState, PreferenceRoot> preference, PreferenceRoot root) {
   ref.read(preference.notifier).set(root);
 }
 
-class PreferenceState extends StateNotifier<PreferenceRoot> {
+/// A root preference state notifier
+class PreferenceState extends StateNotifier<PreferenceRoot> { // TODO: rename
 
+  /// Initialize root preference from [ref], [section], and [init]
   PreferenceState(this.ref, this.section, Map<String, dynamic> init) : super(PreferenceRoot(section, init));
 
   final Ref ref;
 
-  final String section;
+  /// Section
+  final String section; // TODO: getter
   
-  /// Keys
+  /// Keys of children
   List<String> get keys => state.keys.toList(growable: false);
 
-  /// Set preference as [root]
+  /// Set [state] as [root]
+  ///
+  /// If [push] failed, [state] does not changed.
   Future<bool> set(PreferenceRoot root) async {
     final result = await push(root);
     if (result) {
@@ -41,7 +49,9 @@ class PreferenceState extends StateNotifier<PreferenceRoot> {
     return result;
   }
 
-  /// Fetch [Preference]s from server
+  /// Pull root [Preference] from server
+  ///
+  /// Returns a value whether pull success.
   Future<bool> fetch() async {
     // Request
     final client = ApiClient();
@@ -63,9 +73,9 @@ class PreferenceState extends StateNotifier<PreferenceRoot> {
     return true;
   }
 
-  /// Push [Preference]s to server
+  /// Push root [Preference] to server
   ///
-  /// Push [state] if [root] is null
+  /// Push [state] if [root] is null. Returns a value whether push is success.
   Future<bool> push([PreferenceRoot? root]) async {
     final target = root ?? state;
     final owner = ref.watch(core_provider.currentUser).user.userId;

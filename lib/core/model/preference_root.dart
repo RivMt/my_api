@@ -5,6 +5,9 @@ import 'package:my_api/core/model/preference_element.dart';
 
 const String _tag = "PreferenceRoot";
 
+/// A root preference
+///
+/// This cannot become a child node
 class PreferenceRoot extends Preference {
 
   PreferenceRoot(this.section, Map<String, dynamic> init) : super() {
@@ -14,14 +17,14 @@ class PreferenceRoot extends Preference {
   /// Section of this preference
   final String section;
 
-  /// Apply from received data
+  /// Apply [raw] as [children]
   void apply(List<PreferenceElement> raw) {
     for(PreferenceElement element in raw) {
       setChild(element);
     }
   }
 
-  /// Add all from map
+  /// Add [map] as [children]
   void addAll(Map<String, dynamic> map) {
     for(String key in map.keys) {
       set(key, map[key]);
@@ -31,7 +34,9 @@ class PreferenceRoot extends Preference {
   /// Raw value of preference
   String get rawValue => Preference.encode(map);
 
-  /// List of children raw
+  /// List of raw value of children
+  ///
+  /// Throws [UnsupportedError] when [children] includes a child which has unsupported value.
   List<Map<String, String>> rawChildren(String owner) {
     final result = <Map<String, String>>[];
     for(PreferenceElement child in children) {
@@ -49,7 +54,9 @@ class PreferenceRoot extends Preference {
     return result;
   }
 
-  /// Return new root for state notifying
+  /// Returns new root for state notifying
+  ///
+  /// Use this there is a necessary to reallocate.
   PreferenceRoot reallocate() {
     final PreferenceRoot root = PreferenceRoot(section, {});
     root.setChildren(children);

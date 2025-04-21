@@ -4,20 +4,30 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/model/model.dart';
 
+
+/// A stream notifier of model
 class ModelStreamNotifier<T extends Model> extends StateNotifier<Set<T>> {
+
+  /// Initialize instance
   ModelStreamNotifier(this.ref) : super(LinkedHashSet<T>(
     equals: (a, b) => a.isEquivalent(b),
     hashCode: (a) => a.representativeCode,
   ));
 
-  final Ref ref;
+  final Ref ref;  // TODO: remove ref
 
+  /// Current query string (Read-only)
   String get currentQuery => _query;
 
+  /// Current query string
   String _query = "";
 
+  /// Search about [query]
+  ///
+  /// If [query] is equal to [_query], method aborted.
+  /// Results will be discarded if [currentQuery] is changed during async.
   Future<void> search(String query) async {
-    if (query == _query) {
+    if (query == _query) {  // TODO: use current query
       return;
     }
     _query = query;
@@ -27,6 +37,8 @@ class ModelStreamNotifier<T extends Model> extends StateNotifier<Set<T>> {
     );
     final response = await ApiClient().search<T>(query);
     await for (T item in response.data) {
+      // Check current query string
+      // because there is possibility of changing during async
       if (_query != query) return;
       state = {...state, item};
     }

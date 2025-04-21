@@ -1,15 +1,7 @@
 import 'package:my_api/core/model/base_model.dart';
 
-enum FinanceModelType {
-  account,
-  payment,
-  transaction,
-  category,
-}
-
-/// Superclass of all Finance API related models.
+/// A superclass of all Finance API related models.
 abstract class FinanceModel extends BaseModel {
-
 
   /// Regular expression for check [Decimal] number
   ///
@@ -19,7 +11,7 @@ abstract class FinanceModel extends BaseModel {
   /// is `2`.
   ///
   /// It checks only digits of integer part and decimal part. If string has
-  /// other letters such as comma(,) or minus sign(-), or any others except
+  /// other letters such as comma(,) or minus sign(-), or any other characters except
   /// number(0-9) and dot(.), **MUST** remove before using this regex.
   static RegExp getRegex(int maxIntegerPartDigits, int maxDecimalPartDigits) {
     final decimal = maxDecimalPartDigits > 0
@@ -29,6 +21,6 @@ abstract class FinanceModel extends BaseModel {
     return RegExp("^$integer$decimal\$");
   }
 
-  /// Create object using [map]
+  /// Initialize instance from given [map]
   FinanceModel([super.map]);
 }

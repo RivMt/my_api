@@ -10,8 +10,10 @@ import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/finance_model.dart';
 import 'package:my_api/finance/model/payment.dart';
 
+/// A transaction class
 class Transaction extends FinanceModel {
 
+  /// Path of API server endpoint
   static const String endpoint = "api/finance/transactions";
 
   /// Maximum digits of integer part of [amount]
@@ -23,19 +25,21 @@ class Transaction extends FinanceModel {
   /// Default [DateTime] of [calculatedDate]
   static final DateTime defaultCalculatedDate = DateTime(1970, 1, 1, 0, 0, 0, 0, 0);
 
-  /// Get amount verification [RegExp] by given [currency]
+  /// Get amount verification [RegExp] from given [currency]
   static RegExp getAmountRegex(Currency currency) {
     return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalPoint));
   }
 
+  /// Initialize instance from given [map]
   Transaction([super.map]);
 
+  /// Initialize base instance
   Transaction.init() : super() {
     paidDate = DateTime.now();
     calculatedDate = paidDate;
   }
 
-  /// Check data is valid
+  /// Whether this transaction is valid or not
   bool get isValid {
     // PID
     if (uuid == BaseModel.unknownUuid) {
@@ -77,21 +81,23 @@ class Transaction extends FinanceModel {
     return true;
   }
 
-  /// Type
+  /// Type of this transaction
   ///
   /// Default value is [TransactionType.expense]
   TransactionType get type => TransactionType.fromCode(getValue(ModelKeys.keyType, 0));
 
   set type(TransactionType value) => map[ModelKeys.keyType] = value.code;
 
-  /// Category
+  /// [Category] of this transaction
   ///
   /// Default value is `0`
   String get categoryId => getValue(ModelKeys.keyCategoryId, BaseModel.unknownUuid);
 
   set categoryId(String value) => map[ModelKeys.keyCategoryId] = value;
 
-  /// [DateTime] of this transaction paid
+  /// [DateTime] of this transaction is paid
+  ///
+  /// Default value is [DateTime.now].
   DateTime get paidDate => getDate(ModelKeys.keyPaidDate, DateTime.now());
 
   set paidDate(DateTime date) {
@@ -100,23 +106,30 @@ class Transaction extends FinanceModel {
     utilityDays = days;
   }
 
-  /// PID of [Account] this transaction occurred
+  /// UUID of [Account] this transaction occurred
+  ///
+  /// Default value is [Account.unknown].
   String get accountId => getValue(ModelKeys.keyAccountId, BaseModel.unknownUuid);
 
   set accountId(String uuid) => map[ModelKeys.keyAccountId] = uuid;
 
-  /// Set [accountId] and [currencyId] according to [account]
+  /// Set [accountId] and [currencyId] from given [account]
   void setAccount(Account account) {
     accountId = account.uuid;
     currencyId = account.currencyId;
   }
 
-  /// PID of [Payment] this transaction handled
+  /// UUID of [Payment] this transaction is paid
+  ///
+  /// Default value is [Payment.unknown].
   String get paymentId => getValue(ModelKeys.keyPaymentId, BaseModel.unknownUuid);
 
   set paymentId(String uuid) => map[ModelKeys.keyPaymentId] = uuid;
 
   /// Set [paymentId], [altCurrencyId], and [altAmount] according to [payment]
+  ///
+  /// [altCurrencyId] and [altAmount] is only set when [currencyId] and currency
+  /// id of [payment] is different.
   void setPayment(Payment payment) {
     paymentId = payment.uuid;
     if (payment.currencyId != Currency.unknownUuid && payment.currencyId != currencyId) {
@@ -128,21 +141,27 @@ class Transaction extends FinanceModel {
     }
   }
 
-  /// ID of currency
+  /// UUID of currency
+  ///
+  /// Default value is [Currency.unknown].
   String get currencyId => getValue(ModelKeys.keyCurrencyId, Currency.unknownUuid);
 
   set currencyId(String uuid) => map[ModelKeys.keyCurrencyId] = uuid;
 
   /// Amount of this transaction
+  ///
+  /// Default value is `0`.
   Decimal get amount => Decimal.parse(getValue(ModelKeys.keyAmount, "0"));
 
   set amount(Decimal value) => map[ModelKeys.keyAmount] = value.toString();
 
-  /// Alternative currency of this transaction
+  /// UUID of alternative currency
   ///
   /// This is used for foreign currency transaction. For example, transaction
-  /// is paid by Euro, and money withdrew (or will withdraw) from Dollar
+  /// is paid by Euro, and money withdrew from Dollar
   /// account, [altCurrencyId] is `EUR`, and [currencyId] is `USD`.
+  ///
+  /// Default value is `null`.
   String? get altCurrencyId => getValue(ModelKeys.keyAltCurrencyId, null);
 
   set altCurrencyId(String? uuid) {
@@ -153,11 +172,13 @@ class Transaction extends FinanceModel {
     }
   }
 
-  /// Alternative mount of this transaction
+  /// Alternative amount of this transaction
   ///
   /// This is used for foreign currency transaction. For example, transaction
-  /// is paid by 5 euros, and money withdrew (or will withdraw) from 2 dollars
+  /// is paid by 5 euros, and money withdrew 2 dollars from
   /// account, [altAmount] is `5`, and [amount] is `2`.
+  ///
+  /// Default value is `null`.
   Decimal? get altAmount {
     final value = getValue(ModelKeys.keyAltAmount, null);
     if (value == null) {
@@ -174,20 +195,23 @@ class Transaction extends FinanceModel {
     }
   }
 
-  /// Value of alternative is available or not
+  /// Whether this transaction has alternative currency and amount or not
   bool get hasAlt => (altCurrencyId != null) || (altAmount != null);
 
-  /// [DateTime] of this transaction calculated in LOCAL
+  /// [DateTime] of this transaction is withdrew
+  ///
+  /// Default value is [defaultCalculatedDate].
   DateTime get calculatedDate => getDate(ModelKeys.keyCalculatedDate, defaultCalculatedDate);
 
   set calculatedDate(DateTime date) => setDate(ModelKeys.keyCalculatedDate, date);
 
-  /// Value of this transaction included in statics
+  /// Whether of this transaction is included in statics or not
   bool get isIncluded => getValue(ModelKeys.keyIncluded, true);
 
   set isIncluded(bool value) => map[ModelKeys.keyIncluded] = value;
 
-  /// Last date of this transaction is utility in LOCAL
+  /// Last date of this transaction is effective
+  @Deprecated("This property is not useful and will be removed in further release")
   DateTime get utilityEnd => getDate(ModelKeys.keyUtilityEnd, paidDate.add(const Duration(seconds: 1)));
 
   set utilityEnd(DateTime date) => setDate(ModelKeys.keyUtilityEnd, date);
@@ -196,6 +220,7 @@ class Transaction extends FinanceModel {
   ///
   /// It includes starting of day, therefore, if [paidDate] and [utilityEnd] is
   /// same day, it is `1`.
+  @Deprecated("This property will be removed due to utilityEnd is deprecated")
   int get utilityDays => utilityEnd.difference(paidDate).inDays + 1;
 
   set utilityDays(int value) => setDate(ModelKeys.keyUtilityEnd, paidDate.add(Duration(
@@ -204,6 +229,7 @@ class Transaction extends FinanceModel {
   )));
 
   /// ID of folder
+  @Deprecated("This property does not working and will be removed in further release")
   int get folderId => getValue(ModelKeys.keyFolder, 0);
 
   set folderId(int value) => map[ModelKeys.keyFolder] = value;
@@ -228,18 +254,21 @@ class Transaction extends FinanceModel {
   }
 }
 
-
+/// A transaction type
 enum TransactionType {
   unknown(-1),
   expense(0),
   income(1);
 
+  /// Construct type
   const TransactionType(this.code);
 
-  /// [int] value of [TransactionType]
+  /// Code of this type
   final int code;
 
-  /// Find valid [TransactionType] object by [code]
+  /// Find corresponding [TransactionType] from given [code]
+  ///
+  /// Default value is [TransactionType.unknown].
   factory TransactionType.fromCode(int code) {
     switch(code) {
       case 0:
@@ -251,7 +280,9 @@ enum TransactionType {
     }
   }
 
-  /// Return list of valid types
+  /// Returns list of valid types
+  ///
+  /// It is distinct to [values] which returns all types.
   static List<TransactionType> get types => const [
     TransactionType.expense,
     TransactionType.income,

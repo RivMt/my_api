@@ -7,19 +7,22 @@ import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
 
+/// A finance account class
 class Account extends WalletItem {
 
+  /// Path of API server endpoint
   static const String endpoint = "api/finance/accounts";
 
-  /// Unknown account
+  /// Unknown account instance
   static final Account unknown = Account({
     ModelKeys.keyUuid: BaseModel.unknownUuid,
     ModelKeys.keyDescription: "Unknown",
   });
 
+  /// Initialize from given [map]
   Account([super.map]);
 
-  /// Value of this model is valid or not
+  /// Whether this model is valid or not
   bool get isValid {
     // UUID
     if (uuid == BaseModel.unknownUuid) {
@@ -37,17 +40,23 @@ class Account extends WalletItem {
     return true;
   }
 
-  /// Index of icon
+  /// Icon of this account
+  ///
+  /// Default value is [AccountSymbol.account]
   AccountSymbol get icon => AccountSymbol.fromId(getValue(ModelKeys.keyIcon, AccountSymbol.account.id));
 
   set icon(AccountSymbol icon) => map[ModelKeys.keyIcon] = icon.id;
 
   /// Balance of this account
+  ///
+  /// Default value is `0`
   Decimal get balance => Decimal.parse(getValue(ModelKeys.keyBalance, "0"));
 
   set balance(Decimal value) => map[ModelKeys.keyBalance] = value.toString();
 
-  /// Is this account handled as cash or not
+  /// Whether this account is cash or not
+  ///
+  /// Default value is `true`
   bool get isCash => getValue(ModelKeys.keyIsCash, true);
 
   set isCash(bool value) => map[ModelKeys.keyIsCash] = value;
@@ -57,6 +66,7 @@ class Account extends WalletItem {
 
 }
 
+/// A symbol of account
 enum AccountSymbol {
   saving(0, Icons.savings_outlined),
   account(1, Icons.folder_outlined),
@@ -70,13 +80,13 @@ enum AccountSymbol {
   prepaid(9, Icons.local_atm),
   mileage(10, Icons.airplane_ticket_outlined);
 
-
+  /// Construct a symbol
   const AccountSymbol(this.id, this.icon);
 
-  /// Unique value
+  /// Unique value of this symbol
   final int id;
 
-  /// [IconData]
+  /// [IconData] of this symbol
   final IconData icon;
 
   /// Name for translation
@@ -84,7 +94,9 @@ enum AccountSymbol {
     return "accountType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
   }
 
-  /// Find icon using [id]
+  /// Find corresponding symbol from [id]
+  ///
+  /// Default value is [AccountSymbol.account].
   factory AccountSymbol.fromId(int id) {
     // Check id value
     if (id < 0 || id >= AccountSymbol.values.length) {

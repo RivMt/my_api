@@ -1,4 +1,4 @@
-/// Constant class of keys
+/// A class contains key of [Model] and its subclasses
 abstract class ModelKeys {
 
   static const String keyUuid = "uuid";

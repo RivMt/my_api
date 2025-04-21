@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:convert';
-import 'dart:math';
 import 'package:decimal/decimal.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_api/core/log.dart';
@@ -19,19 +18,11 @@ import 'model/preference.dart';
 
 const String _tag = "API";
 
-/// Send and receive HTTP request
-///
-/// Send API call and convert data properly which is raw received HTTP response.
-/// It also handles authentication and login using [login] and [auth] method.
-///
-/// Generally, using [init] method to login or authenticate [User]. And process of
-/// creating, updating and deleting can be done by [create], [update] and [delete].
-/// It is possible that using [read] to get data from server, however, use
-/// [ModelState] alternatively, to manage widgets' state easily.
+/// Send and receive HTTP request to backend server
 class ApiClient {
 
   /// Header key for API key
-  static const String keyApiKey = "X-API-Key";
+  static const String keyApiKey = "X-API-Key";  // TODO: remove
 
   /// Private instance for singleton pattern
   static final ApiClient _instance = ApiClient._();
@@ -42,39 +33,39 @@ class ApiClient {
   /// Factory constructor for singleton pattern
   factory ApiClient() => _instance;
 
+  /// Instance for OIDC management
   final OpenIDConnect oidc = OpenIDConnect();
 
+  /// Address of backend server
   String _uri = "";
 
+  /// Address of backend server (Read-only)
   String get uri => _uri;
 
   /// HTTP request headers
+  ///
+  /// This header includes authenticate token also. Be careful when using this.
   Map<String, String> get headers => {
     "Content-Type": "application/json",
     "Authorization": "Bearer ${oidc.idToken}",
   };
 
-  /// Value of current app is developer mode or not
+  /// Whether current app is developer mode (Read-only)
   bool get isDevelop => _isDevelop;
 
+  /// Whether current app is developer mode
   bool _isDevelop = false;
 
-  /// Init
+  /// Init client with [preferences]
   ///
-  /// Initiate server connection. If login is required, [onLoginRequired]
-  /// will be triggered.
-  ///
-  /// [preferences] are `json` data of server addresses.
-  ///
-  /// You can select `Production` and `Test` server using [useTest]. If it
-  /// is `null`, server will be selected by [kDebugMode]. Otherwise, follow its
-  /// value.
-  ///
-  /// The structure of `json` file like below.
+  /// The structure of [preferences] likes below.
   /// ```json
   /// {
-  ///   "url": PRODUCTION-SERVER-ADDRESS,
-  ///   "test": TEST-SERVER-ADDRESS
+  ///   "apiUri": Uri of server (e.g. https://example.com),
+  ///   "clientId": Client ID of registered OIDC server,
+  ///   "clientSecret": Client secret of registered OIDC server,
+  ///   "redirectUri": Redirect uri of catch oidc result (e.g. https://example.com/redirect.html),
+  ///   "isDevelop": Whether current app is developer mode or not
   /// }
   /// ```
   Future<void> init(Map<String, dynamic> preferences) async {
@@ -95,19 +86,21 @@ class ApiClient {
     return;
   }
 
+  /// Login
   Future<User> login() async {
     final user = await oidc.login();
     Log.i(_tag, "Logged in: ${user.email}");
     return user;
   }
 
+  /// Logout
   Future<User> logout() async {
     await oidc.logout();
     Log.i(_tag, "Logged out");
     return User.unknown;
   }
 
-  void onUserChanges(Function(User) listener) {
+  void onUserChanges(Function(User) listener) {  // TODO: remove
     oidc.manager.userChanges().listen((OidcUser? user) {
       if (user == null) {
         return;
@@ -116,8 +109,8 @@ class ApiClient {
     });
   }
 
-  /// Build uri
-  Uri buildUri(String endpoint, Map<String, dynamic>? query) {
+  /// Returns [Uri] of REST API address with [endpoint] and [query]
+  Uri buildUri(String endpoint, Map<String, dynamic>? query) {  // TODO: rename
     final split = uri.split(":");
     final host = split[0];
     final port = (split.length > 1) ? int.parse(split[1]) : null;
@@ -130,7 +123,14 @@ class ApiClient {
     );
   }
 
-  /// Make HTTP request
+  /// Send HTTP request with [method] and [endpoint]
+  ///
+  /// This returns raw http response. Use [request] or [requestStream] instead.
+  ///
+  /// [body] is not required and should be a `null` when [method] is [HttpMethod.get].
+  /// Otherwise, it is required usually.
+  ///
+  /// [query] is query parameters
   Future<http.StreamedResponse> _request({
     required HttpMethod method,
     required String endpoint,
@@ -162,7 +162,12 @@ class ApiClient {
     return http.StreamedResponse(const Stream.empty(), 400);
   }
 
-  /// Request API Stream
+  /// Send HTTP stream request with [method] and [endpoint]
+  ///
+  /// Returns [Stream]. Use [request] if completed data is needed.
+  ///
+  /// [body] is not required and should be a `null` if [method] is [HttpMethod.get].
+  /// [query] is query parameter.
   Future<ApiResponse<Stream>> requestStream<T>({
     required HttpMethod method,
     required String endpoint,
@@ -187,7 +192,12 @@ class ApiClient {
     );
   }
 
-  /// Send API call
+  /// Send HTTP request with [method] and [endpoint]
+  ///
+  /// Returns completed data. Use [requestStream] if data stream is needed.
+  ///
+  /// [body] is not required and should be a `null` if [method] is [HttpMethod.get].
+  /// [query] is query parameter.
   Future<ApiResponse> request<T>({
     required HttpMethod method,
     required String endpoint,
@@ -211,27 +221,27 @@ class ApiClient {
     );
   }
 
-  /// Covert [map] to [T]
-  dynamic cast<T>(Map<String, dynamic> data) {
+  /// Casts [map] to instance of [T]
+  dynamic cast<T>(Map<String, dynamic> map) {
     switch(T) {
       case Account:
-        return Account(data);
+        return Account(map);
       case Payment:
-        return Payment(data);
+        return Payment(map);
       case Transaction:
-        return Transaction(data);
+        return Transaction(map);
       case Category:
-        return Category(data);
+        return Category(map);
       case Currency:
-        return Currency(data);
+        return Currency(map);
       case PreferenceElement:
-        return PreferenceElement.fromMap(PreferenceDummy(), data);
+        return PreferenceElement.fromMap(PreferenceDummy(), map);
       default:
         throw UnimplementedError();
     }
   }
 
-  /// Covert multiple items in [map] to [T]
+  /// Casts multiple items in [list] to instances of [T]
   List<T> casts<T>(List list) {
     final data = <T>[];
     for (Map<String, dynamic> map in list) {
@@ -240,7 +250,9 @@ class ApiClient {
     return data;
   }
 
-  /// Parse endpoint from generic type
+  /// Get api endpoint from type [T]
+  ///
+  /// Throws [UnimplementedError] if endpoint is not specified yet.
   String endpoint<T>() {
     switch(T) {
       case Account: return Account.endpoint;
@@ -253,8 +265,10 @@ class ApiClient {
     }
   }
 
-  /// Create [body] from [link]
-  Future<ApiResponse<T>> create<T>(Map<String, dynamic> body) async {
+  /// Create [body] using HTTP POST
+  ///
+  /// [T] must be specified and it is not specified, throws [TypeError].
+  Future<ApiResponse<T>> create<T>(Map<String, dynamic> body) async {  // TODO: extends model
     if (T == dynamic) {
       throw TypeError();
     }
@@ -266,7 +280,9 @@ class ApiClient {
     return result.cast<T>(cast<T>(result.data));
   }
 
-  /// Read [currency] from [link]
+  /// Read data with [query] using HTTP GET
+  ///
+  /// [T] must be specified and it is not specified, throws [TypeError].
   Future<ApiResponse<List<T>>> read<T>([Map<String, dynamic>? query]) async {
     if (T == dynamic) {
       throw TypeError();
@@ -279,8 +295,10 @@ class ApiClient {
     return result.casts<T>(casts<T>(result.data));
   }
 
-  /// Update [body] from [link]
-  Future<ApiResponse<T>> update<T>(Map<String, dynamic> body) async {
+  /// Update [body] using HTTP PUT
+  ///
+  /// [T] must be specified and it is not specified, throws [TypeError].
+  Future<ApiResponse<T>> update<T>(Map<String, dynamic> body) async {  // TODO: extends
     if (T == dynamic) {
       throw TypeError();
     }
@@ -292,8 +310,10 @@ class ApiClient {
     return result.cast<T>(cast<T>(result.data));
   }
 
-  /// Delete [body] from [link]
-  Future<ApiResponse<T>> delete<T>(Map<String, dynamic> body) async {
+  /// Delete [body] using HTTP DELETE
+  ///
+  /// [T] must be specified and it is not specified, throws [TypeError].
+  Future<ApiResponse<T>> delete<T>(Map<String, dynamic> body) async {  // TODO: extends
     if (T == dynamic) {
       throw TypeError();
     }
@@ -308,7 +328,17 @@ class ApiClient {
     return result.cast<T>(cast<T>(result.data));
   }
 
-  /// Calculate value by [query]
+  /// Calculate value with [query] using HTTP GET
+  ///
+  /// [T] must be specified and it is not specified, throws [TypeError].
+  /// Below is example of result.
+  /// ```json
+  /// {
+  ///   "total": 0,
+  ///   "average": 0,
+  ///   "count": 0
+  /// }
+  /// ```
   Future<ApiResponse<Map<String, Decimal>>> stat<T>([ApiQuery? query]) async {
     if (T == dynamic) {
       throw TypeError();
@@ -330,7 +360,9 @@ class ApiClient {
     return ApiResponse(result: result.result, data: data);
   }
 
-  /// Search query
+  /// Search [query] using HTTP GET
+  ///
+  /// [T] must be specified and it is not specified, throws [TypeError].
   Future<ApiResponse<Stream<T>>> search<T>(String query) async {
     if (T == dynamic) {
       throw TypeError();
@@ -361,12 +393,14 @@ enum HttpMethod {
   String toString() => name.toUpperCase();
 }
 
-enum ApiResultCode {
+/// A code of result
+enum ApiResultCode {  // TODO: rename
   success,
   failed,
   unknown,
 }
 
+/// A response of type [T]
 class ApiResponse<T> {
 
   /// Result
@@ -375,44 +409,54 @@ class ApiResponse<T> {
   /// Data
   final T data;
 
+  /// Initialize
   ApiResponse({
     required this.result,
     required this.data,
   });
 
+  /// Failed response
   ApiResponse.failed(this.data, [
     this.result = ApiResultCode.failed,
   ]);
 
-  /// Covert item in [data] and return new [ApiResponse]
+  /// Casts [data] as [E] and return new [ApiResponse]
   ApiResponse<E> cast<E>(E data) => ApiResponse<E>(
     result: result,
     data: data,
   );
 
-  /// Covert item in [data] and return new [ApiResponse]
+  /// Casts [data] as List of [E] and return new [ApiResponse]
   ApiResponse<List<E>> casts<E>(List<E> data) => ApiResponse<List<E>>(
     result: result,
     data: data,
   );
 }
 
+/// A query parameter
 class ApiQuery {
 
+  /// Key of sort fields
   static const String keySortField = "sort_field";
 
+  /// Key of sort orders
   static const String keySortOrder = "sort_order";
 
+  /// Key of query range begin
   static const String keyQueryRangeBegin = "begin";
 
+  /// Key of query range end
   static const String keyQueryRangeEnd = "end";
 
+  /// Key of search query
   static const String keyQueryString = "q";
 
-  final Map<String, dynamic>? conditions;
+  final Map<String, dynamic>? conditions;  // TODO: remove
 
+  /// Initialize
   const ApiQuery(this.conditions);
 
+  /// Query parameters
   Map<String, String> get params {
     if (conditions == null) {
       return {};
@@ -436,6 +480,9 @@ class ApiQuery {
   }
 }
 
+/// A order of sort
+///
+/// `true` is ascending, `false` is descending.
 enum SortOrder {
   asc(true),
   desc(false);

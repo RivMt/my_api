@@ -3,43 +3,66 @@ import 'dart:collection';
 import 'package:decimal/decimal.dart';
 import 'package:my_api/core/model/preference_element.dart';
 
+/// A preference class
+///
+/// Preferences are consist of multiple preference instances. Its structure is
+/// like tree. A leaf node can store a single value, however, a stem node can
+/// store multiple children nodes.
 abstract class Preference<T> {
 
+  /// API endpoint path
   static const String endpoint = "api/core/preferences";
 
+  /// Escape letter of control character
   static const String tokenEscape = "\\";
 
+  /// Type indicator of [int]
   static const String tokenInteger = "I";
 
+  /// Type indicator of [String]
   static const String tokenString = "S";
 
+  /// Type indicator of [Decimal]
   static const String tokenDecimal = "D";
 
+  /// Type indicator of [double]
   static const String tokenDouble = "d";
 
+  /// Type indicator of [bool]
   static const String tokenBoolean = "B";
 
+  /// Type indicator of [List]
   static const String tokenList = "L";
 
+  /// Separator of each list item
   static const String tokenListSeparator = ",";
 
+  /// Opening character of list
   static const String tokenListOpener = "[";
 
+  /// Closing character of list
   static const String tokenListCloser = "]";
 
+  /// Type indicator of [Map]
   static const String tokenMap = "M";
 
+  /// Connecting character of map
   static const String tokenMapConnector = ":";
 
+  /// Separator of each map key-value item
   static const String tokenMapSeparator = ";";
 
+  /// Opening character of map
   static const String tokenMapOpener = "{";
 
+  /// Closing character of map
   static const String tokenMapCloser = "}";
 
+  /// Type indicator of [DateTime]
   static const String tokenDateTime = "Z";
 
-  static const List<String> escapeCandidates = [
+  /// List of characters which should be escaped
+  static const List<String> escapeCandidates = [  // TODO: Consider rename
     tokenListSeparator,
     tokenListOpener,
     tokenListCloser,
@@ -50,7 +73,7 @@ abstract class Preference<T> {
   ];
 
   /// Encode raw [value] to string-style data
-  static String encode(dynamic value) {
+  static String encode(dynamic value) {  // TODO: Refactor
     late String type;
     String str = value.toString();
     if (value is int) {
@@ -91,9 +114,6 @@ abstract class Preference<T> {
   }
 
   /// Decode string-style [data] to raw [value]
-  ///
-  /// **I** is [int], **S** is [String], **D** is [Decimal], **d** is [double],
-  /// **B** is [bool], and **L** is [List]. It does not support nested list.
   static dynamic decode(final String data) {
     // If value is too short, return null
     if (data.isEmpty) {
@@ -184,36 +204,42 @@ abstract class Preference<T> {
         || (value is LinkedHashMap<String, dynamic>);
   }
 
+  /// Initialize empty preference
   Preference();
 
+  /// Initialize new instance from [map]
   Preference.fromMap(Map<String, dynamic> map);
 
-  /// Child preferences
+  /// Children of current preference
   final Map<String, PreferenceElement> _children = {};
 
-  /// Child preferences
+  /// List of children preference
   Iterable<PreferenceElement> get children => _children.values;
 
-  /// List of child preferences keys
+  /// List of children preference keys
   Iterable<String> get keys => _children.keys;
 
-  /// Check preference contains [key]
+  /// Whether there is a child which its key is [key]
   bool containsKey(String key) => _children.containsKey(key);
 
-  /// Set child [value] by [key]
+  /// Set child [value] as [key]
+  ///
+  /// It is recommended to specify type
   void set<V>(String key, V value) => setChild(PreferenceElement<V>(
     parent: this,
     key: key,
     value: value,
   ));
 
-  /// Set single child
+  /// Set [element] as child
+  ///
+  /// If there is a child which has same key, it will be replaced by [element].
   void setChild(PreferenceElement element) {
     element.parent = this;
     _children[element.key] = element;
   }
 
-  /// Set children
+  /// Replace children by [elements]
   void setChildren(Iterable<PreferenceElement> elements) {
     for(PreferenceElement element in elements) {
       setChild(element);
@@ -222,7 +248,9 @@ abstract class Preference<T> {
 
   /// Get child by [key]
   ///
-  /// If [key] is not contained, set new [PreferenceElement] with [key], [value]
+  /// If [key] is not contained, set new child with [key], [value].
+  /// It is recommend to specify type because sometimes new child has been created
+  /// by above description.
   PreferenceElement get<V>(String key, V value) {
     if (!containsKey(key)) {
       set<V>(key, value);
@@ -231,6 +259,8 @@ abstract class Preference<T> {
   }
 
   /// Remove child by [key]
+  ///
+  /// If it does not contains [key], return `null`.
   PreferenceElement? remove(String key) {
     if (!containsKey(key)) {
       return null;
@@ -238,7 +268,9 @@ abstract class Preference<T> {
     return _children.remove(key);
   }
 
-  /// Convert [children] to map
+  /// Converts this instance as map
+  ///
+  /// The results contains key and value of its children.
   Map<String, dynamic> get map {
     final Map<String, dynamic> map = {};
     for(PreferenceElement child in children) {

@@ -3,39 +3,45 @@ import 'package:my_api/core/api.dart';
 import 'package:my_api/core/log.dart';
 import 'package:my_api/core/model/model.dart';
 
-class ModelsState<T extends Model> extends StateNotifier<List<T>> {
+// TODO: Separate two classes
+
+/// A state of model list
+class ModelsState<T extends Model> extends StateNotifier<List<T>> {  // TODO: rename
 
   static const String _tag = "ModelsState";
 
-  ModelsState(this.ref) : super([]);
+  /// Initialize state notifier
+  ModelsState(this.ref) : super([]);  // TODO: remove ref
 
   final Ref ref;
 
-  /// Clear state
+  /// Clear state as empty list
   void clear() => state = [];
 
-  /// Fetch [T] items fit to [condition] and filter by [options]
+  /// Fetch [T] items with [query]
   ///
-  /// This method overrides [state]
-  Future<void> fetch([Map<String, dynamic>? queries]) async {
+  /// This method set [state] as new response. If there is a necessary to append
+  /// items to current state, use [append].
+  Future<void> fetch([Map<String, dynamic>? query]) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(queries);
+    final ApiResponse<List<T>> response = await client.read<T>(query);
     if (response.result != ApiResultCode.success) {
-      Log.e(_tag, "Failed to fetch: $queries");
+      Log.e(_tag, "Failed to fetch: $query");
       state = [];
       return;
     }
     state = response.data;
   }
 
-  /// Get [T] items fit to [condition] and filter by [options]
+  /// Append [T] items with [query]
   ///
-  /// This method append/update data to [state]
-  Future<void> append(Map<String, dynamic>? queries) async {
+  /// This method append/update data of [state]. If there is a necessary to reset
+  /// [state] as response, use [fetch].
+  Future<void> append(Map<String, dynamic>? query) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(queries);
+    final ApiResponse<List<T>> response = await client.read<T>(query);
     if (response.result != ApiResultCode.success) {
-      Log.e(_tag, "Failed to append: $queries");
+      Log.e(_tag, "Failed to append: $query");
       return;
     }
     // Apply fetched data
@@ -51,7 +57,7 @@ class ModelsState<T extends Model> extends StateNotifier<List<T>> {
     state = List<T>.from(list);
   }
 
-  /// Create [data] to server
+  /// Create [data] and returns value whether success or not
   Future<bool> create(T data) async {
     final result = await ApiClient().create<T>(data.map);
     if (result.result != ApiResultCode.success) {
@@ -62,7 +68,7 @@ class ModelsState<T extends Model> extends StateNotifier<List<T>> {
     return true;
   }
 
-  /// Update [data] to server
+  /// Update [data] and returns value whether success or not
   Future<bool> update(T data) async {
     final result = await ApiClient().update<T>(data.map);
     if (result.result != ApiResultCode.success) {
@@ -79,7 +85,7 @@ class ModelsState<T extends Model> extends StateNotifier<List<T>> {
     return true;
   }
 
-  /// Delete [data] to server
+  /// Delete [data] and returns value whether success or not
   Future<bool> delete(T data) async {
     final result = await ApiClient().delete<T>(data.map);
     if (result.result != ApiResultCode.success) {
@@ -98,31 +104,36 @@ class ModelsState<T extends Model> extends StateNotifier<List<T>> {
 
 }
 
-class ModelState<T> extends StateNotifier<T> {
+/// A single model state notifier
+class ModelState<T> extends StateNotifier<T> {  // TODO: rename, inherit value state notifier
 
   static const String _tag = "ModelState";
 
+  /// Initialize instance
+  ///
+  /// [unknown] is default value of [state] when [clear] called.
   ModelState(this.ref, this.unknown) : super(unknown);
 
-  final Ref ref;
+  final Ref ref;  // TODO: remove ref
 
+  /// Default value of [T]
   final T unknown;
 
-  /// Clear state
+  /// Clear state as [unknown]
   void clear() => state = unknown;
 
-  /// Fetch [T] item fit to [condition] and filter by [options]
-  Future<void> fetch([Map<String, dynamic>? queries]) async {
+  /// Fetch [T] item with [query]
+  Future<void> fetch([Map<String, dynamic>? query]) async {
     final client = ApiClient();
-    final ApiResponse<List<T>> response = await client.read<T>(queries);
+    final ApiResponse<List<T>> response = await client.read<T>(query);
     if (response.result != ApiResultCode.success || response.data.isEmpty) {
-      Log.e(_tag, "Failed to request: $queries");
+      Log.e(_tag, "Failed to request: $query");
       state = unknown;
       return;
     }
     state = response.data[0];
   }
 
-  /// Set [state] directly
-  void set(T value) => state = value;
+  /// Set [state] as [value] directly
+  void set(T value) => state = value;  // TODO: check this is necessary
 }

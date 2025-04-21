@@ -1,8 +1,17 @@
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference.dart';
+import 'package:my_api/core/model/preference_root.dart';
 
+/// An element of preference
+///
+/// This can become a stem and node node except root. Use [PreferenceRoot] as root preference.
+/// If empty preference is required, use [PreferenceDummy].
 class PreferenceElement<T> extends Preference {
 
+  /// Initialize preference from [parent], [key] and [value]
+  ///
+  /// If [value] is map, [value] is assigned as [children].
+  /// Otherwise, it is assigned as [value].
   PreferenceElement({
     required this.parent,
     required String key,
@@ -18,7 +27,9 @@ class PreferenceElement<T> extends Preference {
     this.value = value;
   }
 
-  /// Construct from JSON map
+  /// Initialize preference from [map]
+  ///
+  /// The [map] is assumed as JSON.
   PreferenceElement.fromMap(this.parent, Map<String, dynamic> map) : super.fromMap(map) {
     key = map[ModelKeys.keyPreferenceKey]!;
     final data = Preference.decode(map[ModelKeys.keyPreferenceValue]!);
@@ -31,8 +42,10 @@ class PreferenceElement<T> extends Preference {
     value = data;
   }
 
-  /// Construct from raw value like below
+  /// Initialize preference from [parent], [key], and [rawValue]
   ///
+  /// It is distinct to default constructor, because only the [String] can be
+  /// a [rawValue]. And [rawValue] is decoded by [Preference.decode].
   /// ```json
   /// {
   ///   "key1": 0,
@@ -49,12 +62,18 @@ class PreferenceElement<T> extends Preference {
     value: Preference.decode(rawValue),
   );
 
+  /// A parent instance of current preference
   Preference parent;
 
-  /// Key of preference
+  /// Key of this preference
   String key = "";
 
-  /// Value of preference
+  /// Value of this preference
+  ///
+  /// It is `null` if this node is a stem node. However, `null` value does not
+  /// mean this instance is stem node always. Sometimes, not initialized instance
+  /// can have `null` value.
+  /// If there is necessary to check it is stem or not, use [isStem].
   T? get value => _value;
 
   set value(T? v) {
@@ -64,17 +83,27 @@ class PreferenceElement<T> extends Preference {
     _value = v;
   }
 
+  /// Value
   T? _value;
 
-  /// Check this node is leaf or not
+  /// Whether this node is leaf
+  ///
+  /// If it is `true`, [value] is `null` because every leaf node has non-null value.
   bool get isLeaf => value != null;
 
-  /// Check this node is stem or not
+  /// Whether this node is stem
+  ///
+  /// If it is `true`, this preference has at least one child.
   bool get isStem => children.isNotEmpty;
 
   /// Raw value of preference
+  ///
+  /// If this is leaf node, returns raw value of [value], otherwise, [map].
   String get rawValue => Preference.encode(isLeaf ? value : map);
 
+  /// Set [element] as child
+  ///
+  /// Throws [UnsupportedError] when trying to set child to leaf node.
   @override
   void setChild(PreferenceElement element) {
     if (isLeaf) {
@@ -99,6 +128,10 @@ class PreferenceElement<T> extends Preference {
 
 }
 
+
+/// A dummy preference
+///
+/// It is singleton instance. It should be used as empty preference temporarily.
 class PreferenceDummy extends Preference {
 
   static final PreferenceDummy _instance = PreferenceDummy._();

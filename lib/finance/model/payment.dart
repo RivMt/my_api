@@ -8,10 +8,17 @@ import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/wallet_item.dart';
 
+/// A payment handler class
+///
+/// Distinct to other models, payment has two default instance [unknown] and [none].
+/// [unknown] is same role of any other models, however, [none] is somewhat different.
+/// If an user defined a transaction does not have payment, [none] is plausible.
 class Payment extends WalletItem {
 
+  /// Path of API server endpoint
   static const String endpoint = "api/finance/payments";
 
+  /// UUID of none payment
   static const String noneUuid = "0";
 
   /// Minimum day of payment day
@@ -22,7 +29,7 @@ class Payment extends WalletItem {
   /// 31th day is regarded as 30th
   static const int payDayMax = 30;
 
-  /// Unknown payment
+  /// Unknown payment instance
   static final Payment unknown = Payment({
     ModelKeys.keyUuid: BaseModel.unknownUuid,
     ModelKeys.keyCurrencyId: Currency.unknownUuid,
@@ -34,8 +41,10 @@ class Payment extends WalletItem {
     ModelKeys.keyCurrencyId: Currency.unknownUuid,
   });
 
+  /// Initialize payment from given [map]
   Payment(super.map);
 
+  /// Whether this payment is valid or not
   bool get isValid {
     // Pid
     if (uuid == BaseModel.unknownUuid) {
@@ -62,27 +71,37 @@ class Payment extends WalletItem {
     return true;
   }
 
-  /// Is this account handled as cash or not
+  /// Whether this payment handles credit transaction or not
+  ///
+  /// Default value is `false`.
   bool get isCredit => getValue(ModelKeys.keyIsCredit, false);
 
   set isCredit(bool value) => map[ModelKeys.keyIsCredit] = value;
 
-  /// Index of icon
+  /// Icon of this payment
+  ///
+  /// Default value is [PaymentSymbol.card]
   PaymentSymbol get icon => PaymentSymbol.fromId(getValue(ModelKeys.keyIcon, PaymentSymbol.card.id));
 
   set icon(PaymentSymbol icon) => map[ModelKeys.keyIcon] = icon.id;
 
-  /// Beginning day of range when this payment paid
+  /// Beginning day of range for each payment period
+  ///
+  /// Default value is [PaymentRangePoint.defaultBegin].
   PaymentRangePoint get payBegin => PaymentRangePoint.fromCode(getValue(ModelKeys.keyPayBegin, PaymentRangePoint.defaultBegin.code));
 
   set payBegin(PaymentRangePoint point) => map[ModelKeys.keyPayBegin] = point.code;
 
-  /// End day of range when this payment paid
+  /// End day of range for each payment period
+  ///
+  /// Default value is [PaymentRangePoint.defaultEnd].
   PaymentRangePoint get payEnd => PaymentRangePoint.fromCode(getValue(ModelKeys.keyPayEnd, PaymentRangePoint.defaultEnd.code));
 
   set payEnd(PaymentRangePoint point) => map[ModelKeys.keyPayEnd] = point.code;
 
-  /// Date of this payment paid on current month
+  /// Withdrawal date of each payment period
+  ///
+  /// Default value is `14`.
   int get payDate => getValue(ModelKeys.keyPayDate, 14);
 
   set payDate(int value) {
@@ -91,7 +110,9 @@ class Payment extends WalletItem {
     map[ModelKeys.keyPayDate] = list[1];
   }
 
-  /// Get date which transaction will be calculated from [paidDate]
+  /// Gets withdrawal date of the transaction based on given [paidDate]
+  ///
+  /// If [isCredit] is `false`, returns [paidDate].
   ///
   /// This method calculates [DateTime] in LOCAL time. If you want UTC time,
   /// you must call `toUtc` returned value.
@@ -127,16 +148,19 @@ class Payment extends WalletItem {
 
 }
 
+/// A point of payment range
 class PaymentRangePoint {
 
+  /// Default beginning point
   static final defaultBegin = PaymentRangePoint(1, Payment.payDayMin);
 
+  /// Default end point
   static final defaultEnd = PaymentRangePoint(1, Payment.payDayMax);
 
-  /// Point of payment range
+  /// Initialize a point from given [month] and [day]
   ///
   /// [month] must be bigger than or equal to `0`, otherwise it will be `0`.
-  /// And [day] must be bigger than or equal to [Payment.payDayMin] - `1` and
+  /// And [day] must be bigger than or equal to [Payment.payDayMin] and
   /// smaller than or equal to [Payment.payDayMax].
   PaymentRangePoint(int month, int day) {
     this.month = max(month, 0);
@@ -145,10 +169,10 @@ class PaymentRangePoint {
     this.day = days[1];
   }
 
-  /// Point of payment range
+  /// Initialize a point from given [code]
   ///
-  /// [month] is quotient of value which divide [code] by `100`.
-  /// [day] is remainder of value which divide [code] by `100`.
+  /// [month] will be quotient of value which divide [code] by `100`.
+  /// [day] will be remainder of value which divide [code] by `100`.
   PaymentRangePoint.fromCode(int code) {
     month = code ~/ 100;
     day = code % 100;
@@ -157,27 +181,30 @@ class PaymentRangePoint {
   /// How many months before
   ///
   /// `0` means current month, and `1` is last month. Of course `100` means 100
-  /// months before
+  /// months before.
   late final int month;
 
-  /// Day
+  /// Day of [month]
   ///
   /// `1` means first day of month. [Payment.payDayMax] means last day of month.
+  /// 31st day is assumed as `30`th because some month does not have that day.
   late final int day;
 
-  /// Code
+  /// Code of this point
   ///
-  /// This is value which is saved at DB.
+  /// The value is `month*100+day`.
   int get code => month * 100 + day;
 
   /// Compare this and other [PaymentRangePoint]
   ///
   /// If returned value is `0`, this and [other] is exactly same point.
-  /// And value is bigger than `0`, this is after (more future) than [other].
-  /// Finally, value is smaller than `0`, this is before (more past) than [other].
+  /// And the value is bigger than `0`, this is after (more future) than [other].
+  /// Otherwise, value is smaller than `0`, this is before (more past) than [other].
   ///
-  /// Also, absolute value of returned is how many days between this and [other].
-  /// This method asserts one month is **ALWAYS 30 days**.
+  /// Also, absolute value of the returned is how many days between this and [other].
+  /// For example, this is `101` and the other is `102`, `-1` will be returned.
+  ///
+  /// This method asserts one month is **ALWAYS** 30 days.
   int compareTo(PaymentRangePoint other) {
     if (month > other.month) {
       return ((Payment.payDayMax - day + 1) + other.day) * -1;
@@ -214,6 +241,7 @@ class PaymentRangePoint {
   bool operator >(PaymentRangePoint other) => compareTo(other) > 0;
 }
 
+/// A symbol of payment
 enum PaymentSymbol {
   card(0, Icons.credit_card),
   cash(1, Icons.money),
@@ -226,15 +254,18 @@ enum PaymentSymbol {
   mileage(8, Icons.flight_outlined),
   toll(9, Icons.toll_outlined);
 
-
+  /// Initialize instance
   const PaymentSymbol(this.id, this.icon);
 
-  /// Unique value
+  /// Unique value of this symbol
   final int id;
 
-  /// [IconData]
+  /// [IconData] of this symbol
   final IconData icon;
 
+  /// Find corresponding symbol from given [id]
+  ///
+  /// Default value is [PaymentSymbol.card].
   factory PaymentSymbol.fromId(int id) {
     // Check id
     if (id < 0 || id >= PaymentSymbol.values.length) {
