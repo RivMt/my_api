@@ -88,15 +88,15 @@ class AppTheme {
     return _theme(primary, _darkSwatches);
   }
 
-  static MaterialStateProperty<Color?>? textButtonOverlay(Color color) {
-    return MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.pressed)) {
+  static WidgetStateProperty<Color?>? textButtonOverlay(Color color) {
+    return WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.pressed)) {
         return color.withAlpha(alphaPressed);
-      } else if (states.contains(MaterialState.hovered)) {
+      } else if (states.contains(WidgetState.hovered)) {
         return color.withAlpha(alphaHovered);
-      } else if (states.contains(MaterialState.focused)) {
+      } else if (states.contains(WidgetState.focused)) {
         return color.withAlpha(alphaFocused);
-      } else if (states.contains(MaterialState.disabled)) {
+      } else if (states.contains(WidgetState.disabled)) {
         return color.withAlpha(alphaDisabled);
       }
       return null;
@@ -311,17 +311,17 @@ class AppTheme {
       // Buttons
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-          iconColor: MaterialStateProperty.all(swatches.contentPrimary),
+          iconColor: WidgetStateProperty.all(swatches.contentPrimary),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(0),
-          shadowColor: MaterialStateProperty.all(Colors.transparent),
-          padding: MaterialStateProperty.all(const EdgeInsets.all(4)),
-          textStyle: MaterialStateProperty.resolveWith((states) {
+          elevation: WidgetStateProperty.all(0),
+          shadowColor: WidgetStateProperty.all(Colors.transparent),
+          padding: WidgetStateProperty.all(const EdgeInsets.all(4)),
+          textStyle: WidgetStateProperty.resolveWith((states) {
             late Color color;
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               color = swatches.rearForeground;
             } else {
               color = swatches.contentPrimary;
@@ -337,9 +337,9 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
-          textStyle: MaterialStateProperty.resolveWith((states) {
+          textStyle: WidgetStateProperty.resolveWith((states) {
             late Color color;
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               color = swatches.rearForeground;
             } else {
               color = primary;
@@ -363,12 +363,12 @@ class AppTheme {
           color: swatches.middleForeground,
           width: 2,
         ),
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.pressed)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.pressed)) {
             return primary;
-          } else if (states.contains(MaterialState.hovered)) {
+          } else if (states.contains(WidgetState.hovered)) {
             return primary;
-          } else if (states.contains(MaterialState.selected)) {
+          } else if (states.contains(WidgetState.selected)) {
             return primary;
           } else {
             return null;
@@ -422,7 +422,7 @@ class AppTheme {
         ),
         inputDecorationTheme: inputDecoration,
         menuStyle: MenuStyle(
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           )),
         )
