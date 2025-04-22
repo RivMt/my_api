@@ -23,6 +23,13 @@ abstract class WalletItem extends FinanceModel {
   /// Initialize instance from given [map]
   WalletItem([super.map]);
 
+  @override
+  bool get isValid {
+    if (name.isEmpty) return false;
+    if (currencyId == Currency.unknownUuid) return false;
+    return super.isValid;
+  }
+
   /// Priority of this item
   ///
   /// Default value is `0`.

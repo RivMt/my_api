@@ -44,21 +44,8 @@ class Payment extends WalletItem {
   /// Initialize payment from given [map]
   Payment(super.map);
 
-  /// Whether this payment is valid or not
+  @override
   bool get isValid {
-    // Pid
-    if (uuid == BaseModel.unknownUuid) {
-      return false;
-    }
-    // Description
-    if (name.isEmpty) {
-      return false;
-    }
-    // Currency
-    if (currencyId == Currency.unknownUuid) {
-      return false;
-    }
-    // Pay range
     if (isCredit) {
       if (payEnd < payBegin ||
           (payBegin.month - payEnd.month > 0 && payBegin.day != payEnd.day + 1) ||
@@ -67,8 +54,7 @@ class Payment extends WalletItem {
         return false;
       }
     }
-    // Otherwise
-    return true;
+    return super.isValid;
   }
 
   /// Whether this payment handles credit transaction or not

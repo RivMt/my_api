@@ -22,24 +22,6 @@ class Account extends WalletItem {
   /// Initialize from given [map]
   Account([super.map]);
 
-  /// Whether this model is valid or not
-  bool get isValid {
-    // UUID
-    if (uuid == BaseModel.unknownUuid) {
-      return false;
-    }
-    // Description
-    if (name.isEmpty) {
-      return false;
-    }
-    // Currency
-    if (currencyId == Currency.unknownUuid) {
-      return false;
-    }
-    // Otherwise
-    return true;
-  }
-
   /// Icon of this account
   ///
   /// Default value is [AccountSymbol.account]

@@ -24,25 +24,12 @@ class Category extends FinanceModel {
   /// Initialize from given [map]
   Category([super.map]);
 
-  /// Whether this category is valid or not
+  @override
   bool get isValid {
-    // Pid
-    if (uuid == BaseModel.unknownUuid) {
-      return false;
-    }
-    // Type
-    if (type == TransactionType.unknown) {
-      return false;
-    }
-    // Name
-    if (name.isEmpty) {
-      return false;
-    }
-    // Icon
-    if (icon == CategorySymbol.unknown) {
-      return false;
-    }
-    return true;
+    if (type == TransactionType.unknown) return false;
+    if (name.isEmpty) return false;
+    if (icon == CategorySymbol.unknown) return false;
+    return super.isValid;
   }
 
   /// Type of this category

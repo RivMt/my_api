@@ -39,33 +39,13 @@ class Transaction extends FinanceModel {
     calculatedDate = paidDate;
   }
 
-  /// Whether this transaction is valid or not
+  @override
   bool get isValid {
-    // PID
-    if (uuid == BaseModel.unknownUuid) {
-      return false;
-    }
-    // Category
-    if (categoryId == BaseModel.unknownUuid) {
-      return false;
-    }
-    // Account
-    if (accountId == BaseModel.unknownUuid) {
-      return false;
-    }
-    // Payment
-    if (paymentId == BaseModel.unknownUuid) {
-      return false;
-    }
-    // Currency
-    if (currencyId == Currency.unknownUuid) {
-      return false;
-    }
-    // Amount
-    if (amount <= Decimal.zero) {
-      return false;
-    }
-    // Alt
+    if (categoryId == BaseModel.unknownUuid) return false;
+    if (accountId == BaseModel.unknownUuid) return false;
+    if (paymentId == BaseModel.unknownUuid) return false;
+    if (currencyId == Currency.unknownUuid) return false;
+    if (amount <= Decimal.zero) return false;
     if ((altCurrencyId != null && altAmount == null) ||
         (altCurrencyId == null && altAmount != null) ||
         (altCurrencyId == Currency.unknownUuid) ||
@@ -73,12 +53,8 @@ class Transaction extends FinanceModel {
     ) {
       return false;
     }
-    // Utility days
-    if (utilityDays < 1) {
-      return false;
-    }
-    // Otherwise
-    return true;
+    if (utilityDays < 1) return false;
+    return super.isValid;
   }
 
   /// Type of this transaction

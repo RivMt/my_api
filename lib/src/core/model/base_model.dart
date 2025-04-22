@@ -27,6 +27,11 @@ abstract class BaseModel extends Model {
   /// Initialize class from given [map] (Optional)
   BaseModel([Map<String, dynamic>? map]) : super(map);
 
+  /// Whether this instance is valid or not
+  ///
+  /// The last line of this property must be `super.isValid` when override this.
+  bool get isValid => uuid != unknownUuid;
+
   /// UUID (Read-only)
   ///
   /// UUID only can be changed by API server. It is possible using [map] to change
