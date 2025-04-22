@@ -1,13 +1,13 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:my_api/core/model/model_keys.dart';
-import 'package:my_api/core/model/preference.dart';
-import 'package:my_api/core/model/preference_element.dart';
-import 'package:my_api/core/model/preference_root.dart';
-import 'package:my_api/finance/model/account.dart';
-import 'package:my_api/finance/model/currency.dart';
-import 'package:my_api/finance/model/payment.dart';
-import 'package:my_api/finance/model/transaction.dart';
+import 'package:my_api/src/core/model/model_keys.dart';
+import 'package:my_api/src/core/model/preference.dart';
+import 'package:my_api/src/core/model/preference_element.dart';
+import 'package:my_api/src/core/model/preference_root.dart';
+import 'package:my_api/src/finance/model/account.dart';
+import 'package:my_api/src/finance/model/currency.dart';
+import 'package:my_api/src/finance/model/payment.dart';
+import 'package:my_api/src/finance/model/transaction.dart';
 
 void main() {
   group("Account Test", () {

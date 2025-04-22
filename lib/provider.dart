@@ -1,2 +1,2 @@
-export 'package:my_api/core/provider.dart';
-export 'package:my_api/finance/provider.dart';
+export 'package:my_api/src/core/provider.dart';
+export 'package:my_api/src/finance/provider.dart';
