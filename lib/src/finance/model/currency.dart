@@ -64,7 +64,7 @@ class Currency extends Model {
   ///
   /// It is combination of [regionCode] and [currencyCode].
   String get uuid {
-    final value = getValue(ModelKeys.keyUuid, unknownUuid);
+    final value = getString(ModelKeys.keyUuid, unknownUuid);
     final combination = "$regionCode$currencyCode";
     return value == combination ? value : unknownUuid;  // TODO: throw exception
   }
@@ -76,7 +76,7 @@ class Currency extends Model {
   /// such as `XA` (gold and silver), `XD` (IMF special drawing rights).
   ///
   /// Default value is [unknownRegionCode].
-  String get regionCode => getValue(ModelKeys.keyRegionCode, unknownRegionCode);
+  String get regionCode => getString(ModelKeys.keyRegionCode, unknownRegionCode);
 
   /// Currency code of this currency
   ///
@@ -84,24 +84,24 @@ class Currency extends Model {
   /// However, it can be an another letter due to [regionCode].
   ///
   /// Default value is [unknownCurrencyCode].
-  String get currencyCode => getValue(ModelKeys.keyCurrencyCode, unknownCurrencyCode);
+  String get currencyCode => getString(ModelKeys.keyCurrencyCode, unknownCurrencyCode);
 
   /// Symbol of this currency
   ///
   /// It is a sign of currency, however, it is named `symbol` for unification.
   ///
   /// Default value is [unknownSymbol].
-  String get symbol => getValue(ModelKeys.keySymbol, unknownSymbol);
+  String get symbol => getString(ModelKeys.keySymbol, unknownSymbol);
 
   /// Url of icon
   ///
   /// Default value is empty string.
-  String get iconUrl => getValue(ModelKeys.keyIconUrl, "");
+  String get iconUrl => getString(ModelKeys.keyIconUrl, "");
 
   /// Digits of decimal part
   ///
   /// Default value is [defaultDecimalPoint].
-  int get decimalPoint => getValue(ModelKeys.keyDecimalPoint, defaultDecimalPoint);
+  int get decimalPoint => getInt(ModelKeys.keyDecimalPoint, defaultDecimalPoint);
 
   /// Key for translation
   String get key => "currencyType$uuid";

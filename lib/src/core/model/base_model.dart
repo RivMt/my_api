@@ -33,7 +33,7 @@ abstract class BaseModel extends Model {
   /// its value, however, it is **STRONGLY** not recommended.
   /// Unlike other read-only variables, this is used to identify each model on
   /// whole system. So changing this value makes unpredictable and dangerous results.
-  String get uuid => getValue(ModelKeys.keyUuid, "");
+  String get uuid => getString(ModelKeys.keyUuid, "");
 
   /// [DateTime] of lastly used (Read-only)
   ///
@@ -43,7 +43,7 @@ abstract class BaseModel extends Model {
   DateTime get lastUsed => getDateTime(ModelKeys.keyLastUsed, DateTime.fromMillisecondsSinceEpoch(0));
 
   /// UUID of owner
-  String get owner => getValue(ModelKeys.keyOwner, "");
+  String get owner => getString(ModelKeys.keyOwner, "");
 
   /// List of editors UUID
   List<String> get editors => getList(ModelKeys.keyEditors, []);
@@ -55,29 +55,19 @@ abstract class BaseModel extends Model {
   ///
   /// If [text] is longer than [maxTextLength], cut first [maxTextLength] characters only,
   /// and discard others.
-  String get name => getValue(ModelKeys.keyName, "");
+  String get name => getString(ModelKeys.keyName, "");
 
-  set name(String text) {
-    if (text.length > maxTextLength) {
-      text = text.substring(0, maxTextLength);
-    }
-    map[ModelKeys.keyName] = text;
-  }
+  set name(String text) => setString(ModelKeys.keyName, text, maxTextLength);
 
   /// Descriptions
-  String get descriptions => getValue(ModelKeys.keyDescription, "");
+  String get descriptions => getString(ModelKeys.keyDescription, "");
 
-  set descriptions(String text) {
-    if (text.length > maxTextLength) {
-      text = text.substring(0, maxTextLength);
-    }
-    map[ModelKeys.keyDescription] = text;
-  }
+  set descriptions(String text) => setString(ModelKeys.keyDescription, text, maxTextLength);
 
   /// Whether this object deleted or not
-  bool get deleted => getValue(ModelKeys.keyDeleted, false);
+  bool get deleted => getBool(ModelKeys.keyDeleted, false);
 
-  set deleted(bool value) => map[ModelKeys.keyDeleted] = value;
+  set deleted(bool value) => setBool(ModelKeys.keyDeleted, value);
 
   @override
   bool isEquivalent(Model other) {

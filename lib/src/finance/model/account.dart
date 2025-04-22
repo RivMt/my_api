@@ -43,23 +43,23 @@ class Account extends WalletItem {
   /// Icon of this account
   ///
   /// Default value is [AccountSymbol.account]
-  AccountSymbol get icon => AccountSymbol.fromId(getValue(ModelKeys.keyIcon, AccountSymbol.account.id));
+  AccountSymbol get icon => AccountSymbol.fromId(getInt(ModelKeys.keyIcon, AccountSymbol.account.id));
 
-  set icon(AccountSymbol icon) => map[ModelKeys.keyIcon] = icon.id;
+  set icon(AccountSymbol icon) => setInt(ModelKeys.keyIcon, icon.id);
 
   /// Balance of this account
   ///
   /// Default value is `0`
-  Decimal get balance => Decimal.parse(getValue(ModelKeys.keyBalance, "0"));
+  Decimal get balance => getDecimal(ModelKeys.keyBalance, Decimal.zero);
 
-  set balance(Decimal value) => map[ModelKeys.keyBalance] = value.toString();
+  set balance(Decimal value) => setDecimal(ModelKeys.keyBalance, value);
 
   /// Whether this account is cash or not
   ///
   /// Default value is `true`
-  bool get isCash => getValue(ModelKeys.keyIsCash, true);
+  bool get isCash => getBool(ModelKeys.keyIsCash, true);
 
-  set isCash(bool value) => map[ModelKeys.keyIsCash] = value;
+  set isCash(bool value) => setBool(ModelKeys.keyIsCash, value);
 
   @override
   String toString() => "$name ($currencyId $balance)";

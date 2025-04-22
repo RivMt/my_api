@@ -1,5 +1,7 @@
 library my_api;
 
+import 'dart:math';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 
@@ -27,11 +29,12 @@ abstract class Model {
     }
   }
 
-  /// Get value from [map] using [key]
+  /// Get `T?` value from [map] using [key]
   ///
-  /// **DO NOT** call this directly from outside. Use each property variables
-  /// instead. Returns [defaultValue] if [key] is not exists in [map].
-  getValue(String key, dynamic defaultValue) {
+  /// Returns [defaultValue] if [key] is not exists in [map].
+  ///
+  /// Use this method only for nullable value and must specify type [T].
+  T? getValue<T>(String key, T? defaultValue) {
     // Check key is exist
     if (map.containsKey(key)) {
       return map[key];
@@ -39,6 +42,68 @@ abstract class Model {
     // Return default value
     return defaultValue;
   }
+
+  /// Set `T?` value of [key] as [value]
+  void setValue<T>(String key, T? value) => map[key] = value;
+
+  /// Get string from [map] using [key]
+  ///
+  /// If [key] is not in [map], returns [value].
+  String getString(String key, String value) {
+    if (!map.containsKey(key)) {
+      return value;
+    }
+    assert(map[key] is String);
+    return map[key];
+  }
+
+  /// Set value of [key] as [value]
+  ///
+  /// Crop string if [maxLength] is defined.
+  void setString(String key, String value, [int? maxLength]) {
+    if (maxLength != null && value.length > maxLength) {
+      value = value.substring(0, maxLength);
+    }
+    map[key] = value;
+  }
+
+  /// Gets integer from [map] using [key]
+  ///
+  /// If [key] is not in [map] or value of corresponding key is not parsable,
+  /// returns [value].
+  int getInt(String key, int value) {
+    if (!map.containsKey(key)) {
+      return value;
+    }
+    if (map[key] is String) {
+      try {
+        return int.parse(map[key]);
+      } on FormatException {
+        return value;
+      }
+    }
+    return map[key];
+  }
+
+  /// Sets value of [key] as [value]
+  void setInt(String key, int value) => map[key] = value;
+
+  /// Gets bool from [map] using [key]
+  ///
+  /// If [key] is not in [map], returns [value]
+  bool getBool(String key, bool value) {
+    if (!map.containsKey(key)) {
+      return value;
+    }
+    if (map[key] is String) {
+      final char = map[key].substring(0, 1).toLowerCase();
+      return char == "t" || char == "1";
+    }
+    return map[key];
+  }
+
+  /// Sets value of [key] as [value]
+  void setBool(String key, bool value) => map[key] = value;
 
   /// Get date from [key]
   ///

@@ -37,25 +37,25 @@ class User extends Model {
   bool get isValid => userId.isNotEmpty;
 
   /// Unique identification code of this (Read-only)
-  String get userId => getValue(ModelKeys.keyUserId, "");
+  String get userId => getString(ModelKeys.keyUserId, "");
 
   /// Email address
-  String get email => getValue(ModelKeys.keyEmail, "");
+  String get email => getString(ModelKeys.keyEmail, "");
 
   /// Whether [email] is verified or not
-  bool get isEmailVerified => getValue(ModelKeys.keyEmailVerified, false);
+  bool get isEmailVerified => getBool(ModelKeys.keyEmailVerified, false);
 
   /// Full name
-  String get name => getValue(ModelKeys.keyName, "");
+  String get name => getString(ModelKeys.keyName, "");
 
   /// Preferred name
-  String get preferredName => getValue(ModelKeys.keyPreferredUserName, "");
+  String get preferredName => getString(ModelKeys.keyPreferredUserName, "");
 
   /// Family name
-  String get familyName => getValue(ModelKeys.keyFamilyName, "");
+  String get familyName => getString(ModelKeys.keyFamilyName, "");
 
   /// Given name
-  String get givenName => getValue(ModelKeys.keyGivenName, "");
+  String get givenName => getString(ModelKeys.keyGivenName, "");
 
   /// Display name
   ///
@@ -68,7 +68,7 @@ class User extends Model {
   }
 
   /// Url of profile picture
-  String get picture => getValue(ModelKeys.keyPicture, "");
+  String get picture => getString(ModelKeys.keyPicture, "");
 
   /// List of groups
   List<String> get groups => getList(ModelKeys.keyGroups, [], ",");

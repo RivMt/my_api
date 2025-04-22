@@ -48,23 +48,23 @@ class Category extends FinanceModel {
   /// Type of this category
   ///
   /// Default value is [TransactionType.expense]
-  TransactionType get type => TransactionType.fromCode(getValue(ModelKeys.keyType, 0));
+  TransactionType get type => TransactionType.fromCode(getInt(ModelKeys.keyType, 0));
 
-  set type(TransactionType value) => map[ModelKeys.keyType] = value.code;
+  set type(TransactionType value) => setInt(ModelKeys.keyType, value.code);
 
   /// Value of related transaction is included in statistics
   ///
   /// Default value is `true`
-  bool get isIncluded => getValue(ModelKeys.keyIncluded, true);
+  bool get isIncluded => getBool(ModelKeys.keyIncluded, true);
 
-  set isIncluded(bool value) => map[ModelKeys.keyIncluded] = value;
+  set isIncluded(bool value) => setBool(ModelKeys.keyIncluded, value);
 
   /// Icon of this category
   ///
   /// Default value is [CategorySymbol.unknown]
-  CategorySymbol get icon => CategorySymbol.fromId(getValue(ModelKeys.keyIcon, CategorySymbol.unknown.id));
+  CategorySymbol get icon => CategorySymbol.fromId(getInt(ModelKeys.keyIcon, CategorySymbol.unknown.id));
 
-  set icon(CategorySymbol icon) => map[ModelKeys.keyIcon] = icon.id;
+  set icon(CategorySymbol icon) => setInt(ModelKeys.keyIcon, icon.id);
 
   @override
   String toString() => "$name (${type.name}, $isIncluded)";

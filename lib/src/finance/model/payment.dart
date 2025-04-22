@@ -74,40 +74,40 @@ class Payment extends WalletItem {
   /// Whether this payment handles credit transaction or not
   ///
   /// Default value is `false`.
-  bool get isCredit => getValue(ModelKeys.keyIsCredit, false);
+  bool get isCredit => getBool(ModelKeys.keyIsCredit, false);
 
-  set isCredit(bool value) => map[ModelKeys.keyIsCredit] = value;
+  set isCredit(bool value) => setBool(ModelKeys.keyIsCredit, value);
 
   /// Icon of this payment
   ///
   /// Default value is [PaymentSymbol.card]
-  PaymentSymbol get icon => PaymentSymbol.fromId(getValue(ModelKeys.keyIcon, PaymentSymbol.card.id));
+  PaymentSymbol get icon => PaymentSymbol.fromId(getInt(ModelKeys.keyIcon, PaymentSymbol.card.id));
 
-  set icon(PaymentSymbol icon) => map[ModelKeys.keyIcon] = icon.id;
+  set icon(PaymentSymbol icon) => setInt(ModelKeys.keyIcon, icon.id);
 
   /// Beginning day of range for each payment period
   ///
   /// Default value is [PaymentRangePoint.defaultBegin].
-  PaymentRangePoint get payBegin => PaymentRangePoint.fromCode(getValue(ModelKeys.keyPayBegin, PaymentRangePoint.defaultBegin.code));
+  PaymentRangePoint get payBegin => PaymentRangePoint.fromCode(getInt(ModelKeys.keyPayBegin, PaymentRangePoint.defaultBegin.code));
 
-  set payBegin(PaymentRangePoint point) => map[ModelKeys.keyPayBegin] = point.code;
+  set payBegin(PaymentRangePoint point) => setInt(ModelKeys.keyPayBegin, point.code);
 
   /// End day of range for each payment period
   ///
   /// Default value is [PaymentRangePoint.defaultEnd].
-  PaymentRangePoint get payEnd => PaymentRangePoint.fromCode(getValue(ModelKeys.keyPayEnd, PaymentRangePoint.defaultEnd.code));
+  PaymentRangePoint get payEnd => PaymentRangePoint.fromCode(getInt(ModelKeys.keyPayEnd, PaymentRangePoint.defaultEnd.code));
 
-  set payEnd(PaymentRangePoint point) => map[ModelKeys.keyPayEnd] = point.code;
+  set payEnd(PaymentRangePoint point) => setInt(ModelKeys.keyPayEnd, point.code);
 
   /// Withdrawal date of each payment period
   ///
   /// Default value is `14`.
-  int get payDate => getValue(ModelKeys.keyPayDate, 14);
+  int get payDate => getInt(ModelKeys.keyPayDate, 14);
 
   set payDate(int value) {
     final list = [payDayMin, value, payDayMax];
     list.sort();
-    map[ModelKeys.keyPayDate] = list[1];
+    setInt(ModelKeys.keyPayDate, list[1]);
   }
 
   /// Gets withdrawal date of the transaction based on given [paidDate]

@@ -84,16 +84,16 @@ class Transaction extends FinanceModel {
   /// Type of this transaction
   ///
   /// Default value is [TransactionType.expense]
-  TransactionType get type => TransactionType.fromCode(getValue(ModelKeys.keyType, 0));
+  TransactionType get type => TransactionType.fromCode(getInt(ModelKeys.keyType, TransactionType.expense.code));
 
-  set type(TransactionType value) => map[ModelKeys.keyType] = value.code;
+  set type(TransactionType value) => setInt(ModelKeys.keyType, value.code);
 
   /// [Category] of this transaction
   ///
   /// Default value is `0`
-  String get categoryId => getValue(ModelKeys.keyCategoryId, BaseModel.unknownUuid);
+  String get categoryId => getString(ModelKeys.keyCategoryId, BaseModel.unknownUuid);
 
-  set categoryId(String value) => map[ModelKeys.keyCategoryId] = value;
+  set categoryId(String value) => setString(ModelKeys.keyCategoryId, value);
 
   /// [DateTime] of this transaction is paid
   ///
@@ -109,9 +109,9 @@ class Transaction extends FinanceModel {
   /// UUID of [Account] this transaction occurred
   ///
   /// Default value is [Account.unknown].
-  String get accountId => getValue(ModelKeys.keyAccountId, BaseModel.unknownUuid);
+  String get accountId => getString(ModelKeys.keyAccountId, BaseModel.unknownUuid);
 
-  set accountId(String uuid) => map[ModelKeys.keyAccountId] = uuid;
+  set accountId(String uuid) => setString(ModelKeys.keyAccountId, uuid);
 
   /// Set [accountId] and [currencyId] from given [account]
   void setAccount(Account account) {
@@ -122,9 +122,9 @@ class Transaction extends FinanceModel {
   /// UUID of [Payment] this transaction is paid
   ///
   /// Default value is [Payment.unknown].
-  String get paymentId => getValue(ModelKeys.keyPaymentId, BaseModel.unknownUuid);
+  String get paymentId => getString(ModelKeys.keyPaymentId, BaseModel.unknownUuid);
 
-  set paymentId(String uuid) => map[ModelKeys.keyPaymentId] = uuid;
+  set paymentId(String uuid) => setString(ModelKeys.keyPaymentId, uuid);
 
   /// Set [paymentId], [altCurrencyId], and [altAmount] according to [payment]
   ///
@@ -144,16 +144,16 @@ class Transaction extends FinanceModel {
   /// UUID of currency
   ///
   /// Default value is [Currency.unknown].
-  String get currencyId => getValue(ModelKeys.keyCurrencyId, Currency.unknownUuid);
+  String get currencyId => getString(ModelKeys.keyCurrencyId, Currency.unknownUuid);
 
-  set currencyId(String uuid) => map[ModelKeys.keyCurrencyId] = uuid;
+  set currencyId(String uuid) => setString(ModelKeys.keyCurrencyId, uuid);
 
   /// Amount of this transaction
   ///
   /// Default value is `0`.
-  Decimal get amount => Decimal.parse(getValue(ModelKeys.keyAmount, "0"));
+  Decimal get amount => getDecimal(ModelKeys.keyAmount, Decimal.zero);
 
-  set amount(Decimal value) => map[ModelKeys.keyAmount] = value.toString();
+  set amount(Decimal value) => setDecimal(ModelKeys.keyAmount, value);
 
   /// UUID of alternative currency
   ///
@@ -162,15 +162,9 @@ class Transaction extends FinanceModel {
   /// account, [altCurrencyId] is `EUR`, and [currencyId] is `USD`.
   ///
   /// Default value is `null`.
-  String? get altCurrencyId => getValue(ModelKeys.keyAltCurrencyId, null);
+  String? get altCurrencyId => getValue<String>(ModelKeys.keyAltCurrencyId, null);
 
-  set altCurrencyId(String? uuid) {
-    if (uuid != null) {
-      map[ModelKeys.keyAltCurrencyId] = uuid;
-    } else {
-      map[ModelKeys.keyAltCurrencyId] = null;
-    }
-  }
+  set altCurrencyId(String? uuid) => setValue<String>(ModelKeys.keyAltCurrencyId, uuid);
 
   /// Alternative amount of this transaction
   ///
@@ -180,7 +174,7 @@ class Transaction extends FinanceModel {
   ///
   /// Default value is `null`.
   Decimal? get altAmount {
-    final value = getValue(ModelKeys.keyAltAmount, null);
+    final value = getValue<String>(ModelKeys.keyAltAmount, null);
     if (value == null) {
       return null;
     }
@@ -206,9 +200,9 @@ class Transaction extends FinanceModel {
   set calculatedDate(DateTime date) => setDate(ModelKeys.keyCalculatedDate, date);
 
   /// Whether of this transaction is included in statics or not
-  bool get isIncluded => getValue(ModelKeys.keyIncluded, true);
+  bool get isIncluded => getBool(ModelKeys.keyIncluded, true);
 
-  set isIncluded(bool value) => map[ModelKeys.keyIncluded] = value;
+  set isIncluded(bool value) => setBool(ModelKeys.keyIncluded, value);
 
   /// Last date of this transaction is effective
   @Deprecated("This property is not useful and will be removed in further release")
@@ -230,9 +224,9 @@ class Transaction extends FinanceModel {
 
   /// ID of folder
   @Deprecated("This property does not working and will be removed in further release")
-  int get folderId => getValue(ModelKeys.keyFolder, 0);
+  int get folderId => getInt(ModelKeys.keyFolder, 0);
 
-  set folderId(int value) => map[ModelKeys.keyFolder] = value;
+  set folderId(int value) => setInt(ModelKeys.keyFolder, value);
 
   @override
   String toString() {

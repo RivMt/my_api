@@ -26,9 +26,9 @@ abstract class WalletItem extends FinanceModel {
   /// Priority of this item
   ///
   /// Default value is `0`.
-  int get priority => getValue(ModelKeys.keyPriority, 0);
+  int get priority => getInt(ModelKeys.keyPriority, 0);
 
-  set priority(int value) => map[ModelKeys.keyPriority] = value;
+  set priority(int value) => setInt(ModelKeys.keyPriority, value);
 
   /// Limitation of this item
   ///
@@ -40,16 +40,16 @@ abstract class WalletItem extends FinanceModel {
   /// UUID of currency
   ///
   /// Default value is [Currency.unknown].
-  String get currencyId => getValue(ModelKeys.keyCurrencyId, Currency.unknownUuid);
+  String get currencyId => getString(ModelKeys.keyCurrencyId, Currency.unknownUuid);
 
-  set currencyId(String uuid) => map[ModelKeys.keyCurrencyId] = uuid;
+  set currencyId(String uuid) => setString(ModelKeys.keyCurrencyId, uuid);
 
   /// Serial number of this item
   ///
   /// Default value is empty string
-  String get serialNumber => getValue(ModelKeys.keySerialNumber, "");
+  String get serialNumber => getString(ModelKeys.keySerialNumber, "");
 
-  set serialNumber(String value) => map[ModelKeys.keySerialNumber] = value;
+  set serialNumber(String value) => setString(ModelKeys.keySerialNumber, value);
 
   /// Foreground color
   ///
