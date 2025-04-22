@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 class Log {
 
   /// Minimum level of log
-  static Level level = Level.trace;  // TODO: rename
+  static Level minimumLevel = Level.trace;
 
   /// Logger instance
   static final Logger _logger = Logger(

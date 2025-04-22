@@ -3,8 +3,8 @@ import 'package:my_api/core/api.dart';
 import 'package:my_api/core/model/model_keys.dart';
 import 'package:my_api/core/model/preference_keys.dart';
 import 'package:my_api/core/model/preference_root.dart';
-import 'package:my_api/core/provider/model_state.dart';
-import 'package:my_api/core/provider/preference_state.dart';
+import 'package:my_api/core/notifier/models_state_notifier.dart';
+import 'package:my_api/core/notifier/preference_state_notifier.dart';
 import 'package:my_api/finance/model/account.dart';
 import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/currency.dart';
@@ -20,20 +20,20 @@ final initFinancePreference = {
 };
 
 /// Provider of finance related preferences
-final financePreference = StateNotifierProvider<PreferenceState, PreferenceRoot>((ref) {
-  return PreferenceState(ref, "finance", initFinancePreference);
+final financePreference = StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot>((ref) {
+  return PreferenceStateNotifier(ref, "finance", initFinancePreference);
 });
 
 /// List of all accounts
-final accounts = StateNotifierProvider<ModelsState<Account>, List<Account>>((ref) {
-  return ModelsState<Account>(ref);
+final accounts = StateNotifierProvider<ModelsStateNotifier<Account>, List<Account>>((ref) {
+  return ModelsStateNotifier<Account>();
 });
 
 /// Append accounts with [query]
 ///
 /// If the sort field and order is not defined, `icon ASC, last_used DESC` will
 /// be applied.
-Future<void> fetchAccounts(WidgetRef ref, [Map<String, dynamic>? query]) async {  // TODO: rename to append
+Future<void> appendAccounts(WidgetRef ref, [Map<String, dynamic>? query]) async {
   final Map<String, dynamic> q = query ?? {};
   if (!q.containsKey(ApiQuery.keySortField)) {
     q[ApiQuery.keySortField] = [
@@ -69,8 +69,8 @@ Future<bool> deleteAccount(WidgetRef ref, Account account) async {
 }
 
 /// List of all payments
-final payments = StateNotifierProvider<ModelsState<Payment>, List<Payment>>((ref) {
-  return ModelsState<Payment>(ref);
+final payments = StateNotifierProvider<ModelsStateNotifier<Payment>, List<Payment>>((ref) {
+  return ModelsStateNotifier<Payment>();
 });
 
 /// Fetch payments
@@ -108,21 +108,21 @@ Future<bool> deletePayment(WidgetRef ref, Payment payment) async {
 }
 
 /// List of all transactions
-final transactions = StateNotifierProvider<ModelsState<Transaction>, List<Transaction>>((ref) {
-  return ModelsState<Transaction>(ref);
+final transactions = StateNotifierProvider<ModelsStateNotifier<Transaction>, List<Transaction>>((ref) {
+  return ModelsStateNotifier<Transaction>();
 });
 
-/// Append transactions with [condition]
-Future<void> fetchTransactions(WidgetRef ref, Map<String, dynamic> condition) async { // TODO: rename append, condition to query
-  condition[ApiQuery.keySortField] = [ModelKeys.keyPaidDate];
-  condition[ApiQuery.keySortOrder] = [SortOrder.desc];
-  await ref.read(transactions.notifier).append(condition);
+/// Append transactions with [query]
+Future<void> appendTransactions(WidgetRef ref, Map<String, dynamic> query) async {
+  query[ApiQuery.keySortField] = [ModelKeys.keyPaidDate];
+  query[ApiQuery.keySortOrder] = [SortOrder.desc];
+  await ref.read(transactions.notifier).append(query);
 }
 
 /// Create transaction
 Future<bool> createTransaction(WidgetRef ref, Transaction transaction) async {
   final result = await ref.read(transactions.notifier).create(transaction);
-  await fetchAccounts(ref, {
+  await appendAccounts(ref, {
     ModelKeys.keyUuid: transaction.accountId,
   });
   return result;
@@ -131,7 +131,7 @@ Future<bool> createTransaction(WidgetRef ref, Transaction transaction) async {
 /// Update transaction
 Future<bool> updateTransaction(WidgetRef ref, Transaction transaction) async {
   final result = await ref.read(transactions.notifier).update(transaction);
-  await fetchAccounts(ref);
+  await appendAccounts(ref);
   return result;
 }
 
@@ -141,15 +141,15 @@ Future<bool> updateTransaction(WidgetRef ref, Transaction transaction) async {
 Future<bool> deleteTransaction(WidgetRef ref, Transaction transaction) async {
   transaction.deleted = true;
   final result = await ref.read(transactions.notifier).update(transaction);
-  await fetchAccounts(ref, {
+  await appendAccounts(ref, {
     ModelKeys.keyUuid: transaction.accountId,
   });
   return result;
 }
 
 /// List of all categories
-final categories = StateNotifierProvider<ModelsState<Category>, List<Category>>((ref) {
-  return ModelsState<Category>(ref);
+final categories = StateNotifierProvider<ModelsStateNotifier<Category>, List<Category>>((ref) {
+  return ModelsStateNotifier<Category>();
 });
 
 /// Fetch categories
@@ -189,8 +189,8 @@ Future<bool> deleteCategory(WidgetRef ref, Category category) async {
 }
 
 /// List of all currencies
-final currencies = StateNotifierProvider<ModelsState<Currency>, List<Currency>>((ref) {
-  return ModelsState<Currency>(ref);
+final currencies = StateNotifierProvider<ModelsStateNotifier<Currency>, List<Currency>>((ref) {
+  return ModelsStateNotifier<Currency>();
 });
 
 /// Fetch currencies

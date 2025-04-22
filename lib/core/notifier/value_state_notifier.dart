@@ -4,13 +4,11 @@ import 'package:my_api/core.dart';
 
 /// A value state notifier
 ///
-/// If [T] is subclass of [Model], use [ModelState] instead.
+/// If [T] is subclass of [Model], use [ModelStateNotifier] instead.
 class ValueStateNotifier<T> extends StateNotifier<T> {
 
   /// Initialize
-  ValueStateNotifier(this.ref, this.unknown) : super(unknown);
-
-  final Ref ref;  // TODO: remove
+  ValueStateNotifier(this.unknown) : super(unknown);
 
   /// Default value of type [T]
   final T unknown;

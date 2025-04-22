@@ -9,12 +9,10 @@ import 'package:my_api/core/model/model.dart';
 class ModelStreamNotifier<T extends Model> extends StateNotifier<Set<T>> {
 
   /// Initialize instance
-  ModelStreamNotifier(this.ref) : super(LinkedHashSet<T>(
+  ModelStreamNotifier() : super(LinkedHashSet<T>(
     equals: (a, b) => a.isEquivalent(b),
     hashCode: (a) => a.representativeCode,
   ));
-
-  final Ref ref;  // TODO: remove ref
 
   /// Current query string (Read-only)
   String get currentQuery => _query;
@@ -27,7 +25,7 @@ class ModelStreamNotifier<T extends Model> extends StateNotifier<Set<T>> {
   /// If [query] is equal to [_query], method aborted.
   /// Results will be discarded if [currentQuery] is changed during async.
   Future<void> search(String query) async {
-    if (query == _query) {  // TODO: use current query
+    if (query == currentQuery) {
       return;
     }
     _query = query;

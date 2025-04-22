@@ -3,7 +3,7 @@ library my_api;
 import 'package:my_api/core/model/model.dart';
 import 'package:my_api/core/model/model_keys.dart';
 
-/// Superclass of all API models
+/// A superclass of all user editable models
 ///
 /// This class is designed to map each database rows from the API server response.
 /// Member variables of this are common columns of all database.
@@ -45,20 +45,11 @@ abstract class BaseModel extends Model {
   /// UUID of owner
   String get owner => getValue(ModelKeys.keyOwner, "");
 
-  // TODO: Remove
-  set owner(String id) => throw UnimplementedError();
-
   /// List of editors UUID
   List<String> get editors => getList(ModelKeys.keyEditors, []);
 
-  // TODO: Remove
-  set editors(List<String> list) => setList(ModelKeys.keyEditors, list);
-
   /// List of viewers UUID
   List<String> get viewers => getList(ModelKeys.keyViewers, []);
-
-  // TODO: Remove
-  set viewers(List<String> list) => setList(ModelKeys.keyViewers, list);
 
   /// Name
   ///

@@ -2,22 +2,21 @@ import 'package:decimal/decimal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_api/core/api.dart';
 import 'package:my_api/core/log.dart';
+import 'package:my_api/core/model/model.dart';
 
 
 /// A state notifier of calculated value
 ///
 /// It is necessary to specify type to find API endpoint.
-class CalculateValueState<T> extends StateNotifier<Decimal> {  // TODO: rename
+class CalculateValueStateNotifier<T extends Model> extends StateNotifier<Decimal> {
 
   static const _tag = "CalculateValueState";
 
   /// Initialize from [conditions] and [type]
-  CalculateValueState(this.ref, {  // TODO: remove ref
+  CalculateValueStateNotifier({
     required this.conditions,
     required this.type,
   }) : super(Decimal.zero);
-
-  final Ref ref;
 
   /// Query conditions
   final Map<String, dynamic> conditions;
@@ -32,9 +31,9 @@ class CalculateValueState<T> extends StateNotifier<Decimal> {  // TODO: rename
   Future<void> request() async {
     final client = ApiClient();
     final ApiResponse<Map<String, Decimal>> response = await client.stat<T>(ApiQuery(conditions));
-    if (response.result != ApiResultCode.success) {
+    if (response.result != ApiResponseResult.success) {
       Log.e(_tag, "Failed to request $conditions");
-      state = Decimal.parse("0");  // TODO: use zero
+      state = Decimal.zero;
       return;
     }
     state = response.data[type.key]!;

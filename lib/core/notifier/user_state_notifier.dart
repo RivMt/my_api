@@ -25,7 +25,7 @@ class UserNotifier extends StateNotifier<UserState> {
   ///
   /// [onLogout] fires on logout succeed.
   void logout([Function()? onLogout]) {
-    ApiClient().logout();  // TODO: check result
+    ApiClient().logout();
     state = UserState(user: User.unknown);
     if (onLogout != null) {
       onLogout();
@@ -38,8 +38,10 @@ class UserNotifier extends StateNotifier<UserState> {
 class UserState {
 
   /// Initialize
+  ///
+  /// Specify [User.unknown] when empty user required
   UserState({
-    required this.user,  // TODO: default as unknown
+    required this.user,
     this.isLoading = false,
   });
 

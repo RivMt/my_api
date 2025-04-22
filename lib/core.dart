@@ -34,11 +34,12 @@ export 'package:my_api/core/model/user.dart';
 export 'package:my_api/core/model/stateful_data.dart';
 
 // Provider
-export 'package:my_api/core/provider/model_state.dart';
-export 'package:my_api/core/provider/calculate_value_state.dart';
-export 'package:my_api/core/provider/preference_state.dart';
-export 'package:my_api/core/provider/model_stream_notifier.dart';
-export 'package:my_api/core/provider/value_state_notifier.dart';
+export 'package:my_api/core/notifier/model_state_notifier.dart';
+export 'package:my_api/core/notifier/models_state_notifier.dart';
+export 'package:my_api/core/notifier/calculate_value_state_notifier.dart';
+export 'package:my_api/core/notifier/preference_state_notifier.dart';
+export 'package:my_api/core/notifier/model_stream_notifier.dart';
+export 'package:my_api/core/notifier/value_state_notifier.dart';
 
 // Utils
 export 'package:my_api/core/data_frame.dart';

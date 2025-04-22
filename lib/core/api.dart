@@ -12,7 +12,6 @@ import 'package:my_api/finance/model/category.dart';
 import 'package:my_api/finance/model/currency.dart';
 import 'package:my_api/finance/model/payment.dart';
 import 'package:my_api/finance/model/transaction.dart';
-import 'package:oidc/oidc.dart';
 
 import 'model/preference.dart';
 
@@ -20,9 +19,6 @@ const String _tag = "API";
 
 /// Send and receive HTTP request to backend server
 class ApiClient {
-
-  /// Header key for API key
-  static const String keyApiKey = "X-API-Key";  // TODO: remove
 
   /// Private instance for singleton pattern
   static final ApiClient _instance = ApiClient._();
@@ -94,23 +90,16 @@ class ApiClient {
   }
 
   /// Logout
+  ///
+  /// Returns [User.unknown] when logout succeed.
   Future<User> logout() async {
     await oidc.logout();
     Log.i(_tag, "Logged out");
     return User.unknown;
   }
 
-  void onUserChanges(Function(User) listener) {  // TODO: remove
-    oidc.manager.userChanges().listen((OidcUser? user) {
-      if (user == null) {
-        return;
-      }
-      listener(User.fromOidc(user));
-    });
-  }
-
   /// Returns [Uri] of REST API address with [endpoint] and [query]
-  Uri buildUri(String endpoint, Map<String, dynamic>? query) {  // TODO: rename
+  Uri buildUri(String endpoint, Map<String, dynamic>? query) {
     final split = uri.split(":");
     final host = split[0];
     final port = (split.length > 1) ? int.parse(split[1]) : null;
@@ -184,7 +173,7 @@ class ApiClient {
       return ApiResponse.failed(const Stream.empty());
     }
     return ApiResponse(
-      result: ApiResultCode.success,
+      result: ApiResponseResult.success,
       data: response.stream
           .transform(utf8.decoder)
           .transform(const LineSplitter())
@@ -216,7 +205,7 @@ class ApiClient {
     }
     final bytes = await response.stream.toBytes();
     return ApiResponse(
-      result: ApiResultCode.success,
+      result: ApiResponseResult.success,
       data: json.decode(utf8.decode(bytes)),
     );
   }
@@ -268,7 +257,7 @@ class ApiClient {
   /// Create [body] using HTTP POST
   ///
   /// [T] must be specified and it is not specified, throws [TypeError].
-  Future<ApiResponse<T>> create<T>(Map<String, dynamic> body) async {  // TODO: extends model
+  Future<ApiResponse<T>> create<T>(Map<String, dynamic> body) async {
     if (T == dynamic) {
       throw TypeError();
     }
@@ -298,7 +287,7 @@ class ApiClient {
   /// Update [body] using HTTP PUT
   ///
   /// [T] must be specified and it is not specified, throws [TypeError].
-  Future<ApiResponse<T>> update<T>(Map<String, dynamic> body) async {  // TODO: extends
+  Future<ApiResponse<T>> update<T>(Map<String, dynamic> body) async {
     if (T == dynamic) {
       throw TypeError();
     }
@@ -313,7 +302,7 @@ class ApiClient {
   /// Delete [body] using HTTP DELETE
   ///
   /// [T] must be specified and it is not specified, throws [TypeError].
-  Future<ApiResponse<T>> delete<T>(Map<String, dynamic> body) async {  // TODO: extends
+  Future<ApiResponse<T>> delete<T>(Map<String, dynamic> body) async {
     if (T == dynamic) {
       throw TypeError();
     }
@@ -393,8 +382,8 @@ enum HttpMethod {
   String toString() => name.toUpperCase();
 }
 
-/// A code of result
-enum ApiResultCode {  // TODO: rename
+/// A result of response
+enum ApiResponseResult {
   success,
   failed,
   unknown,
@@ -404,7 +393,7 @@ enum ApiResultCode {  // TODO: rename
 class ApiResponse<T> {
 
   /// Result
-  final ApiResultCode result;
+  final ApiResponseResult result;
 
   /// Data
   final T data;
@@ -417,7 +406,7 @@ class ApiResponse<T> {
 
   /// Failed response
   ApiResponse.failed(this.data, [
-    this.result = ApiResultCode.failed,
+    this.result = ApiResponseResult.failed,
   ]);
 
   /// Casts [data] as [E] and return new [ApiResponse]

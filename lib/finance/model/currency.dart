@@ -123,9 +123,11 @@ class Currency extends Model {
   }
 
   /// Converts currency formatted [String] to [Decimal]
+  ///
+  /// Throws [FormatException] when failed to parse [Decimal]
   Decimal convert(String str) {
     final regex = RegExp(r"[^\d.]");
-    return Decimal.parse(str.replaceAll(regex, ""));  // TODO: handle exception
+    return Decimal.parse(str.replaceAll(regex, ""));
   }
 
   @override
