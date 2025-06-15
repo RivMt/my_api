@@ -298,7 +298,7 @@ class AppTheme {
       // TextField
       inputDecorationTheme: inputDecoration,
       // Card
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: swatches.rearBackground,
         surfaceTintColor: primary,
         shape: RoundedRectangleBorder(
@@ -386,7 +386,7 @@ class AppTheme {
         ),
       ),
       // Dialog
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: swatches.rearBackground,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -466,7 +466,7 @@ class AppTheme {
         color: swatches.rearForeground,
       ),
       // TabBar
-      tabBarTheme: TabBarTheme(
+      tabBarTheme: TabBarThemeData(
         indicatorColor: primary,
         labelStyle: TextStyle(
           color: swatches.contentPrimary,
