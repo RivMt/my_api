@@ -154,18 +154,20 @@ final categories = StateNotifierProvider<ModelsStateNotifier<Category>, List<Cat
 
 /// Fetch categories
 ///
-/// Default sort is `deleted ASC, included DESC, uuid ASC`.
+/// Default sort is `deleted ASC, type ASC, included DESC, lastUsed ASC`.
 Future<void> fetchCategories(WidgetRef ref) async {
   await ref.read(categories.notifier).fetch({
     ApiQuery.keySortField: [
       ModelKeys.keyDeleted,
+      ModelKeys.keyType,
       ModelKeys.keyIncluded,
-      ModelKeys.keyUuid
+      ModelKeys.keyLastUsed,
     ],
     ApiQuery.keySortOrder: [
       SortOrder.asc,
+      SortOrder.asc,
       SortOrder.desc,
-      SortOrder.asc
+      SortOrder.asc,
     ]
   });
 }
