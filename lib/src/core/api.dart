@@ -52,6 +52,12 @@ class ApiClient {
   /// Whether current app is developer mode
   bool _isDevelop = false;
 
+  /// Function to extend endpoint
+  String Function<T>()? handleExtendedEndpoint;
+
+  /// Function to extends casting
+  Function<T>(Map<String, dynamic> map)? extendCast;
+
   /// Init client with [preferences]
   ///
   /// The structure of [preferences] likes below.
@@ -226,7 +232,10 @@ class ApiClient {
       case PreferenceElement:
         return PreferenceElement.fromMap(PreferenceDummy(), map);
       default:
-        throw UnimplementedError();
+        if (extendCast == null) {
+          throw UnimplementedError();
+        }
+        return extendCast!<T>(map);
     }
   }
 
@@ -250,7 +259,11 @@ class ApiClient {
       case Category: return Category.endpoint;
       case Currency: return Currency.endpoint;
       case PreferenceElement: return Preference.endpoint;
-      default: throw UnimplementedError();
+      default:
+        if (handleExtendedEndpoint == null) {
+          throw UnimplementedError();
+        }
+        return handleExtendedEndpoint!<T>();
     }
   }
 
