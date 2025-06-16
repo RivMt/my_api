@@ -160,12 +160,12 @@ abstract class Model {
   /// // Result = ["abc", "def"]
   /// ```
   /// If value is not split by [pattern], returns empty list.
-  List<String> getList(String key, List<String> value, [String pattern = " "]) {
+  List<String> getList(String key, List<String> value) {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is String);
-    return (map[key] as String).split(pattern);
+    assert(map[key] is List);
+    return map[key];
   }
 
   /// Set value of [key] as [list]
@@ -179,8 +179,8 @@ abstract class Model {
   ///   "key": "abc def"
   /// }
   /// ```
-  void setList(String key, List<String> list, [String separator = " "]) {
-    map[key] = list.join(separator);
+  void setList(String key, List<String> list) {
+    map[key] = list;
   }
 
   /// Get [Decimal] from [key]
