@@ -1,6 +1,7 @@
 import 'package:my_api/src/core/log.dart';
 import 'package:my_api/src/core/model/user.dart';
 import 'package:oidc/oidc.dart';
+import 'package:oidc_default_store/oidc_default_store.dart';
 
 const String _tag = "OIDC";
 
@@ -50,14 +51,15 @@ class OpenIDConnect {
         clientId: clientId,
         clientSecret: clientSecret,
       ),
-      store: OidcMemoryStore(),
+      store: OidcDefaultStore(),
       settings: OidcUserManagerSettings(
         redirectUri: redirect,
         scope: [
           "profile",
           "email",
           "groups",
-        ]
+        ],
+        refreshBefore: (token) => const Duration(days: 1),
       ),
     );
     await manager.init();
