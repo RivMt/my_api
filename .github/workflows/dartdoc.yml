@@ -35,6 +35,9 @@ jobs:
       - name: Generate API documentation
         run: dart doc --output=doc/api .
 
+      - name: Block search engine crawling
+        run: cp doc/robots.txt doc/api/robots.txt
+
       - name: Upload documentation artifact
         uses: actions/upload-artifact@v6
         with:
