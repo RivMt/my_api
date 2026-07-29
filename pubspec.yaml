@@ -14,7 +14,7 @@ dependencies:
   shared_preferences:
   intl:
   decimal: ^3.0.2
-  hooks_riverpod:
+  hooks_riverpod: '>=2.6.1 <3.0.0'
   easy_localization:
   fl_chart:
   oidc: ^0.9.0+1
