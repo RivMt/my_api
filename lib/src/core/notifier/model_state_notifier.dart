@@ -10,7 +10,7 @@ class ModelStateNotifier<T extends Model> extends ValueStateNotifier<T> {
 
   /// Initialize instance
   ///
-  /// [unknown] is default value of [state] when [clear] called.
+  /// Uses [unknown] as the default value restored by [clear].
   ModelStateNotifier(super.unknown);
 
   /// Fetch [T] item with [query]

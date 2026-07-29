@@ -4,15 +4,19 @@ import 'package:my_api/src/core/model/user.dart';
 
 const String _tag = "UserIcon";
 
+/// Displays a user's profile picture with an account-icon fallback.
 class UserIcon extends StatelessWidget {
 
+  /// Creates a profile icon for [user].
   const UserIcon(this.user, {
     super.key,
     this.size = 24,
   });
 
+  /// User whose picture is displayed.
   final User user;
 
+  /// Width and height of the icon.
   final double size;
 
   @override

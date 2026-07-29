@@ -136,6 +136,7 @@ class PreferenceDummy extends Preference {
 
   static final PreferenceDummy _instance = PreferenceDummy._();
 
+  /// Returns the shared empty preference.
   factory PreferenceDummy() => _instance;
 
   PreferenceDummy._();

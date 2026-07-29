@@ -2,18 +2,22 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/src/core/model/model.dart';
 
+/// Displays a date and opens a date picker when tapped.
 class DateButton extends StatelessWidget {
+  /// Creates a date selection button.
   const DateButton({
     super.key,
     required this.date,
     this.onChanged,
   });
 
+  /// Currently displayed date.
   final DateTime date;
 
+  /// Called after a date is selected.
   final Function(DateTime)? onChanged;
 
-  /// Show date picker
+  /// Opens the date picker using [base] as its initial value.
   Future<DateTime> showDatePickDialog(BuildContext context, DateTime base) async {
     final DateTime? result = await showDatePicker(
       context: context,
@@ -24,7 +28,7 @@ class DateButton extends StatelessWidget {
     return result ?? base;
   }
 
-  /// Triggers on paid date button pressed
+  /// Opens the picker and reports the selected date.
   void onDateButtonPressed(BuildContext context) async {
     final result = await showDatePickDialog(context, date);
     if (onChanged != null) {

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/src/core/theme.dart';
 
+/// Overlays a loading shimmer on its child.
 class Shimmer extends StatefulWidget {
+  /// Creates a loading shimmer.
   const Shimmer({
     super.key,
     required this.child,
     required this.isLoading,
   });
 
+  /// Content displayed beneath the shimmer.
   final Widget child;
 
+  /// Whether the loading overlay is visible.
   final bool isLoading;
 
   @override

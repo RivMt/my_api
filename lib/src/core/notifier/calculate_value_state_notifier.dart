@@ -49,6 +49,7 @@ enum CalculationType {
   /// Key of calculation
   final String key;
 
+  /// Creates a calculation type for an API response [key].
   const CalculationType(this.key);
 
 }

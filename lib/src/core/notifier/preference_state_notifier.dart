@@ -30,6 +30,7 @@ class PreferenceStateNotifier extends StateNotifier<PreferenceRoot> {
   /// Initialize root preference from [ref], [section], and [init]
   PreferenceStateNotifier(this.ref, String section, Map<String, dynamic> init) : super(PreferenceRoot(section, init));
 
+  /// Provider reference used to access the current user.
   final Ref ref;
 
   /// Section
@@ -38,9 +39,9 @@ class PreferenceStateNotifier extends StateNotifier<PreferenceRoot> {
   /// Keys of children
   List<String> get keys => state.keys.toList(growable: false);
 
-  /// Set [state] as [root]
+  /// Replaces the current state with [root].
   ///
-  /// If [push] failed, [state] does not changed.
+  /// Keeps the existing state when [push] fails.
   Future<bool> set(PreferenceRoot root) async {
     final result = await push(root);
     if (result) {
@@ -75,7 +76,7 @@ class PreferenceStateNotifier extends StateNotifier<PreferenceRoot> {
 
   /// Push root [Preference] to server
   ///
-  /// Push [state] if [root] is null. Returns a value whether push is success.
+  /// Pushes the current state when [root] is omitted.
   Future<bool> push([PreferenceRoot? root]) async {
     final target = root ?? state;
     final owner = ref.watch(core_provider.currentUser).user.userId;

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
+/// Selects a month with previous and next controls.
 class MonthPicker extends StatefulWidget {
 
+  /// Currently selected month.
   final DateTime date;
 
+  /// Called with the first day of the selected month.
   final void Function(DateTime) onDateChanged;
 
+  /// Formats the selected month for display.
   final String Function(DateTime) displayText;
 
+  /// Creates a month picker.
   const MonthPicker({
     super.key,
     required this.date,

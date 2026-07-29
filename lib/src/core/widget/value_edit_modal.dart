@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_api/core.dart';
 
+/// Edits a numeric value with direct input and step controls.
 class ValueEditModal extends StatefulWidget {
 
+  /// Creates a numeric value editor.
   const ValueEditModal({
     super.key,
     required this.title,
@@ -14,16 +16,22 @@ class ValueEditModal extends StatefulWidget {
     this.negativeButtonTitle = "Cancel",
   });
 
+  /// Modal title.
   final String title;
 
+  /// Amount added or removed by the step controls.
   final double tick;
 
+  /// Initial value.
   final double value;
 
+  /// Whether decimal input is accepted.
   final bool isDecimal;
 
+  /// Confirmation button label.
   final String positiveButtonTitle;
 
+  /// Cancellation button label.
   final String negativeButtonTitle;
 
   @override

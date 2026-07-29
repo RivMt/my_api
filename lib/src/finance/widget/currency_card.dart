@@ -5,7 +5,9 @@ import 'package:my_api/src/core/widget/data_card.dart';
 import 'package:my_api/src/finance/model/currency.dart';
 import 'package:my_api/src/finance/widget/currency_icon.dart';
 
+/// Displays a currency and, optionally, a formatted amount.
 class CurrencyCard extends StatelessWidget {
+  /// Creates a currency card.
   const CurrencyCard({
     super.key,
     required this.currency,
@@ -15,14 +17,19 @@ class CurrencyCard extends StatelessWidget {
     this.useIconBackground = true,
   });
 
+  /// Currency to display.
   final Currency currency;
 
+  /// Optional amount formatted with [currency].
   final Decimal? amount;
 
+  /// Whether to mark the currency as selected.
   final bool selected;
 
+  /// Whether the currency icon has a colored background.
   final bool useIconBackground;
 
+  /// Called when the card is tapped.
   final Function()? onTap;
 
   @override
@@ -58,4 +65,3 @@ class CurrencyCard extends StatelessWidget {
     );
   }
 }
-

@@ -5,15 +5,19 @@ import 'package:my_api/src/finance/model/currency.dart';
 
 const String _tag = "CurrencySymbol";
 
+/// Displays a currency's remote SVG icon or text-symbol fallback.
 class CurrencySymbol extends StatelessWidget {
 
+  /// Creates a symbol for [currency].
   const CurrencySymbol(this.currency, {
     super.key,
     this.color,
   });
 
+  /// Currency represented by the symbol.
   final Currency currency;
 
+  /// Optional SVG icon color.
   final Color? color;
 
   @override
@@ -36,10 +40,13 @@ class CurrencySymbol extends StatelessWidget {
   }
 }
 
+/// Displays a currency's text symbol.
 class CurrencySymbolText extends StatelessWidget {
 
+  /// Currency represented by the text.
   final Currency currency;
 
+  /// Creates a text symbol for [currency].
   const CurrencySymbolText(this.currency, {super.key});
 
   @override

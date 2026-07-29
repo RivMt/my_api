@@ -6,8 +6,10 @@ import 'package:my_api/src/finance/model/account.dart';
 import 'package:my_api/src/finance/model/payment.dart';
 import 'package:my_api/src/finance/provider.dart' as finance_provider;
 
+/// Displays a selectable wallet-item glyph.
 class WalletItemIcon extends StatelessWidget {
 
+  /// Creates a wallet-item icon.
   const WalletItemIcon({
     super.key,
     required this.foreground,
@@ -16,10 +18,13 @@ class WalletItemIcon extends StatelessWidget {
     this.selected = false,
   });
 
+  /// Icon and container colors.
   final Color foreground, background;
 
+  /// Glyph to display.
   final IconData icon;
 
+  /// Whether to display the selection badge.
   final bool selected;
 
   @override
@@ -45,7 +50,9 @@ class WalletItemIcon extends StatelessWidget {
   }
 }
 
+/// Displays common account or payment summary content.
 class WalletItemCard extends StatelessWidget {
+  /// Creates a wallet-item card.
   const WalletItemCard({
     super.key,
     required this.title,
@@ -63,22 +70,31 @@ class WalletItemCard extends StatelessWidget {
     this.onHover,
   });
 
+  /// Wallet-item glyph.
   final IconData icon;
 
+  /// Icon colors.
   final Color foreground, background;
 
+  /// Primary and secondary text.
   final String title, subtitle;
 
+  /// Whether to mark the item as selected.
   final bool selected;
 
+  /// Whether to replace the content with [unknownMessage].
   final bool isUnknown;
 
+  /// Message displayed for unknown data.
   final String? unknownMessage;
 
+  /// Whether to use disabled styling.
   final bool isDeleted;
 
+  /// Pointer callbacks for the card.
   final Function()? onTap, onDoubleTap, onLongPress;
 
+  /// Called when the pointer enters or leaves the card.
   final Function(bool)? onHover;
 
   @override
@@ -120,7 +136,9 @@ class WalletItemCard extends StatelessWidget {
   }
 }
 
+/// Displays an account with its balance or identifying details.
 class AccountCard extends ConsumerWidget {
+  /// Creates an account card.
   const AccountCard({
     super.key,
     required this.data,
@@ -134,24 +152,29 @@ class AccountCard extends ConsumerWidget {
     this.onHover,
   });
 
-  /// [Account] instance to display information
+  /// Account to display.
   final Account data;
 
+  /// Whether to mark the account as selected.
   final bool selected;
 
+  /// Whether to suppress deleted styling.
   final bool ignoreDeleted;
 
-  /// Value of show account's balance or not
+  /// Whether to display the formatted balance.
   ///
   /// If `true`, balance is used for title and description is used for subtitle.
   /// Otherwise, description is used for title and serial number is used for
   /// subtitle.
   final bool showBalance;
 
+  /// Message displayed for [Account.unknown].
   final String? unknownMessage;
 
+  /// Pointer callbacks for the card.
   final Function()? onTap, onDoubleTap, onLongPress;
 
+  /// Called when the pointer enters or leaves the card.
   final Function(bool)? onHover;
 
   @override
@@ -180,7 +203,9 @@ class AccountCard extends ConsumerWidget {
 
 }
 
+/// Displays a payment method and its identifying details.
 class PaymentCard extends StatelessWidget {
+  /// Creates a payment card.
   const PaymentCard({
     super.key,
     required this.data,
@@ -193,17 +218,22 @@ class PaymentCard extends StatelessWidget {
     this.onHover,
   });
 
-  /// [Payment] instance to display information
+  /// Payment method to display.
   final Payment data;
 
+  /// Whether to mark the payment as selected.
   final bool selected;
 
+  /// Whether to suppress deleted styling.
   final bool ignoreDeleted;
 
+  /// Message displayed for [Payment.unknown].
   final String? unknownMessage;
 
+  /// Pointer callbacks for the card.
   final Function()? onTap, onDoubleTap, onLongPress;
 
+  /// Called when the pointer enters or leaves the card.
   final Function(bool)? onHover;
 
   @override

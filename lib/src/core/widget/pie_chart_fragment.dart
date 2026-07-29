@@ -40,30 +40,43 @@ const List<Color> _itemColors = [
   Colors.indigoAccent,
 ];
 
+/// Displays paired keys and values as a pie chart with a legend.
 class PieChartFragment<K, V> extends StatefulWidget {
 
+  /// Chart heading.
   final String title;
 
+  /// Optional chart subheading.
   final String subtitle;
 
+  /// Items represented by the chart sections.
   final List<K> keys;
 
+  /// Values paired by index with [keys].
   final List<V> values;
 
+  /// Available chart width and height.
   final double width, height;
 
+  /// Maximum number of entries to display.
   final int entries;
 
+  /// Returns the label for a key.
   final String Function(K) getName;
 
+  /// Returns the legend description for a key-value pair.
   final String Function(K, V) getDescription;
 
+  /// Converts a key-value pair to a chart value.
   final double Function(K, V) toDouble;
 
+  /// Optionally builds a legend icon with its section color.
   final Widget Function(K, Color)? getIcon;
 
+  /// State used by the enclosing [HomeCard].
   final StatefulDataState state;
 
+  /// Creates a pie chart and legend.
   const PieChartFragment({
     super.key,
     this.title = "",

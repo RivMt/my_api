@@ -16,8 +16,7 @@ class ModelsStateNotifier<T extends Model> extends StateNotifier<List<T>> {
 
   /// Fetch [T] items with [query]
   ///
-  /// This method set [state] as new response. If there is a necessary to append
-  /// items to current state, use [append].
+  /// Replaces the current state with the response. Use [append] to merge items.
   Future<void> fetch([Map<String, dynamic>? query]) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(query);
@@ -31,8 +30,7 @@ class ModelsStateNotifier<T extends Model> extends StateNotifier<List<T>> {
 
   /// Append [T] items with [query]
   ///
-  /// This method append/update data of [state]. If there is a necessary to reset
-  /// [state] as response, use [fetch].
+  /// Merges the response into the current state. Use [fetch] to replace it.
   Future<void> append(Map<String, dynamic>? query) async {
     final client = ApiClient();
     final ApiResponse<List<T>> response = await client.read<T>(query);

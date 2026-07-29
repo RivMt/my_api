@@ -4,29 +4,26 @@ import 'package:my_api/src/core/model/base_model.dart';
 const _tag = "DataFrame";
 
 
-/// A data frame for [BaseModel]
-///
-///
+/// Converts selected [BaseModel] fields into tabular output.
 class DataFrame<T extends BaseModel> {
 
+  /// Creates a data frame with optional field conversions.
   DataFrame({
     this.columns = const [],
     this.data = const [],
     this.conversions = const {},
   });
 
-  /// List of column names
-  ///
-  /// Column names must be same as [T]'s each key.
+  /// Model keys included as columns.
   List<String> columns;
 
-  /// List of data which type is [T]
+  /// Model rows.
   List<T> data;
 
-  /// Conversion functions
+  /// Field conversions keyed by column name.
   Map<String, Object Function(dynamic)> conversions;
 
-  /// Convert to csv
+  /// Converts this data frame to CSV text.
   String toCsv({
     String separator = ",",
     String newLine = "\r\n",

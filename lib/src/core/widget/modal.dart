@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/src/core/theme.dart';
 
+/// Displays editable content with asynchronous confirmation controls.
 class Modal extends StatefulWidget {
 
+  /// Creates an asynchronous edit modal.
   const Modal({
     super.key,
     this.ready = true,
@@ -14,14 +16,19 @@ class Modal extends StatefulWidget {
     required this.child,
   });
 
+  /// Whether the confirmation controls are enabled.
   final bool ready;
 
+  /// Header and action labels.
   final String title, positiveButtonTitle, negativeButtonTitle;
 
+  /// Called when the positive action is selected.
   final Future<bool> Function() onPositiveButtonPressed;
 
+  /// Called when the negative action is selected.
   final Future<bool> Function() onNegativeButtonPressed;
 
+  /// Editable modal content.
   final Widget child;
 
   @override
@@ -110,7 +117,9 @@ class _ModalState extends State<Modal> {
   }
 }
 
+/// Displays a modal title between negative and positive actions.
 class ModalHeader extends StatelessWidget {
+  /// Creates a modal header.
   const ModalHeader({
     super.key,
     this.disabled = false,
@@ -121,16 +130,22 @@ class ModalHeader extends StatelessWidget {
     this.onPositiveButtonPressed,
   });
 
+  /// Whether both actions are disabled.
   final bool disabled;
 
+  /// Header title.
   final String headerTitle;
 
+  /// Negative action label.
   final String negativeButtonTitle;
 
+  /// Positive action label.
   final String positiveButtonTitle;
 
+  /// Called when the negative action is selected.
   final Function()? onNegativeButtonPressed;
 
+  /// Called when the positive action is selected.
   final Function()? onPositiveButtonPressed;
 
   @override

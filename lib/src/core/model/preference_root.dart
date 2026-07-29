@@ -10,6 +10,7 @@ const String _tag = "PreferenceRoot";
 /// This cannot become a child node
 class PreferenceRoot extends Preference {
 
+  /// Creates a preference root for [section] with initial values.
   PreferenceRoot(this.section, Map<String, dynamic> init) : super() {
     addAll(map);
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Displays interactive data with leading, primary, and secondary content.
 class DataCard extends StatefulWidget {
+  /// Creates an interactive data card.
   const DataCard({
     super.key,
     required this.leading,
@@ -15,26 +17,28 @@ class DataCard extends StatefulWidget {
     this.onHover,
   });
 
-  /// [Widget] which is located at start position of card
+  /// Content displayed at the start of the card.
   final Widget leading;
 
-  /// [Widget] which is located at upper side of card
+  /// Primary content displayed above [bottom].
   final Widget top;
 
-  /// [Widget] which is located at lower side of card
+  /// Secondary content displayed below [top].
   final Widget bottom;
 
-  /// Background [Color] of this card
+  /// Card background color.
   final Color? color;
 
-  /// Value of show [unknownMessage] or not
+  /// Whether to replace the card content with [unknownMessage].
   final bool isUnknown;
 
-  /// If [isUnknown] is `true`, show this rather than [top], [bottom] and [leading]
+  /// Message displayed for unknown data.
   final String? unknownMessage;
 
+  /// Pointer callbacks for the card.
   final Function()? onTap, onDoubleTap, onLongPress;
 
+  /// Called when the pointer enters or leaves the card.
   final Function(bool)? onHover;
 
   @override

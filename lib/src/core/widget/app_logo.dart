@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+/// Displays the application title and, on wide layouts, its asset icon.
 class AppLogo extends StatelessWidget {
 
+  /// Creates an application logo.
   const AppLogo({
     super.key,
     required this.iconName,
@@ -9,10 +11,13 @@ class AppLogo extends StatelessWidget {
     required this.isWide,
   });
 
+  /// Asset path of the application icon.
   final String iconName;
 
+  /// Application title.
   final String title;
 
+  /// Whether to display the icon beside the title.
   final bool isWide;
 
   @override

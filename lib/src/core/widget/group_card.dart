@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Displays a titled, non-scrolling group of lazily built items.
 class GroupCard extends StatefulWidget {
+  /// Creates a grouped list card.
   const GroupCard({
     super.key,
     required this.title,
@@ -9,22 +11,22 @@ class GroupCard extends StatefulWidget {
     this.button,
   });
 
-  /// Default width
+  /// Default card width.
   static const int width = 480;
 
-  /// Default height
+  /// Default card height.
   static const int height = 280;
 
-  /// Title
+  /// Group title.
   final String title;
 
-  /// Number of children
+  /// Number of list items.
   final int count;
 
-  /// Top-right button
+  /// Optional action displayed at the top right.
   final Widget? button;
 
-  /// Build list
+  /// Builds each list item.
   final Widget? Function(BuildContext, int) build;
 
   @override

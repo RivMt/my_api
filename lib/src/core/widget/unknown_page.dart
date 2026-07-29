@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Displays the fallback page for an unknown route.
 class UnknownPage extends StatelessWidget {
+  /// Creates an unknown-route page.
   const UnknownPage({super.key});
 
   @override

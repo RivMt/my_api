@@ -16,6 +16,6 @@ class ValueStateNotifier<T> extends StateNotifier<T> {
   /// Clear state as [unknown]
   void clear() => state = unknown;
 
-  /// Set [state] as [value]
+  /// Replaces the current state with [value].
   void set(T value) => state = value;
 }

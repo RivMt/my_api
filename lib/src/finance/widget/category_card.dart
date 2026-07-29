@@ -4,7 +4,9 @@ import 'package:my_api/src/core/widget/data_card.dart';
 import 'package:my_api/src/finance/model/category.dart';
 import 'package:my_api/src/finance/model/transaction.dart';
 
+/// Displays a category summary with its semantic icon.
 class CategoryCard extends StatelessWidget {
+  /// Creates a category card.
   const CategoryCard({
     super.key,
     required this.category,
@@ -15,18 +17,19 @@ class CategoryCard extends StatelessWidget {
     this.onHover,
   });
 
-  /// Card height
+  /// Standard card height.
   static const int height = 72;
 
-  /// Category
+  /// Category to display.
   final Category category;
 
-  /// Unknown message
+  /// Message displayed for [Category.unknown].
   final String? unknownMessage;
 
-  /// Tap action
+  /// Pointer callbacks for the card.
   final Function()? onTap, onDoubleTap, onLongPress;
 
+  /// Called when the pointer enters or leaves the card.
   final Function(bool)? onHover;
 
   @override
@@ -64,7 +67,9 @@ class CategoryCard extends StatelessWidget {
   }
 }
 
+/// Displays a category icon colored by transaction type and status.
 class CategoryIcon extends StatelessWidget {
+  /// Creates a category icon from explicit values.
   const CategoryIcon({
     super.key,
     required this.type,
@@ -75,6 +80,7 @@ class CategoryIcon extends StatelessWidget {
     this.background,
   });
 
+  /// Creates an icon from [category].
   CategoryIcon.fromCategory(Category category, {super.key})
       : type = category.type,
         icon = category.icon.icon,
@@ -84,22 +90,22 @@ class CategoryIcon extends StatelessWidget {
         background = null;
 
 
-  /// Icon
+  /// Glyph to display.
   final IconData icon;
 
-  /// Type
+  /// Transaction type that determines the color.
   final TransactionType type;
 
-  /// Included
+  /// Whether the category is included in statistics.
   final bool included;
 
-  /// Deleted
+  /// Whether to use disabled colors.
   final bool isDeleted;
 
-  /// Given colors by parent
+  /// Optional color overrides.
   final Color? foreground, background;
 
-  /// Icon color
+  /// Resolved icon color.
   Color? get foregroundColor {
     if (foreground != null) {
       return foreground;
@@ -110,7 +116,7 @@ class CategoryIcon extends StatelessWidget {
     return getColor(type, included, false);
   }
 
-  /// Background color
+  /// Resolved background color.
   Color? get backgroundColor {
     if (background != null) {
       return background;
@@ -121,7 +127,7 @@ class CategoryIcon extends StatelessWidget {
     return getColor(type, included, true);
   }
 
-  /// Get color by [type], [included], and [background]
+  /// Resolves a color for [type], inclusion, and layer.
   Color? getColor(TransactionType type, bool included, bool background) {
     final level = background ? 100 : 500;
     switch(type) {

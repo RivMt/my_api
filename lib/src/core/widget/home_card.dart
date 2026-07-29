@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:my_api/src/core/model/stateful_data.dart';
 import 'package:my_api/src/core/widget/message_box.dart';
 
+/// Displays home content for its loading, ready, or error state.
 class HomeCard extends StatelessWidget {
 
+  /// Creates a state-aware home card.
   const HomeCard({
     super.key,
     required this.title,
@@ -12,12 +14,16 @@ class HomeCard extends StatelessWidget {
     this.children = const [],
   });
 
+  /// Primary heading.
   final String title;
 
+  /// Optional secondary heading.
   final String subtitle;
 
+  /// State that selects the visible card content.
   final StatefulDataState state;
 
+  /// Content shown when [state] is ready.
   final List<Widget> children;
 
   @override

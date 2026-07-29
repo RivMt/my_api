@@ -6,7 +6,9 @@ import 'package:my_api/src/finance/model/category.dart';
 import 'package:my_api/src/finance/model/transaction.dart';
 import 'package:my_api/src/finance/provider.dart' as finance_provider;
 
+/// Displays a transaction amount, description, and category icon.
 class TransactionCard extends ConsumerWidget {
+  /// Creates a transaction card.
   const TransactionCard({
     super.key,
     required this.data,
@@ -18,18 +20,19 @@ class TransactionCard extends ConsumerWidget {
     this.onHover,
   });
 
-  /// Transaction
+  /// Transaction to display.
   final Transaction data;
 
-  /// Category
+  /// Category associated with [data].
   final Category category;
 
-  /// Is paid
+  /// Whether the transaction is already paid.
   final bool isPaid;
 
-  /// Tap action
+  /// Pointer callbacks for the card.
   final Function()? onTap, onDoubleTap, onLongPress;
 
+  /// Called when the pointer enters or leaves the card.
   final Function(bool)? onHover;
 
   @override
@@ -83,17 +86,19 @@ class TransactionCard extends ConsumerWidget {
   }
 }
 
+/// Displays a transaction's category icon and status colors.
 class TransactionIcon extends StatelessWidget {
+  /// Creates an icon for [data] and [category].
   const TransactionIcon({
     super.key,
     required this.data,
     required this.category,
   });
 
-  /// Transaction
+  /// Transaction that determines type and status.
   final Transaction data;
 
-  /// Category
+  /// Category that supplies the glyph.
   final Category category;
 
   @override

@@ -1,43 +1,60 @@
 import 'package:flutter/material.dart';
 
+/// Builds application themes and exposes the active color swatches.
 class AppTheme {
 
+  /// Primary color for destructive or error actions.
   static const Color errorPrimary = Colors.red;
 
+  /// Secondary color for destructive or error actions.
   static final Color errorSecondary = Colors.red[300] ?? Colors.redAccent;
 
+  /// Overlay alpha for focused controls.
   static const int alphaFocused = 36;
 
+  /// Overlay alpha for pressed controls.
   static const int alphaPressed = 24;
 
+  /// Overlay alpha for hovered controls.
   static const int alphaHovered = 12;
 
+  /// Overlay alpha for disabled controls.
   static const int alphaDisabled = 5;
 
+  /// Large display-text size.
   static const double sizeDisplayLarge = 28;
 
+  /// Medium display-text size.
   static const double sizeDisplayMedium = 24;
 
+  /// Large title-text size.
   static const double sizeTitleLarge = 18;
 
+  /// Medium title-text size.
   static const double sizeTitleMedium = 16;
 
+  /// Small title-text size.
   static const double sizeTitleSmall = 12;
 
+  /// Medium body-text size.
   static const double sizeBodyMedium = 14;
 
+  /// Small body-text size.
   static const double sizeBodySmall = 12;
 
+  /// Large label-text size.
   static const double sizeLabelLarge = 16;
 
+  /// Medium label-text size.
   static const double sizeLabelMedium = 14;
 
+  /// Small label-text size.
   static const double sizeLabelSmall = 12;
 
-  /// Is theme is dark or not
+  /// Whether the active theme is dark.
   static bool isDarkMode = false;
 
-  /// Swatches of current theme
+  /// Color swatches for the active theme.
   static ColorSwatches get swatches => isDarkMode ? _darkSwatches : _lightSwatches;
 
   static final ColorSwatches _lightSwatches = ColorSwatches(
@@ -78,16 +95,17 @@ class AppTheme {
     contentSecondary: Colors.grey[400]!,
   );
 
-  /// Light theme
+  /// Builds the light theme with [primary] as its seed color.
   static ThemeData light(Color primary) {
     return _theme(primary, _lightSwatches);
   }
 
-  /// Dark theme
+  /// Builds the dark theme with [primary] as its seed color.
   static ThemeData dark(Color primary) {
     return _theme(primary, _darkSwatches);
   }
 
+  /// Resolves a text-button overlay from its interaction state.
   static WidgetStateProperty<Color?>? textButtonOverlay(Color color) {
     return WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.pressed)) {
@@ -495,20 +513,28 @@ class AppTheme {
   }
 }
 
+/// Groups semantic colors shared by an application theme.
 class ColorSwatches {
 
+  /// Whether these swatches belong to a dark theme.
   final bool isDarkMode;
 
+  /// Foreground colors ordered from front to rear.
   final Color frontForeground, middleForeground, rearForeground;
 
+  /// Base application background.
   final Color background;
 
+  /// Background colors ordered from front to rear.
   final Color frontBackground, middleBackground, rearBackground;
 
+  /// Primary and secondary content colors.
   final Color contentPrimary, contentSecondary;
 
+  /// Colors for disabled foreground and background content.
   final Color disabledForeground, disabledBackground;
 
+  /// Creates a set of semantic color swatches.
   ColorSwatches({
     required this.isDarkMode,
     required this.frontForeground,

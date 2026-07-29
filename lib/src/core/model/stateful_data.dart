@@ -4,8 +4,10 @@ enum StatefulDataStateLevel {
   loading(1),
   error(2);
 
+  /// Stack index used to display this state.
   final int level;
 
+  /// Creates a state level with its display [level].
   const StatefulDataStateLevel(this.level);
 
 }
@@ -30,6 +32,7 @@ class StatefulDataState {
   /// Level of this state
   final StatefulDataStateLevel code;
 
+  /// Error message, or an empty string for non-error states.
   final String message;
 }
 

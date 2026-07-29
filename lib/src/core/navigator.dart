@@ -4,12 +4,16 @@ import 'package:my_api/src/core/widget/unknown_page.dart';
 
 const String _tag = "Navigator";
 
+/// Describes an application route and its optional detail state.
 class RoutePath {
 
+  /// Root application route.
   static final RoutePath home = RoutePath("");
 
+  /// Fallback route for unknown locations.
   static final RoutePath unknown = RoutePath("404");
 
+  /// Creates a route path.
   RoutePath(this.path, {
     this.uuid,
     this.queries,
@@ -17,20 +21,25 @@ class RoutePath {
     this.index = 0,
   });
 
+  /// Base path segment.
   final String path;
 
+  /// Optional identifier for a detail route.
   final String? uuid;
 
+  /// Optional query parameters.
   final Map<String, dynamic>? queries;
 
+  /// Optional URI fragment.
   final String? anchor;
 
+  /// Tab index associated with the route.
   final int index;
 
-  /// Value of this route path is about details or not
+  /// Whether this route targets a detail item.
   bool get isDetails => uuid != null;
 
-  /// List of path segments
+  /// Route path segments.
   List<String> get pathSegments {
     final segments = <String>[];
     segments.add("/$path");
@@ -38,10 +47,10 @@ class RoutePath {
     return segments;
   }
 
-  /// Depth of path
+  /// Number of path segments.
   int get depth => pathSegments.length;
 
-  /// Current uri
+  /// URI represented by this route.
   Uri get uri {
     return Uri(
       pathSegments: pathSegments,
@@ -50,10 +59,10 @@ class RoutePath {
     );
   }
 
-  /// Generate details uri from current
+  /// Returns a detail route for [uuid].
   RoutePath details(String uuid) => RoutePath(path, uuid: uuid);
 
-  /// Generate complex uri from current
+  /// Returns this route with the supplied optional components.
   RoutePath extend({
     String? uuid,
     Map<String, dynamic>? queries,
@@ -64,7 +73,7 @@ class RoutePath {
     anchor: anchor,
   );
 
-  /// Generate previous uri from current
+  /// Returns the previous route state.
   RoutePath previous() {
     // Anchor
     if (anchor != null) {
@@ -99,15 +108,16 @@ class RoutePath {
   int get hashCode => uri.hashCode;
 }
 
+/// Converts platform route information to and from [RoutePath].
 class RouteParser extends RouteInformationParser<RoutePath> {
 
-  /// List of path segments does not have detail uri
+  /// Routes that do not accept a detail identifier.
   List<RoutePath> get pathStandalone => [];
 
-  /// List of path segments which have detail uri
+  /// Routes that accept a detail identifier.
   List<RoutePath> get pathDetails => [];
 
-  /// List of tab page by home index
+  /// Home-tab routes ordered by index.
   List<RoutePath> get pathIndex => [];
 
   @override
@@ -157,8 +167,10 @@ class RouteParser extends RouteInformationParser<RoutePath> {
   }
 }
 
+/// Base router delegate that builds a page stack from [RoutePath].
 abstract class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeNotifier, PopNavigatorRouterDelegateMixin {
 
+  /// Creates a router delegate with a navigator key.
   CoreRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -200,10 +212,10 @@ abstract class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeN
     return;
   }
 
-  /// Widget of home page
+  /// Root page widget.
   Widget get home;
 
-  /// Stack of pages to current uri
+  /// Page stack from [home] to the current route.
   ///
   /// This variable should returns pages from [home] to current.
   ///
@@ -216,7 +228,7 @@ abstract class CoreRouterDelegate extends RouterDelegate<RoutePath> with ChangeN
   /// ```
   List<Page> get pages;
 
-  /// Move to previous page
+  /// Updates the route after [page] is removed.
   void onDidRemovePage(Page page) {
     currentConfiguration = currentConfiguration.previous();
     notifyListeners();

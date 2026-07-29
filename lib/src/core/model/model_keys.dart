@@ -1,6 +1,7 @@
-/// A class contains key of [Model] and its subclasses
+/// Defines serialized field names shared by API models.
 abstract class ModelKeys {
 
+  // Common model fields.
   static const String keyUuid = "uuid";
   static const String keyLastUsed = "last_used";
   static const String keyOwner = "owner_id";
@@ -9,6 +10,7 @@ abstract class ModelKeys {
   static const String keyDescription = "description";
   static const String keyDeleted = "deleted";
 
+  // Wallet-item fields.
   static const String keyPriority = "priority";
   static const String keyLimitation = "limitation";
   static const String keyCurrencyId = "currency_id";
@@ -16,6 +18,7 @@ abstract class ModelKeys {
   static const String keyForeground = "foreground";
   static const String keyBackground = "background";
 
+  // Account and payment fields.
   static const String keyIcon = "icon";
   static const String keyBalance = "balance";
   static const String keyIsCash = "is_cash";
@@ -24,10 +27,12 @@ abstract class ModelKeys {
   static const String keyPayEnd = "pay_end";
   static const String keyPayDate = "pay_date";
 
+  // Preference fields.
   static const String keySection = "section";
   static const String keyKey = "key";
   static const String keyValue = "value";
 
+  // User fields.
   static const String keyUserId = "user_id";
   static const String keyEmail = "email";
   static const String keyEmailVerified = "email_verified";
@@ -37,6 +42,7 @@ abstract class ModelKeys {
   static const String keyPreferredUserName = "preferred_username";
   static const String keyPicture = "picture";
 
+  // Transaction and category fields.
   static const String keyType = "type";
   static const String keyCategoryId = "category_id";
   static const String keyPaidDate = "paid_date";
@@ -51,15 +57,18 @@ abstract class ModelKeys {
   static const String keyName = "name";
   static const String keyDate = "date";
 
+  // Currency fields.
   static const String keyRegionCode = "region_code";
   static const String keyCurrencyCode = "currency_code";
   static const String keySymbol = "symbol";
   static const String keyIconUrl = "icon_url";
   static const String keyDecimalPoint = "decimal_point";
 
+  // Serialized preference fields.
   static const String keyPreferenceKey = "pref_key";
   static const String keyPreferenceValue = "pref_value";
 
+  // Import and query fields.
   static const String keyTable = "table";
   static const String keyAccountName = "account_name";
   static const String keyPaymentName = "payment_name";

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Displays an action button styled as the final item in a list.
 class ListTailButton extends StatefulWidget {
+  /// Creates a list-tail action button.
   const ListTailButton({
     super.key,
     required this.icon,
@@ -11,12 +13,16 @@ class ListTailButton extends StatefulWidget {
     this.onHover,
   });
 
+  /// Action icon.
   final IconData icon;
 
+  /// Action label.
   final String title;
 
+  /// Pointer callbacks for the button.
   final Function()? onTap, onDoubleTap, onLongPress;
 
+  /// Called when the pointer enters or leaves the button.
   final Function(bool)? onHover;
 
   @override

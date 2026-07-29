@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 
 const double _defaultPadding = 8;
 
+/// Displays a preference-section title and optional trailing control.
 class PreferenceHeader extends StatelessWidget {
+  /// Creates a preference header.
   const PreferenceHeader({
     super.key,
     this.title = "",
     this.trailing = const SizedBox(),
   });
 
+  /// Section title.
   final String title;
 
+  /// Control displayed after the title.
   final Widget trailing;
 
   @override
@@ -34,8 +38,10 @@ class PreferenceHeader extends StatelessWidget {
   }
 }
 
+/// Displays one tappable preference row.
 class PreferenceTile extends StatelessWidget {
 
+  /// Creates a preference tile.
   const PreferenceTile({
     super.key,
     this.title = "",
@@ -44,12 +50,16 @@ class PreferenceTile extends StatelessWidget {
     this.onTap,
   });
 
+  /// Preference name.
   final String title;
 
+  /// Current value or supporting text.
   final String subtitle;
 
+  /// Optional control displayed at the end of the row.
   final Widget? trailing;
 
+  /// Called when the tile is tapped.
   final Function()? onTap;
 
   @override
