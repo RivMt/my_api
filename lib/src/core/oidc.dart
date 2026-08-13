@@ -20,20 +20,23 @@ class OpenIDConnect {
   /// [OidcUserManager] instance
   late OidcUserManager manager;
 
-  /// ID token of current user
+  /// Access token of current user
   ///
   /// The value is `null` when any user logged in currently
-  String get idToken => manager.currentUser?.idToken ?? "";
+  String get accessToken => manager.currentUser?.token.accessToken ?? "";
 
   /// Init instance
   ///
-  /// [serverUri] is URI of API server. [clientId] and [clientSecret] is issued
-  /// by OIDC server. [redirectUri] is URI of redirection receiving. This URI is
-  /// registered in OIDC server.
+  /// [serverUri] is the URI of the OIDC server. [clientId] identifies a public
+  /// client registered by the OIDC server. [redirectUri] receives the
+  /// authorization response and must be registered by the OIDC server.
+  ///
+  /// Authentication uses Authorization Code Flow with PKCE. Public clients do
+  /// not use a client secret because an application binary cannot keep one
+  /// confidential.
   Future<void> init({
     required String serverUri,
     required String clientId,
-    required String clientSecret,
     required String redirectUri,
   }) async {
     final redirect = Uri.parse(redirectUri);
@@ -47,9 +50,8 @@ class OpenIDConnect {
       discoveryDocumentUri: OidcUtils.getOpenIdConfigWellKnownUri(
         Uri.parse(serverUri),
       ),
-      clientCredentials: OidcClientAuthentication.clientSecretBasic(
+      clientCredentials: OidcClientAuthentication.none(
         clientId: clientId,
-        clientSecret: clientSecret,
       ),
       store: OidcDefaultStore(),
       settings: OidcUserManagerSettings(
@@ -80,9 +82,6 @@ class OpenIDConnect {
     OidcUser? user;
     try {
       user = await manager.loginAuthorizationCodeFlow(
-        extraTokenParameters: {
-          "client_secret": manager.clientCredentials.clientSecret
-        },
         options: const OidcPlatformSpecificOptions(
           web: OidcPlatformSpecificOptions_Web(
             navigationMode: OidcPlatformSpecificOptions_Web_NavigationMode

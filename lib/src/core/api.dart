@@ -43,7 +43,7 @@ class ApiClient {
   /// This header includes authenticate token also. Be careful when using this.
   Map<String, String> get headers => {
     "Content-Type": "application/json",
-    "Authorization": "Bearer ${oidc.idToken}",
+    "Authorization": "Bearer ${oidc.accessToken}",
   };
 
   /// Current application mode (Read-only)
@@ -69,7 +69,6 @@ class ApiClient {
   /// {
   ///   "apiUri": Uri of server (e.g. https://example.com),
   ///   "clientId": Client ID of registered OIDC server,
-  ///   "clientSecret": Client secret of registered OIDC server,
   ///   "redirectUri": Redirect uri of catch oidc result (e.g. https://example.com/redirect.html),
   ///   "mode": Application mode (production, dev, or demo)
   /// }
@@ -78,14 +77,12 @@ class ApiClient {
     _uri = preferences["apiUri"] ?? "";
     final serverUri = preferences["authUri"] ?? "";
     final clientId = preferences["clientId"] ?? "";
-    final clientSecret = preferences["clientSecret"] ?? "";
     final redirectUri = preferences["redirectUri"] ?? "";
     _mode = ApiMode.values.byName(preferences["mode"] ?? "production");
     // Initialize
     await oidc.init(
       serverUri: serverUri,
       clientId: clientId,
-      clientSecret: clientSecret,
       redirectUri: redirectUri,
     );
     Log.i(_tag, "API Client initialized");

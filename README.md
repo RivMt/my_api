@@ -15,7 +15,7 @@ The package currently includes common application infrastructure and personal fi
 ## Features
 
 - **REST API client**: Typed create, read, update, delete, statistics, and streaming search operations through the singleton `ApiClient`.
-- **OIDC authentication**: Authorization Code Flow login, logout, token storage, and bearer token injection into API requests.
+- **OIDC authentication**: Authorization Code Flow with PKCE for public clients, logout, token storage, and bearer token injection into API requests.
 - **Finance models**: Models for accounts, payment methods, transactions, categories, currencies, and preferences.
 - **Riverpod state management**: Notifiers and providers for loading, updating, searching, and calculating values from API-backed models.
 - **Query support**: Sorting, date and value ranges, filtering, and text search through `ApiQuery`.
@@ -81,7 +81,6 @@ Future<void> main() async {
     'apiUri': 'api.example.com',
     'authUri': 'https://auth.example.com/realms/mysuite',
     'clientId': 'my-app',
-    'clientSecret': 'replace-with-your-client-secret',
     'redirectUri': 'https://app.example.com/redirect.html',
     'mode': 'production',
   });
@@ -95,11 +94,10 @@ Future<void> main() async {
 | `apiUri` | The `kyro` host and optional port. The current implementation expects `host` or `host:port` without a URI scheme, for example `api.example.com` or `localhost:8080`. |
 | `authUri` | The full URI of the OIDC provider or realm used to discover its OpenID configuration. |
 | `clientId` | The client ID registered with the OIDC provider. |
-| `clientSecret` | The OIDC client secret used by the configured authentication flow. |
 | `redirectUri` | The login redirect URI. It must exactly match a redirect URI registered with the OIDC provider. |
 | `mode` | Application mode: `production`, `dev`, or `demo`. `dev` uses HTTP for `kyro` requests; the other modes use HTTPS. |
 
-Do not commit real credentials. Client configuration bundled in a Flutter application can be inspected by end users, so production OIDC settings must be safe for a public client environment.
+Register the application as a public OIDC client with token endpoint authentication set to `none`, and require PKCE with the `S256` challenge method. No client secret is stored or transmitted by `my_api`.
 
 ### 3. Authenticate and access data
 

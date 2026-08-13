@@ -15,7 +15,7 @@
 ## 기능
 
 - **REST API 클라이언트**: 싱글턴 `ApiClient`를 통해 타입이 지정된 생성, 조회, 수정, 삭제, 통계, 스트리밍 검색 작업을 제공합니다.
-- **OIDC 인증**: Authorization Code Flow 로그인과 로그아웃, 토큰 저장, API 요청의 Bearer 토큰 설정을 처리합니다.
+- **OIDC 인증**: 공개 클라이언트를 위한 PKCE 기반 Authorization Code Flow 로그인과 로그아웃, 토큰 저장, API 요청의 Bearer 토큰 설정을 처리합니다.
 - **재무 모델**: 계좌, 결제 수단, 거래, 카테고리, 통화, 환경 설정 모델을 제공합니다.
 - **Riverpod 상태 관리**: API 기반 모델을 불러오고 수정하거나 검색하고 값을 계산하는 notifier와 provider를 제공합니다.
 - **쿼리 지원**: `ApiQuery`를 통한 정렬, 날짜·값 범위, 필터링, 문자열 검색을 지원합니다.
@@ -81,7 +81,6 @@ Future<void> main() async {
     'apiUri': 'api.example.com',
     'authUri': 'https://auth.example.com/realms/mysuite',
     'clientId': 'my-app',
-    'clientSecret': 'replace-with-your-client-secret',
     'redirectUri': 'https://app.example.com/redirect.html',
     'mode': 'production',
   });
@@ -95,11 +94,10 @@ Future<void> main() async {
 | `apiUri` | `kyro`의 호스트와 선택적 포트입니다. 현재 구현은 스킴 없이 `host` 또는 `host:port` 형식을 사용합니다. 예: `api.example.com`, `localhost:8080` |
 | `authUri` | OpenID 설정을 찾는 데 사용하는 OIDC 공급자 또는 realm의 전체 URI입니다. |
 | `clientId` | OIDC 공급자에 등록한 클라이언트 ID입니다. |
-| `clientSecret` | 설정된 인증 흐름에서 사용하는 OIDC 클라이언트 secret입니다. |
 | `redirectUri` | 로그인 redirect URI입니다. OIDC 공급자에 등록한 값과 정확히 같아야 합니다. |
 | `mode` | 애플리케이션 모드입니다: `production`, `dev`, `demo`. `dev`는 `kyro` 요청에 HTTP를 사용하고, 나머지 모드는 HTTPS를 사용합니다. |
 
-실제 인증 정보를 커밋하지 마세요. Flutter 앱에 포함된 클라이언트 설정은 최종 사용자가 확인할 수 있으므로, 운영 OIDC 설정은 공개 클라이언트 환경에서도 안전해야 합니다.
+애플리케이션을 공개 OIDC 클라이언트로 등록하고 토큰 엔드포인트 인증 방식을 `none`으로 설정한 뒤, `S256` challenge 방식을 사용하는 PKCE를 필수로 설정하세요. `my_api`는 client secret을 저장하거나 전송하지 않습니다.
 
 ### 3. 인증 및 데이터 접근
 
