@@ -76,6 +76,10 @@ class PieChartFragment<K, V> extends StatefulWidget {
   /// State used by the enclosing [HomeCard].
   final StatefulDataState state;
 
+  final Widget? button;
+
+  final bool showCard;
+
   /// Creates a pie chart and legend.
   const PieChartFragment({
     super.key,
@@ -91,6 +95,8 @@ class PieChartFragment<K, V> extends StatefulWidget {
     this.entries = 5,
     this.getIcon,
     required this.state,
+    this.button,
+    this.showCard = true,
   });
 
   @override
@@ -98,7 +104,6 @@ class PieChartFragment<K, V> extends StatefulWidget {
 }
 
 class _PieChartFragmentState<K, V> extends State<PieChartFragment<K, V>> {
-
   int touchedIndex = -1;
 
   int get entries => math.min(widget.keys.length, widget.entries);
@@ -115,21 +120,21 @@ class _PieChartFragmentState<K, V> extends State<PieChartFragment<K, V>> {
         touchedIndex = -1;
         return;
       }
-      touchedIndex = pieTouchResponse
-          .touchedSection!.touchedSectionIndex;
+      touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
     });
   }
 
   List<PieChartSectionData> showingSections() {
     assert(keys.length == values.length);
     final List<PieChartSectionData> sections = [];
-    for(int i=0; i < keys.length; i++) {
+    for (int i = 0; i < keys.length; i++) {
       final k = keys[i];
       final v = values[i];
       final isTouched = (i == touchedIndex);
-      final radius = (isTouched ? 1 : 0.6) * math.min(widget.width, widget.height) * 0.3;
+      final radius =
+          (isTouched ? 1 : 0.6) * math.min(widget.width, widget.height) * 0.3;
       sections.add(PieChartSectionData(
-        value: widget.toDouble(k ,v),
+        value: widget.toDouble(k, v),
         title: widget.getName(k),
         color: _itemColors[i % _itemColors.length],
         radius: radius,
@@ -144,6 +149,8 @@ class _PieChartFragmentState<K, V> extends State<PieChartFragment<K, V>> {
       title: widget.title,
       subtitle: widget.subtitle,
       state: widget.state,
+      button: widget.button,
+      showCard: widget.showCard,
       children: [
         SizedBox(
           width: widget.width,
@@ -173,7 +180,10 @@ class _PieChartFragmentState<K, V> extends State<PieChartFragment<K, V>> {
             final key = keys[index];
             final value = values[index];
             return ListTile(
-              leading: widget.getIcon == null ? const Icon(Icons.circle) : widget.getIcon!(key, _itemColors[index % _itemColors.length]),
+              leading: widget.getIcon == null
+                  ? const Icon(Icons.circle)
+                  : widget.getIcon!(
+                      key, _itemColors[index % _itemColors.length]),
               title: Text(widget.getName(key)),
               subtitle: Text(widget.getDescription(key, value)),
             );

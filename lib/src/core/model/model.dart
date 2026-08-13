@@ -1,7 +1,5 @@
 library my_api;
 
-import 'dart:math';
-
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 
@@ -49,12 +47,13 @@ abstract class Model {
   /// Get string from [map] using [key]
   ///
   /// If [key] is not in [map], returns [value].
+  /// IF the value corresponding to [key] is `null`, returns [value].
   String getString(String key, String value) {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is String);
-    return map[key];
+    if (map[key] == null) return value;
+    return map[key].toString();
   }
 
   /// Set value of [key] as [value]
@@ -70,6 +69,7 @@ abstract class Model {
   /// Gets integer from [map] using [key]
   ///
   /// If [key] is not in [map] or value of corresponding key is not parsable,
+  /// or if the value corresponding to [key] is `null`,
   /// returns [value].
   int getInt(String key, int value) {
     if (!map.containsKey(key)) {
@@ -82,6 +82,7 @@ abstract class Model {
         return value;
       }
     }
+    if (map[key] == null) return value;
     return map[key];
   }
 
@@ -90,7 +91,10 @@ abstract class Model {
 
   /// Gets bool from [map] using [key]
   ///
-  /// If [key] is not in [map], returns [value]
+  /// `1`, `true`, `True`, `TRUE` are considered as `true`.
+  /// If [key] is not in [map], returns [value].
+  /// If value of corresponding key is not parsable, returns [value].
+  /// If the value corresponding to [key] is `null`, returns [value].
   bool getBool(String key, bool value) {
     if (!map.containsKey(key)) {
       return value;
@@ -99,6 +103,7 @@ abstract class Model {
       final char = map[key].substring(0, 1).toLowerCase();
       return char == "t" || char == "1";
     }
+    if (map[key] == null) return value;
     return map[key];
   }
 
@@ -109,11 +114,12 @@ abstract class Model {
   ///
   /// Unlike [getDateTime], this method does not consider timezone.
   /// [value] is default value when [key] is not exist in [map].
+  /// If the value corresponding to [key] is `null`, returns [value].
   DateTime getDate(String key, DateTime value) {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is String);
+    if (map[key] is! String) return value;
     final utc = DateTime.parse(map[key]);
     return DateTime(utc.year, utc.month, utc.day, utc.hour, utc.minute, utc.second, utc.millisecond, utc.microsecond);
   }
@@ -130,11 +136,12 @@ abstract class Model {
   ///
   /// This method considers timezone and returns [DateTime] as local timezone.
   /// [value] is default value when [key] is not exist.
+  /// If the value corresponding to [key] is `null`, returns [value].
   DateTime getDateTime(String key, DateTime value) {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is String);
+    if (map[key] is! String) return value;
     return DateTime.parse(map[key]).toLocal();
   }
 
@@ -148,48 +155,39 @@ abstract class Model {
 
   /// Get [List] from [key]
   ///
-  /// [value] is default value when [key] is not exist.
-  /// List is made from value of [key] and split by [pattern].
-  /// Default value of [pattern] is ` ` (space).
-  /// ```dart
-  /// // Map
-  /// {
-  ///   "key": "abc def"
-  /// }
-  /// list = getList("key", []);
-  /// // Result = ["abc", "def"]
-  /// ```
-  /// If value is not split by [pattern], returns empty list.
-  List<String> getList(String key, List<String> value, [String pattern = " "]) {
+  /// [value] is default value when [key] is not exist or the type is not [List].
+  /// This method assume that the value corresponding to [key] is `List<String>`.
+  List<String> getList(String key, List<String> value) {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is String);
-    return (map[key] as String).split(pattern);
+    if (map[key] is! List) return value;
+    final result = <String>[];
+    for (final item in map[key]) {
+      result.add(item.toString());
+    }
+    return result;
   }
 
   /// Set value of [key] as [list]
-  ///
-  /// The [separator] is letter of joining [list] and its default value is ` ` (space).
-  ///
-  /// ```dart
-  /// setList("key", ["abc", "def"]);
-  /// // Map
-  /// {
-  ///   "key": "abc def"
-  /// }
-  /// ```
-  void setList(String key, List<String> list, [String separator = " "]) {
-    map[key] = list.join(separator);
+  void setList(String key, List<String> list) {
+    map[key] = list;
   }
 
   /// Get [Decimal] from [key]
+  ///
+  /// If [key] is not in [map], value of corresponding key is not parsable, or
+  /// the value is not [String], return [value].
   Decimal getDecimal(String key, Decimal value) {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is String);
-    return Decimal.parse(map[key]);  // TODO: Catch exception
+    if (map[key] is! String) return value;
+    try {
+      return Decimal.parse(map[key]);
+    } on FormatException {
+      return value;
+    }
   }
 
   /// Set value of [key] as [decimal]
@@ -202,13 +200,13 @@ abstract class Model {
     if (!map.containsKey(key)) {
       return value;
     }
-    assert(map[key] is int);
+    if (map[key] is! int) return value;
     return Color(map[key]);
   }
 
   /// Set value of [key] as [color]
   void setColor(String key, Color color) {
-    map[key] = color.value;
+    map[key] = color.toARGB32();
   }
 
   /// Check [other] is equivalent or not

@@ -71,7 +71,7 @@ class User extends Model {
   String get picture => getString(ModelKeys.keyPicture, "");
 
   /// List of groups
-  List<String> get groups => getList(ModelKeys.keyGroups, [], ",");
+  List<String> get groups => getList(ModelKeys.keyGroups, []);
 
   @override
   bool isEquivalent(Model other) {

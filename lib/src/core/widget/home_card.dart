@@ -12,6 +12,8 @@ class HomeCard extends StatelessWidget {
     this.subtitle = "",
     required this.state,
     this.children = const [],
+    this.button,
+    this.showCard = true,
   });
 
   /// Primary heading.
@@ -26,8 +28,38 @@ class HomeCard extends StatelessWidget {
   /// Content shown when [state] is ready.
   final List<Widget> children;
 
+  /// Top-right button.
+  final Widget? button;
+
+  /// Whether to show the card container and header.
+  final bool showCard;
+
   @override
   Widget build(BuildContext context) {
+    final stateContent = IndexedStack(
+      index: state.code.level,
+      children: [
+        // Ready
+        Column(
+          children: children,
+        ),
+        // Loading
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+        // Error
+        Align(
+          alignment: Alignment.center,
+          child: MessageBox(
+            icon: Icons.error_outline,
+            message: state.message,
+          ),
+        ),
+      ],
+    );
+    if (!showCard) {
+      return stateContent;
+    }
     return Card(
       elevation: 4,
       child: Padding(
@@ -36,51 +68,38 @@ class HomeCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Visibility(
-                    visible: title != "",
-                    child: Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleLarge,
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Visibility(
+                          visible: title != "",
+                          child: Text(
+                            title,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        Visibility(
+                          visible: subtitle != "",
+                          child: Text(
+                            subtitle,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Visibility(
-                    visible: subtitle != "",
-                    child: Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
+                  if (button != null) button!,
                 ],
               ),
             ),
-            IndexedStack(
-              index: state.code.level,
-              children: [
-                // Ready
-                Column(
-                  children: children,
-                ),
-                // Loading
-                const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                // Error
-                Align(
-                  alignment: Alignment.center,
-                  child: MessageBox(
-                    icon: Icons.error_outline,
-                    message: state.message,
-                  ),
-                ),
-              ],
-            ),
+            stateContent,
           ],
         ),
       ),

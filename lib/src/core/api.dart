@@ -43,14 +43,24 @@ class ApiClient {
   /// This header includes authenticate token also. Be careful when using this.
   Map<String, String> get headers => {
     "Content-Type": "application/json",
-    "Authorization": "Bearer ${oidc.idToken}",
+    "Authorization": "Bearer ${oidc.accessToken}",
   };
 
-  /// Whether current app is developer mode (Read-only)
-  bool get isDevelop => _isDevelop;
+  /// Current application mode (Read-only)
+  ApiMode get mode => _mode;
 
-  /// Whether current app is developer mode
-  bool _isDevelop = false;
+  /// Whether current app is developer mode (Read-only)
+  @Deprecated('Use mode == ApiMode.dev instead.')
+  bool get isDevelop => mode == ApiMode.dev;
+
+  /// Current application mode
+  ApiMode _mode = ApiMode.production;
+
+  /// Function to extend endpoint
+  String Function<T>()? handleExtendedEndpoint;
+
+  /// Function to extends casting
+  Function<T>(Map<String, dynamic> map)? extendCast;
 
   /// Init client with [preferences]
   ///
@@ -59,23 +69,20 @@ class ApiClient {
   /// {
   ///   "apiUri": Uri of server (e.g. https://example.com),
   ///   "clientId": Client ID of registered OIDC server,
-  ///   "clientSecret": Client secret of registered OIDC server,
   ///   "redirectUri": Redirect uri of catch oidc result (e.g. https://example.com/redirect.html),
-  ///   "isDevelop": Whether current app is developer mode or not
+  ///   "mode": Application mode (production, dev, or demo)
   /// }
   /// ```
   Future<void> init(Map<String, dynamic> preferences) async {
     _uri = preferences["apiUri"] ?? "";
     final serverUri = preferences["authUri"] ?? "";
     final clientId = preferences["clientId"] ?? "";
-    final clientSecret = preferences["clientSecret"] ?? "";
     final redirectUri = preferences["redirectUri"] ?? "";
-    _isDevelop = preferences["isDevelop"] ?? false;
+    _mode = ApiMode.values.byName(preferences["mode"] ?? "production");
     // Initialize
     await oidc.init(
       serverUri: serverUri,
       clientId: clientId,
-      clientSecret: clientSecret,
       redirectUri: redirectUri,
     );
     Log.i(_tag, "API Client initialized");
@@ -104,7 +111,7 @@ class ApiClient {
     final host = split[0];
     final port = (split.length > 1) ? int.parse(split[1]) : null;
     return Uri(
-      scheme: isDevelop ? "http" : "https",
+      scheme: mode == ApiMode.dev ? "http" : "https",
       host: host,
       port: port,
       path: endpoint,
@@ -226,7 +233,10 @@ class ApiClient {
       case PreferenceElement:
         return PreferenceElement.fromMap(PreferenceDummy(), map);
       default:
-        throw UnimplementedError();
+        if (extendCast == null) {
+          throw UnimplementedError();
+        }
+        return extendCast!<T>(map);
     }
   }
 
@@ -250,7 +260,11 @@ class ApiClient {
       case Category: return Category.endpoint;
       case Currency: return Currency.endpoint;
       case PreferenceElement: return Preference.endpoint;
-      default: throw UnimplementedError();
+      default:
+        if (handleExtendedEndpoint == null) {
+          throw UnimplementedError();
+        }
+        return handleExtendedEndpoint!<T>();
     }
   }
 
@@ -368,6 +382,13 @@ class ApiClient {
       data: result.data.map((data) => cast<T>(data)),
     );
   }
+}
+
+/// Application mode
+enum ApiMode {
+  production,
+  dev,
+  demo,
 }
 
 /// HTTP Method
