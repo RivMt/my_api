@@ -83,7 +83,7 @@ Future<void> main() async {
     'clientId': 'my-app',
     'clientSecret': 'replace-with-your-client-secret',
     'redirectUri': 'https://app.example.com/redirect.html',
-    'isDevelop': false,
+    'mode': 'production',
   });
 
   runApp(const MyApp());
@@ -97,7 +97,7 @@ Future<void> main() async {
 | `clientId` | The client ID registered with the OIDC provider. |
 | `clientSecret` | The OIDC client secret used by the configured authentication flow. |
 | `redirectUri` | The login redirect URI. It must exactly match a redirect URI registered with the OIDC provider. |
-| `isDevelop` | Uses HTTP for `kyro` requests when `true` and HTTPS when `false`. |
+| `mode` | Application mode: `production`, `dev`, or `demo`. `dev` uses HTTP for `kyro` requests; the other modes use HTTPS. |
 
 Do not commit real credentials. Client configuration bundled in a Flutter application can be inspected by end users, so production OIDC settings must be safe for a public client environment.
 

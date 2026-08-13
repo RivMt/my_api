@@ -83,7 +83,7 @@ Future<void> main() async {
     'clientId': 'my-app',
     'clientSecret': 'replace-with-your-client-secret',
     'redirectUri': 'https://app.example.com/redirect.html',
-    'isDevelop': false,
+    'mode': 'production',
   });
 
   runApp(const MyApp());
@@ -97,7 +97,7 @@ Future<void> main() async {
 | `clientId` | OIDC 공급자에 등록한 클라이언트 ID입니다. |
 | `clientSecret` | 설정된 인증 흐름에서 사용하는 OIDC 클라이언트 secret입니다. |
 | `redirectUri` | 로그인 redirect URI입니다. OIDC 공급자에 등록한 값과 정확히 같아야 합니다. |
-| `isDevelop` | `true`이면 `kyro` 요청에 HTTP를, `false`이면 HTTPS를 사용합니다. |
+| `mode` | 애플리케이션 모드입니다: `production`, `dev`, `demo`. `dev`는 `kyro` 요청에 HTTP를 사용하고, 나머지 모드는 HTTPS를 사용합니다. |
 
 실제 인증 정보를 커밋하지 마세요. Flutter 앱에 포함된 클라이언트 설정은 최종 사용자가 확인할 수 있으므로, 운영 OIDC 설정은 공개 클라이언트 환경에서도 안전해야 합니다.
 

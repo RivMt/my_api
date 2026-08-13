@@ -46,11 +46,15 @@ class ApiClient {
     "Authorization": "Bearer ${oidc.idToken}",
   };
 
-  /// Whether current app is developer mode (Read-only)
-  bool get isDevelop => _isDevelop;
+  /// Current application mode (Read-only)
+  ApiMode get mode => _mode;
 
-  /// Whether current app is developer mode
-  bool _isDevelop = false;
+  /// Whether current app is developer mode (Read-only)
+  @Deprecated('Use mode == ApiMode.dev instead.')
+  bool get isDevelop => mode == ApiMode.dev;
+
+  /// Current application mode
+  ApiMode _mode = ApiMode.production;
 
   /// Function to extend endpoint
   String Function<T>()? handleExtendedEndpoint;
@@ -67,7 +71,7 @@ class ApiClient {
   ///   "clientId": Client ID of registered OIDC server,
   ///   "clientSecret": Client secret of registered OIDC server,
   ///   "redirectUri": Redirect uri of catch oidc result (e.g. https://example.com/redirect.html),
-  ///   "isDevelop": Whether current app is developer mode or not
+  ///   "mode": Application mode (production, dev, or demo)
   /// }
   /// ```
   Future<void> init(Map<String, dynamic> preferences) async {
@@ -76,7 +80,7 @@ class ApiClient {
     final clientId = preferences["clientId"] ?? "";
     final clientSecret = preferences["clientSecret"] ?? "";
     final redirectUri = preferences["redirectUri"] ?? "";
-    _isDevelop = preferences["isDevelop"] ?? false;
+    _mode = ApiMode.values.byName(preferences["mode"] ?? "production");
     // Initialize
     await oidc.init(
       serverUri: serverUri,
@@ -110,7 +114,7 @@ class ApiClient {
     final host = split[0];
     final port = (split.length > 1) ? int.parse(split[1]) : null;
     return Uri(
-      scheme: isDevelop ? "http" : "https",
+      scheme: mode == ApiMode.dev ? "http" : "https",
       host: host,
       port: port,
       path: endpoint,
@@ -381,6 +385,13 @@ class ApiClient {
       data: result.data.map((data) => cast<T>(data)),
     );
   }
+}
+
+/// Application mode
+enum ApiMode {
+  production,
+  dev,
+  demo,
 }
 
 /// HTTP Method
