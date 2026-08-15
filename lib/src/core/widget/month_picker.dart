@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 /// Selects a month with previous and next controls.
@@ -10,13 +11,13 @@ class MonthPicker extends StatefulWidget {
   final void Function(DateTime) onDateChanged;
 
   /// Formats the selected month for display.
-  final String Function(DateTime) displayText;
+  final String Function(DateTime)? displayText;
 
   /// Creates a month picker.
   const MonthPicker({
     super.key,
     required this.date,
-    required this.displayText,
+    this.displayText,
     required this.onDateChanged,
   });
 
@@ -32,6 +33,17 @@ class _MonthPickerState extends State<MonthPicker> {
     return widget.onDateChanged(changed);
   }
 
+  String getMonthText(DateTime date) {
+    if (widget.displayText != null) {
+      return widget.displayText!(date);
+    }
+    final now = DateTime.now();
+    if (date.year == now.year) {
+      return DateFormat.MMM().format(date);
+    }
+    return DateFormat.yMMM().format(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -41,7 +53,8 @@ class _MonthPickerState extends State<MonthPicker> {
           icon: const Icon(Icons.chevron_left),
           onPressed: () => onButtonPressed(-1),
         ),
-        Text(widget.displayText(widget.date)),
+        Text(getMonthText(widget.date)),
+        // TODO: Add current month icon button
         IconButton(
           icon: const Icon(Icons.chevron_right),
           onPressed: () => onButtonPressed(1),
