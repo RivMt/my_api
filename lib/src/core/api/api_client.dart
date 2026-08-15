@@ -1,19 +1,16 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:decimal/decimal.dart';
-import 'package:http/http.dart' as http;
-import 'package:my_api/src/core/api/api_mode.dart';
+import 'package:my_api/src/core/api/api_connector.dart';
+import 'package:my_api/src/core/api/demo_connector.dart';
+import 'package:my_api/src/core/app_mode.dart';
 import 'package:my_api/src/core/api/api_query.dart';
 import 'package:my_api/src/core/api/api_response.dart';
-import 'package:my_api/src/core/api/api_response_result.dart';
 import 'package:my_api/src/core/api/http_method.dart';
+import 'package:my_api/src/core/api/remote_connector.dart';
 import 'package:my_api/src/core/log.dart';
 import 'package:my_api/src/core/model/model_keys.dart';
 import 'package:my_api/src/core/model/preference.dart';
 import 'package:my_api/src/core/model/preference_element.dart';
 import 'package:my_api/src/core/model/user.dart';
-import 'package:my_api/src/core/oidc.dart';
 import 'package:my_api/src/finance/model/account.dart';
 import 'package:my_api/src/finance/model/category.dart';
 import 'package:my_api/src/finance/model/currency.dart';
@@ -24,41 +21,41 @@ const String _tag = "API";
 
 /// Sends and receives HTTP requests to the backend server.
 class ApiClient {
+  /// Environment variable used to override the configured API mode.
+  static const String modeEnvironmentKey = "MYSUITE_MODE";
+
+  static const String _environmentMode = String.fromEnvironment(
+    modeEnvironmentKey,
+  );
+
   /// Private instance for singleton pattern.
   static final ApiClient _instance = ApiClient._();
 
   /// Private constructor for singleton pattern.
-  ApiClient._();
+  ApiClient._() {
+    _connector = RemoteConnector();
+  }
 
   /// Factory constructor for singleton pattern.
   factory ApiClient() => _instance;
 
-  /// Instance for OIDC management.
-  final OpenIDConnect oidc = OpenIDConnect();
-
-  /// Address of backend server.
-  String _uri = "";
+  /// Singleton instance.
+  static ApiClient get instance => _instance;
 
   /// Address of backend server (read-only).
-  String get uri => _uri;
-
-  /// HTTP request headers.
-  ///
-  /// This header includes the authentication token. Be careful when using it.
-  Map<String, String> get headers => {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer ${oidc.accessToken}",
-      };
+  String get uri => _connector.uri;
 
   /// Current application mode (read-only).
-  ApiMode get mode => _mode;
+  AppMode get mode => _connector.mode;
 
   /// Whether the current app is in developer mode (read-only).
   @Deprecated('Use mode == ApiMode.dev instead.')
-  bool get isDevelop => mode == ApiMode.dev;
+  bool get isDevelop => mode == AppMode.dev;
 
-  /// Current application mode.
-  ApiMode _mode = ApiMode.production;
+  /// Connector used to send API requests.
+  ApiConnector get connector => _connector;
+
+  late ApiConnector _connector;
 
   /// Function to extend endpoint handling.
   String Function<T>()? handleExtendedEndpoint;
@@ -68,80 +65,45 @@ class ApiClient {
 
   /// Initializes the client with [preferences].
   Future<void> init(Map<String, dynamic> preferences) async {
-    _uri = preferences["apiUri"] ?? "";
-    final serverUri = preferences["authUri"] ?? "";
-    final clientId = preferences["clientId"] ?? "";
-    final redirectUri = preferences["redirectUri"] ?? "";
-    _mode = ApiMode.values.byName(preferences["mode"] ?? "production");
-    await oidc.init(
-      serverUri: serverUri,
-      clientId: clientId,
-      redirectUri: redirectUri,
-    );
+    final mode = resolveMode(preferences);
+    _connector = _createConnector(mode);
+    await _connector.init(preferences);
     Log.i(_tag, "API Client initialized");
   }
 
-  /// Logs in.
-  Future<User> login() async {
-    final user = await oidc.login();
-    Log.i(_tag, "Logged in: ${user.email}");
-    return user;
+  /// Resolves the API mode, preferring a valid environment override.
+  static AppMode resolveMode(
+    Map<String, dynamic> preferences, {
+    Map<String, String>? environment,
+  }) {
+    final modeName = environment == null
+        ? (_environmentMode.isEmpty ? null : _environmentMode)
+        : environment[modeEnvironmentKey];
+    if (modeName != null &&
+        AppMode.values.any((mode) => mode.name == modeName)) {
+      return AppMode.values.byName(modeName);
+    }
+    return AppMode.values.byName(
+      preferences["mode"] ?? AppMode.production.name,
+    );
   }
+
+  ApiConnector _createConnector(AppMode mode) => switch (mode) {
+        AppMode.demo => DemoConnector(),
+        AppMode.production || AppMode.dev => RemoteConnector(mode: mode),
+      };
+
+  /// Logs in.
+  Future<User> login() => _connector.login();
 
   /// Logs out.
   ///
   /// Returns [User.unknown] when logout succeeds.
-  Future<User> logout() async {
-    await oidc.logout();
-    Log.i(_tag, "Logged out");
-    return User.unknown;
-  }
+  Future<User> logout() => _connector.logout();
 
   /// Returns the REST API [Uri] for [endpoint] and [query].
-  Uri buildUri(String endpoint, Map<String, dynamic>? query) {
-    final split = uri.split(":");
-    final host = split[0];
-    final port = (split.length > 1) ? int.parse(split[1]) : null;
-    return Uri(
-      scheme: mode == ApiMode.dev ? "http" : "https",
-      host: host,
-      port: port,
-      path: endpoint,
-      queryParameters: query,
-    );
-  }
-
-  Future<http.StreamedResponse> _request({
-    required HttpMethod method,
-    required String endpoint,
-    Object? body,
-    Map<String, dynamic>? query,
-  }) async {
-    final uri = buildUri(endpoint, query);
-    final client = http.Client();
-    final request = http.Request(method.name.toUpperCase(), uri);
-    for (String key in headers.keys) {
-      request.headers[key] = headers[key]!;
-    }
-    if (body != null) {
-      request.body = json.encode(body);
-    }
-    try {
-      final response = await client.send(request);
-      final logMessage = "${response.statusCode} $method $uri";
-      if (response.statusCode != 200) {
-        Log.w(_tag, logMessage);
-      } else {
-        Log.v(_tag, logMessage);
-      }
-      return response;
-    } on SocketException catch (e, s) {
-      Log.e(_tag, "Socket Exception: $method $uri", e, s);
-    } on http.ClientException catch (e, s) {
-      Log.e(_tag, "Client Exception: $method $uri", e, s);
-    }
-    return http.StreamedResponse(const Stream.empty(), 400);
-  }
+  Uri buildUri(String endpoint, Map<String, dynamic>? query) =>
+      _connector.buildUri(endpoint, query);
 
   /// Sends an HTTP stream request with [method] and [endpoint].
   Future<ApiResponse<Stream>> requestStream<T>({
@@ -149,22 +111,12 @@ class ApiClient {
     required String endpoint,
     Object? body,
     ApiQuery? query,
-  }) async {
-    final response = await _request(
+  }) {
+    return _connector.requestStream<T>(
       method: method,
       endpoint: endpoint,
       body: body,
-      query: query?.params,
-    );
-    if (response.statusCode != 200) {
-      return ApiResponse.failed(const Stream.empty());
-    }
-    return ApiResponse(
-      result: ApiResponseResult.success,
-      data: response.stream
-          .transform(utf8.decoder)
-          .transform(const LineSplitter())
-          .map((line) => json.decode(line) as Map<String, dynamic>),
+      query: query,
     );
   }
 
@@ -174,21 +126,12 @@ class ApiClient {
     required String endpoint,
     Object? body,
     ApiQuery? query,
-  }) async {
-    final defaultValue = method == HttpMethod.get ? <T>[] : <String, dynamic>{};
-    final response = await _request(
+  }) {
+    return _connector.request<T>(
       method: method,
       endpoint: endpoint,
       body: body,
-      query: query?.params,
-    );
-    if (response.statusCode != 200) {
-      return ApiResponse.failed(defaultValue);
-    }
-    final bytes = await response.stream.toBytes();
-    return ApiResponse(
-      result: ApiResponseResult.success,
-      data: json.decode(utf8.decode(bytes)),
+      query: query,
     );
   }
 
@@ -309,13 +252,13 @@ class ApiClient {
     }
     final result = await request(
       method: HttpMethod.get,
-      endpoint: "${endpoint<T>()}/stat",
+      endpoint: "${endpoint<T>()}/stats",
       query: query,
     );
     final Map<String, Decimal> data = {};
     for (String key in result.data) {
       try {
-        data[key] = Decimal.parse(result.data[key]);
+        data[key] = Decimal.parse(result.data[key].toString());
       } on FormatException {
         Log.w(_tag, "Unable to parse: ${result.data[key]}");
         data[key] = Decimal.zero;

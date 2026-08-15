@@ -1,5 +1,5 @@
 /// Application mode.
-enum ApiMode {
+enum AppMode {
   production,
   dev,
   demo,

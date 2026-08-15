@@ -45,6 +45,7 @@ export 'package:my_api/src/core/notifier/value_state_notifier.dart';
 
 // Utils
 export 'package:my_api/src/core/data_frame.dart';
+export 'package:my_api/src/core/app_mode.dart';
 
 // Navigator
 export 'package:my_api/src/core/navigator.dart';

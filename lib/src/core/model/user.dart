@@ -7,8 +7,21 @@ import 'package:oidc/oidc.dart';
 /// All properties are read-only because user info only can be changed by server-side.
 class User extends Model {
 
+  /// Demo user id
+  static const String demoId = "demo";
+
   /// An unknown user
   static final User unknown = User();
+
+  /// Demo user
+  static final User demo = User({
+    ModelKeys.keyUserId: demoId,
+    ModelKeys.keyEmail: "demo@example.com",
+    ModelKeys.keyName: "demo",
+    ModelKeys.keyPreferredUserName: "Demo User",
+    ModelKeys.keyFamilyName: "User",
+    ModelKeys.keyGivenName: "Demo",
+  });
 
   /// Initialize from [map]
   User([super.map]);
