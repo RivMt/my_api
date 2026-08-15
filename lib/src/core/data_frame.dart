@@ -46,14 +46,17 @@ class DataFrame<T extends BaseModel> {
         final key = columns[index];
         Object value;
         // Check value exist
-        if (item.map.containsKey(key)) {
-          value = item.map[columns[index]] ?? "";
-          // Check conversion exist
-          if (conversions.containsKey(key)) {
+        if (conversions.containsKey(key)) {
+          if (item.map.containsKey(key)) {
+            value = item.map[columns[index]] ?? "";
             value = conversions[key]!(value);
+          } else {
+            value = conversions[key]!(item);
           }
+        } else if (item.map.containsKey(key)) {
+          value = item.map[columns[index]] ?? "";
         } else {
-          Log.e(_tag, "$key does not exist in ${item.uuid}");
+          Log.e(_tag, "`$key` does not exist in conversion map and unable to directly convert");
           value = "";
         }
         return _toValidCsvField(
