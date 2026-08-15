@@ -3,7 +3,7 @@ export 'package:my_api/src/core/exceptions.dart';
 export 'package:my_api/src/core/log.dart';
 
 // API
-export 'package:my_api/src/core/api.dart';
+export 'package:my_api/src/core/api/api.dart';
 
 // UI
 export 'package:my_api/src/core/theme.dart';

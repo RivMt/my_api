@@ -1,11 +1,10 @@
-import 'package:my_api/src/core/api.dart';
+import 'package:my_api/src/core/api/api.dart';
 import 'package:my_api/src/core/log.dart';
 import 'package:my_api/src/core/model/model.dart';
 import 'package:my_api/src/core/notifier/value_state_notifier.dart';
 
 /// A single model state notifier
 class ModelStateNotifier<T extends Model> extends ValueStateNotifier<T> {
-
   static const String _tag = "ModelState";
 
   /// Initialize instance

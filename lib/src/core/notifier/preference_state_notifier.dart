@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_api/src/core/api.dart';
+import 'package:my_api/src/core/api/api.dart';
 import 'package:my_api/src/core/log.dart';
 import 'package:my_api/src/core/model/preference_element.dart';
 import 'package:my_api/src/core/provider.dart' as core_provider;
@@ -10,32 +10,37 @@ import 'package:my_api/src/core/model/preference_root.dart';
 const String _tag = "Prefs";
 
 /// Pull preferences by root [preference]
-void pullPreferences(WidgetRef ref, StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot> preference) {
+void pullPreferences(WidgetRef ref,
+    StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot> preference) {
   ref.read(preference.notifier).pull();
 }
 
 /// Push preferences by root [preference]
-void pushPreferences(WidgetRef ref, StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot> preference) {
+void pushPreferences(WidgetRef ref,
+    StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot> preference) {
   ref.read(preference.notifier).push();
 }
 
 /// Set preferences by root [preference].
-void setPreference(WidgetRef ref, StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot> preference, PreferenceRoot root) {
+void setPreference(
+    WidgetRef ref,
+    StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot> preference,
+    PreferenceRoot root) {
   ref.read(preference.notifier).set(root);
 }
 
 /// A root preference state notifier
 class PreferenceStateNotifier extends StateNotifier<PreferenceRoot> {
-
   /// Initialize root preference from [ref], [section], and [init]
-  PreferenceStateNotifier(this.ref, String section, Map<String, dynamic> init) : super(PreferenceRoot(section, init));
+  PreferenceStateNotifier(this.ref, String section, Map<String, dynamic> init)
+      : super(PreferenceRoot(section, init));
 
   /// Provider reference used to access the current user.
   final Ref ref;
 
   /// Section
   String get section => state.section;
-  
+
   /// Keys of children
   List<String> get keys => state.keys.toList(growable: false);
 
@@ -82,7 +87,7 @@ class PreferenceStateNotifier extends StateNotifier<PreferenceRoot> {
     final owner = ref.watch(core_provider.currentUser).user.userId;
     final data = target.rawChildren(owner);
     final client = ApiClient();
-    for(Map<String, String> map in data) {
+    for (Map<String, String> map in data) {
       final response = await client.update<PreferenceElement>(map);
       if (response.result != ApiResponseResult.success) {
         Log.e(_tag, "Failed to pull ${target.section} preferences: $map");

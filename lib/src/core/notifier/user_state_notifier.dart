@@ -1,11 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_api/src/core/api.dart';
+import 'package:my_api/src/core/api/api.dart';
 import 'package:my_api/src/core/model/user.dart';
-
 
 /// A user state notifier
 class UserNotifier extends StateNotifier<UserState> {
-
   /// Initialize instance
   UserNotifier() : super(UserState(user: User.unknown));
 
@@ -33,10 +31,8 @@ class UserNotifier extends StateNotifier<UserState> {
   }
 }
 
-
 /// State of user
 class UserState {
-
   /// Initialize
   ///
   /// Specify [User.unknown] when empty user required

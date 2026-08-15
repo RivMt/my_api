@@ -1,11 +1,10 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_api/src/core/api.dart';
+import 'package:my_api/src/core/api/api.dart';
 import 'package:my_api/src/core/log.dart';
 import 'package:my_api/src/core/model/model.dart';
 
 /// A state of model list
 class ModelsStateNotifier<T extends Model> extends StateNotifier<List<T>> {
-
   static const String _tag = "ModelsState";
 
   /// Initialize state notifier
@@ -95,5 +94,4 @@ class ModelsStateNotifier<T extends Model> extends StateNotifier<List<T>> {
     state = List.from(list);
     return true;
   }
-
 }

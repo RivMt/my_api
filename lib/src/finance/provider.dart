@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_api/src/core/api.dart';
+import 'package:my_api/src/core/api/api.dart';
 import 'package:my_api/src/core/model/model_keys.dart';
 import 'package:my_api/src/core/model/preference_keys.dart';
 import 'package:my_api/src/core/model/preference_root.dart';
@@ -20,12 +20,14 @@ final initFinancePreference = {
 };
 
 /// Provider of finance related preferences
-final financePreference = StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot>((ref) {
+final financePreference =
+    StateNotifierProvider<PreferenceStateNotifier, PreferenceRoot>((ref) {
   return PreferenceStateNotifier(ref, "finance", initFinancePreference);
 });
 
 /// List of all accounts
-final accounts = StateNotifierProvider<ModelsStateNotifier<Account>, List<Account>>((ref) {
+final accounts =
+    StateNotifierProvider<ModelsStateNotifier<Account>, List<Account>>((ref) {
   return ModelsStateNotifier<Account>();
 });
 
@@ -33,19 +35,14 @@ final accounts = StateNotifierProvider<ModelsStateNotifier<Account>, List<Accoun
 ///
 /// If the sort field and order is not defined, `icon ASC, last_used DESC` will
 /// be applied.
-Future<void> appendAccounts(WidgetRef ref, [Map<String, dynamic>? query]) async {
+Future<void> appendAccounts(WidgetRef ref,
+    [Map<String, dynamic>? query]) async {
   final Map<String, dynamic> q = query ?? {};
   if (!q.containsKey(ApiQuery.keySortField)) {
-    q[ApiQuery.keySortField] = [
-      ModelKeys.keyIcon,
-      ModelKeys.keyLastUsed
-    ];
+    q[ApiQuery.keySortField] = [ModelKeys.keyIcon, ModelKeys.keyLastUsed];
   }
   if (!q.containsKey(ApiQuery.keySortOrder)) {
-    q[ApiQuery.keySortOrder] = [
-      SortOrder.asc,
-      SortOrder.desc
-    ];
+    q[ApiQuery.keySortOrder] = [SortOrder.asc, SortOrder.desc];
   }
   await ref.read(accounts.notifier).append(q);
 }
@@ -69,7 +66,8 @@ Future<bool> deleteAccount(WidgetRef ref, Account account) async {
 }
 
 /// List of all payments
-final payments = StateNotifierProvider<ModelsStateNotifier<Payment>, List<Payment>>((ref) {
+final payments =
+    StateNotifierProvider<ModelsStateNotifier<Payment>, List<Payment>>((ref) {
   return ModelsStateNotifier<Payment>();
 });
 
@@ -78,14 +76,8 @@ final payments = StateNotifierProvider<ModelsStateNotifier<Payment>, List<Paymen
 /// The sort order is `icon ASC, last_used DESC`.
 Future<void> fetchPayments(WidgetRef ref) async {
   await ref.read(payments.notifier).fetch({
-    ApiQuery.keySortField: [
-      ModelKeys.keyIcon,
-      ModelKeys.keyLastUsed
-    ],
-    ApiQuery.keySortOrder: [
-      SortOrder.asc,
-      SortOrder.desc
-    ]
+    ApiQuery.keySortField: [ModelKeys.keyIcon, ModelKeys.keyLastUsed],
+    ApiQuery.keySortOrder: [SortOrder.asc, SortOrder.desc]
   });
 }
 
@@ -108,12 +100,15 @@ Future<bool> deletePayment(WidgetRef ref, Payment payment) async {
 }
 
 /// List of all transactions
-final transactions = StateNotifierProvider<ModelsStateNotifier<Transaction>, List<Transaction>>((ref) {
+final transactions =
+    StateNotifierProvider<ModelsStateNotifier<Transaction>, List<Transaction>>(
+        (ref) {
   return ModelsStateNotifier<Transaction>();
 });
 
 /// Append transactions with [query]
-Future<void> appendTransactions(WidgetRef ref, Map<String, dynamic> query) async {
+Future<void> appendTransactions(
+    WidgetRef ref, Map<String, dynamic> query) async {
   query[ApiQuery.keySortField] = [ModelKeys.keyPaidDate];
   query[ApiQuery.keySortOrder] = [SortOrder.desc];
   await ref.read(transactions.notifier).append(query);
@@ -148,7 +143,8 @@ Future<bool> deleteTransaction(WidgetRef ref, Transaction transaction) async {
 }
 
 /// List of all categories
-final categories = StateNotifierProvider<ModelsStateNotifier<Category>, List<Category>>((ref) {
+final categories =
+    StateNotifierProvider<ModelsStateNotifier<Category>, List<Category>>((ref) {
   return ModelsStateNotifier<Category>();
 });
 
@@ -191,7 +187,8 @@ Future<bool> deleteCategory(WidgetRef ref, Category category) async {
 }
 
 /// List of all currencies
-final currencies = StateNotifierProvider<ModelsStateNotifier<Currency>, List<Currency>>((ref) {
+final currencies =
+    StateNotifierProvider<ModelsStateNotifier<Currency>, List<Currency>>((ref) {
   return ModelsStateNotifier<Currency>();
 });
 
@@ -235,7 +232,9 @@ Currency getCurrency(ref, String? uuid) {
 /// Get default currency which is set on [financePreference]
 final defaultCurrency = Provider<Currency>((ref) {
   final root = ref.watch(financePreference);
-  final uuid = root.get<String>(PreferenceKeys.defaultCurrency, Currency.unknownUuid).value;
+  final uuid = root
+      .get<String>(PreferenceKeys.defaultCurrency, Currency.unknownUuid)
+      .value;
   return getCurrency(ref, uuid);
 });
 
