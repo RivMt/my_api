@@ -21,7 +21,7 @@ typedef DemoDataTransformer = List<Map<String, dynamic>> Function(
 /// Loads static seed assets and provides local API behavior without authentication.
 class DemoConnector implements ApiConnector {
   /// Base URI used to represent demo API resources.
-  static final Uri demoUri = Uri.base.resolve("/assets/assets/demo");
+  static final Uri demoUri = Uri.base.resolve("assets/assets/demo");
 
   /// Creates a demo connector.
   DemoConnector({
