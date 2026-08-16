@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/src/core/app_mode.dart';
 import 'package:my_api/src/core/widget/app_logo.dart';
@@ -55,6 +56,7 @@ class _AppVersionModalState extends State<AppVersionModal> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      scrollable: true,
       title: AppLogo(
         iconName: widget.iconName,
         title: widget.title,
@@ -110,6 +112,15 @@ class _AppVersionModalState extends State<AppVersionModal> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              Text('msgCommonDisclaimer'.tr()),
+              if (widget.channel == AppMode.demo) ...[
+                const SizedBox(height: 8),
+                Text('msgDemoDisclaimer'.tr()),
+              ] else if (widget.channel != AppMode.production) ...[
+                const SizedBox(height: 8),
+                Text('msgDevDisclaimer'.tr()),
+              ],
             ],
           );
         },
