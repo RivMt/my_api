@@ -78,6 +78,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await ApiClient().init({
+    'apiScheme': 'https',
     'apiUri': 'api.example.com',
     'authUri': 'https://auth.example.com/realms/mysuite',
     'clientId': 'my-app',
@@ -91,11 +92,12 @@ Future<void> main() async {
 
 | Key | Description |
 | --- | --- |
+| `apiScheme` | The scheme used for `kyro` requests. Defaults to `https` when omitted. |
 | `apiUri` | The `kyro` host and optional port. The current implementation expects `host` or `host:port` without a URI scheme, for example `api.example.com` or `localhost:8080`. |
 | `authUri` | The full URI of the OIDC provider or realm used to discover its OpenID configuration. |
 | `clientId` | The client ID registered with the OIDC provider. |
 | `redirectUri` | The login redirect URI. It must exactly match a redirect URI registered with the OIDC provider. |
-| `mode` | Application mode: `production`, `dev`, or `demo`. `dev` uses HTTP for `kyro` requests; the other modes use HTTPS. |
+| `mode` | Application mode: `production`, `dev`, or `demo`. |
 
 Register the application as a public OIDC client with token endpoint authentication set to `none`, and require PKCE with the `S256` challenge method. No client secret is stored or transmitted by `my_api`.
 

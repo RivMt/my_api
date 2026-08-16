@@ -30,6 +30,8 @@ class RemoteConnector implements ApiConnector {
 
   String _uri;
 
+  String _scheme = "https";
+
   /// Current application mode.
   @override
   AppMode get mode => _mode;
@@ -48,6 +50,7 @@ class RemoteConnector implements ApiConnector {
   @override
   Future<void> init(Map<String, dynamic> preferences) async {
     _uri = preferences["apiUri"] ?? "";
+    _scheme = preferences["apiScheme"] ?? "https";
     await oidc.init(
       serverUri: preferences["authUri"] ?? "",
       clientId: preferences["clientId"] ?? "",
@@ -77,7 +80,7 @@ class RemoteConnector implements ApiConnector {
     final host = split[0];
     final port = split.length > 1 ? int.parse(split[1]) : null;
     return Uri(
-      scheme: mode == AppMode.dev ? "http" : "https",
+      scheme: _scheme,
       host: host,
       port: port,
       path: endpoint,

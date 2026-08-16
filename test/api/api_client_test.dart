@@ -1,7 +1,30 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_api/core.dart';
 import 'package:my_api/finance.dart';
+import 'package:my_api/src/core/oidc.dart';
+import 'package:oidc/oidc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class FakeOpenIDConnect implements OpenIDConnect {
+  @override
+  String get accessToken => '';
+
+  @override
+  late OidcUserManager manager;
+
+  @override
+  Future<void> init({
+    required String serverUri,
+    required String clientId,
+    required String redirectUri,
+  }) async {}
+
+  @override
+  Future<User> login() async => User.unknown;
+
+  @override
+  Future<void> logout() async {}
+}
 
 void main() {
   group('ApiClient', () {
@@ -37,11 +60,15 @@ void main() {
   });
 
   group('RemoteConnector', () {
-    test('builds an HTTP URI in development mode', () {
+    test('builds a URI with the configured API scheme', () async {
       final connector = RemoteConnector(
-        uri: 'localhost:8080',
-        mode: AppMode.dev,
+        mode: AppMode.production,
+        oidc: FakeOpenIDConnect(),
       );
+      await connector.init({
+        'apiScheme': 'http',
+        'apiUri': 'localhost:8080',
+      });
 
       expect(
         connector.buildUri('/items', {'page': '1'}),
@@ -49,11 +76,12 @@ void main() {
       );
     });
 
-    test('builds an HTTPS URI in production mode', () {
+    test('defaults the API scheme to HTTPS regardless of mode', () async {
       final connector = RemoteConnector(
-        uri: 'api.example.com',
-        mode: AppMode.production,
+        mode: AppMode.dev,
+        oidc: FakeOpenIDConnect(),
       );
+      await connector.init({'apiUri': 'api.example.com'});
 
       expect(
         connector.buildUri('/items', null),

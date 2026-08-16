@@ -78,6 +78,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await ApiClient().init({
+    'apiScheme': 'https',
     'apiUri': 'api.example.com',
     'authUri': 'https://auth.example.com/realms/mysuite',
     'clientId': 'my-app',
@@ -91,11 +92,12 @@ Future<void> main() async {
 
 | 키 | 설명 |
 | --- | --- |
+| `apiScheme` | `kyro` 요청에 사용할 스킴입니다. 생략하면 `https`를 사용합니다. |
 | `apiUri` | `kyro`의 호스트와 선택적 포트입니다. 현재 구현은 스킴 없이 `host` 또는 `host:port` 형식을 사용합니다. 예: `api.example.com`, `localhost:8080` |
 | `authUri` | OpenID 설정을 찾는 데 사용하는 OIDC 공급자 또는 realm의 전체 URI입니다. |
 | `clientId` | OIDC 공급자에 등록한 클라이언트 ID입니다. |
 | `redirectUri` | 로그인 redirect URI입니다. OIDC 공급자에 등록한 값과 정확히 같아야 합니다. |
-| `mode` | 애플리케이션 모드입니다: `production`, `dev`, `demo`. `dev`는 `kyro` 요청에 HTTP를 사용하고, 나머지 모드는 HTTPS를 사용합니다. |
+| `mode` | 애플리케이션 모드입니다: `production`, `dev`, `demo`. |
 
 애플리케이션을 공개 OIDC 클라이언트로 등록하고 토큰 엔드포인트 인증 방식을 `none`으로 설정한 뒤, `S256` challenge 방식을 사용하는 PKCE를 필수로 설정하세요. `my_api`는 client secret을 저장하거나 전송하지 않습니다.
 
