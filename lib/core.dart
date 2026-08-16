@@ -9,6 +9,8 @@ export 'package:my_api/src/core/api/api.dart';
 export 'package:my_api/src/core/theme.dart';
 export 'package:my_api/src/core/screen_planner.dart';
 export 'package:my_api/src/core/widget/app_logo.dart';
+export 'package:my_api/src/core/widget/app_title.dart';
+export 'package:my_api/src/core/widget/app_version_modal.dart';
 export 'package:my_api/src/core/widget/group_card.dart';
 export 'package:my_api/src/core/widget/data_card.dart';
 export 'package:my_api/src/core/widget/message_box.dart';

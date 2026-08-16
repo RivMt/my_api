@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_api/src/core/api/api.dart';
 
-/// Displays the application title and, on wide layouts, its asset icon.
+/// Displays the application logo without handling user interaction.
 class AppLogo extends StatelessWidget {
   /// Creates an application logo.
   const AppLogo({
@@ -25,6 +25,7 @@ class AppLogo extends StatelessWidget {
     AppMode.dev: Color.fromARGB(255, 118, 255, 3),
     AppMode.demo: Color.fromARGB(255, 255, 3, 85),
     AppMode.edge: Color.fromARGB(255, 255, 46, 235),
+    AppMode.test: Color.fromARGB(255, 255, 234, 46),
   };
 
   Widget buildTitle(BuildContext context) {
@@ -52,9 +53,9 @@ class AppLogo extends StatelessWidget {
             child: Text(
               mode.name.toUpperCase(),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Colors.black,
-                fontWeight: FontWeight.w900,
-              ),
+                    color: Colors.black,
+                    fontWeight: FontWeight.w900,
+                  ),
             ),
           ),
         ),
@@ -65,14 +66,12 @@ class AppLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = buildTitle(context);
-    if (!isWide) {
-      return title;
-    }
-    return Row(
-      children: [
-        Visibility(
-          visible: isWide,
-          child: Container(
+    final Widget logo;
+    if (isWide) {
+      logo = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
             alignment: Alignment.center,
             child: Image.asset(
               iconName,
@@ -80,10 +79,14 @@ class AppLogo extends StatelessWidget {
               height: 32,
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        title,
-      ],
-    );
+          const SizedBox(width: 8),
+          title,
+        ],
+      );
+    } else {
+      logo = title;
+    }
+
+    return logo;
   }
 }

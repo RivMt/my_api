@@ -4,4 +4,5 @@ enum AppMode {
   dev,
   demo,
   edge,
+  test,
 }
