@@ -22,8 +22,9 @@ class AppLogo extends StatelessWidget {
 
   static const Map<AppMode, Color> labelColors = {
     AppMode.production: Colors.transparent,
-    AppMode.dev: Colors.lightGreenAccent,
-    AppMode.demo: Colors.redAccent,
+    AppMode.dev: Color.fromARGB(255, 118, 255, 3),
+    AppMode.demo: Color.fromARGB(255, 255, 3, 85),
+    AppMode.edge: Color.fromARGB(255, 255, 46, 235),
   };
 
   Widget buildTitle(BuildContext context) {

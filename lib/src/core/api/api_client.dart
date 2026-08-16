@@ -90,7 +90,7 @@ class ApiClient {
 
   ApiConnector _createConnector(AppMode mode) => switch (mode) {
         AppMode.demo => DemoConnector(),
-        AppMode.production || AppMode.dev => RemoteConnector(mode: mode),
+        AppMode.production || AppMode.dev || AppMode.edge => RemoteConnector(mode: mode),
       };
 
   /// Logs in.
