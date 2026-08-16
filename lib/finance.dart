@@ -14,3 +14,6 @@ export 'package:my_api/src/finance/model/payment.dart';
 export 'package:my_api/src/finance/model/transaction.dart';
 export 'package:my_api/src/finance/model/category.dart';
 export 'package:my_api/src/finance/model/currency.dart';
+
+// Demo
+export 'package:my_api/src/finance/demo/transaction_demo.dart';

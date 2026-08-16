@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:my_api/core.dart';
 import 'package:my_api/finance.dart';
 import 'package:my_api/src/core/oidc.dart';
@@ -24,6 +28,61 @@ class FakeOpenIDConnect implements OpenIDConnect {
 
   @override
   Future<void> logout() async {}
+}
+
+DemoConnector createDemoConnector([List<Uri>? requests]) {
+  final assets = <String, Object>{
+    'accounts': [
+      {
+        'uuid': 'demo-account',
+        'owner_id': User.demoId,
+        'name': 'Demo Account',
+        'currency_id': 'USD',
+      },
+    ],
+    'categories': <Object>[],
+    'currencies': [
+      {
+        'uuid': 'USD',
+        'region_code': 'US',
+        'currency_code': 'D',
+        'symbol': r'$',
+        'icon_url': '',
+        'decimal_point': 2,
+      },
+    ],
+    'payments': <Object>[],
+    'transactions': [
+      {
+        'uuid': 'demo-transaction',
+        'paid_date': '2020-01-31',
+        'calculated_date': '2020-01-31',
+      },
+    ],
+    'preferences': <Object>[],
+  };
+  return DemoConnector(
+    endpoints: const [
+      Account.endpoint,
+      Currency.endpoint,
+      Transaction.endpoint,
+    ],
+    transformers: {
+      Transaction.endpoint: (items) => alignDemoTransactionDates(
+            items,
+            now: DateTime(2026, 2, 15),
+          ),
+    },
+    baseUri: Uri.parse('https://app.example/assets/assets/demo'),
+    client: MockClient((request) async {
+      requests?.add(request.url);
+      final data = assets[request.url.pathSegments.last];
+      if (data == null) {
+        return http.Response('', 404);
+      }
+      return http.Response.bytes(utf8.encode(json.encode(data)), 200);
+    }),
+  );
 }
 
 void main() {
@@ -95,31 +154,56 @@ void main() {
       SharedPreferences.setMockInitialValues({});
     });
 
-    test('uses a dummy URI and does not authenticate', () async {
-      final connector = DemoConnector();
+    test('loads demo assets with GET and seeds local storage', () async {
+      final requests = <Uri>[];
+      final connector = createDemoConnector(requests);
       await connector.init(const {});
 
       expect(
         connector.buildUri('api/finance/accounts', {'deleted': false}),
         Uri.parse(
-          '${AppMode.demo.name}://local/api/finance/accounts?deleted=false',
+          '${connector.uri}/accounts?deleted=false',
         ),
       );
       final user = await connector.login();
       expect(user.isValid, isTrue);
       expect(user, same(User.demo));
       expect(user.userId, User.demoId);
+      expect(requests.map((uri) => uri.pathSegments.last).toSet(), {
+        'accounts',
+        'currencies',
+        'transactions',
+      });
+      expect(
+        (await connector.storage.read('api/finance/accounts')).single['name'],
+        'Demo Account',
+      );
+      expect(
+        (await connector.storage.read(Transaction.endpoint))
+            .single['paid_date'],
+        '2026-02-28',
+      );
       expect(await connector.logout(), same(User.unknown));
+      expect(await connector.storage.read(Account.endpoint), isEmpty);
+      expect(await connector.storage.read(Currency.endpoint), isEmpty);
+      expect(await connector.storage.read(Transaction.endpoint), isEmpty);
     });
 
     test('is selected by the API client in demo mode', () async {
-      await ApiClient.instance.init({'mode': AppMode.demo.name});
+      await ApiClient.instance.init(
+        {'mode': AppMode.demo.name},
+        demoEndpoints: const [Account.endpoint],
+      );
 
       expect(ApiClient.instance.connector, isA<DemoConnector>());
+      expect(
+        (ApiClient.instance.connector as DemoConnector).endpoints,
+        [Account.endpoint],
+      );
       expect(ApiClient.instance.mode, AppMode.demo);
       expect(
-        ApiClient.instance.buildUri('api/finance/accounts', null).scheme,
-        AppMode.demo.name,
+        ApiClient.instance.buildUri('api/finance/accounts', null),
+        Uri.parse('${DemoConnector.demoUri}/accounts'),
       );
     });
 

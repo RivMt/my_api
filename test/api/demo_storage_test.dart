@@ -70,7 +70,18 @@ void main() {
     expect(result.single['pref_value'], 'sJPY');
   });
 
-  test('provides USD as the demo currency', () async {
+  test('persists seeded demo currencies', () async {
+    await storage.seed(_currencies, [
+      {
+        'uuid': 'USD',
+        'region_code': 'US',
+        'currency_code': 'D',
+        'symbol': r'$',
+        'icon_url': '',
+        'decimal_point': 2,
+      },
+    ]);
+    await storage.seed(_currencies, const []);
     final currencies = await storage.read(_currencies, {
       'sort_field': 'uuid',
       'sort_order': 'asc',
@@ -78,6 +89,20 @@ void main() {
 
     expect(currencies, hasLength(1));
     expect(currencies.single['uuid'], 'USD');
+  });
+
+  test('resets every persisted demo table', () async {
+    await storage.seed(_currencies, [
+      {'uuid': 'USD'},
+    ]);
+    await storage.create(_accounts, {'name': 'Cash'});
+    await storage.create(_categories, {'name': 'Food'});
+
+    await storage.reset();
+
+    expect(await storage.read(_currencies), isEmpty);
+    expect(await storage.read(_accounts), isEmpty);
+    expect(await storage.read(_categories), isEmpty);
   });
 
   test('calculates account balances and transaction statistics', () async {

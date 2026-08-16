@@ -64,9 +64,16 @@ class ApiClient {
   Function<T>(Map<String, dynamic> map)? extendCast;
 
   /// Initializes the client with [preferences].
-  Future<void> init(Map<String, dynamic> preferences) async {
+  ///
+  /// [demoEndpoints] selects the assets loaded when demo mode logs in.
+  /// [demoTransformers] customizes loaded data for individual endpoints.
+  Future<void> init(
+    Map<String, dynamic> preferences, {
+    Iterable<String> demoEndpoints = const [],
+    Map<String, DemoDataTransformer> demoTransformers = const {},
+  }) async {
     final mode = resolveMode(preferences);
-    _connector = _createConnector(mode);
+    _connector = _createConnector(mode, demoEndpoints, demoTransformers);
     await _connector.init(preferences);
     Log.i(_tag, "API Client initialized");
   }
@@ -88,9 +95,21 @@ class ApiClient {
     );
   }
 
-  ApiConnector _createConnector(AppMode mode) => switch (mode) {
-        AppMode.demo => DemoConnector(),
-        AppMode.production || AppMode.dev || AppMode.edge || AppMode.test => RemoteConnector(mode: mode),
+  ApiConnector _createConnector(
+    AppMode mode,
+    Iterable<String> demoEndpoints,
+    Map<String, DemoDataTransformer> demoTransformers,
+  ) =>
+      switch (mode) {
+        AppMode.demo => DemoConnector(
+            endpoints: demoEndpoints,
+            transformers: demoTransformers,
+          ),
+        AppMode.production ||
+        AppMode.dev ||
+        AppMode.edge ||
+        AppMode.test =>
+          RemoteConnector(mode: mode),
       };
 
   /// Logs in.

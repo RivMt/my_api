@@ -6,7 +6,6 @@ import 'package:oidc/oidc.dart';
 ///
 /// All properties are read-only because user info only can be changed by server-side.
 class User extends Model {
-
   /// Demo user id
   static const String demoId = "demo";
 
@@ -37,13 +36,16 @@ class User extends Model {
     }
     map[ModelKeys.keyUserId] = user.uid ?? "";
     map[ModelKeys.keyEmail] = user.userInfo[ModelKeys.keyEmail] ?? "";
-    map[ModelKeys.keyEmailVerified] = user.userInfo[ModelKeys.keyEmailVerified] ?? false;
+    map[ModelKeys.keyEmailVerified] =
+        user.userInfo[ModelKeys.keyEmailVerified] ?? false;
     map[ModelKeys.keyName] = user.userInfo[ModelKeys.keyName] ?? "";
-    map[ModelKeys.keyPreferredUserName] = user.userInfo[ModelKeys.keyPreferredUserName] ?? "";
+    map[ModelKeys.keyPreferredUserName] =
+        user.userInfo[ModelKeys.keyPreferredUserName] ?? "";
     map[ModelKeys.keyFamilyName] = user.userInfo[ModelKeys.keyFamilyName] ?? "";
     map[ModelKeys.keyGivenName] = user.userInfo[ModelKeys.keyGivenName] ?? "";
     map[ModelKeys.keyPicture] = user.userInfo[ModelKeys.keyPicture] ?? "";
-    map[ModelKeys.keyGroups] = user.userInfo[ModelKeys.keyGroups].join(",") ?? "";
+    map[ModelKeys.keyGroups] =
+        user.userInfo[ModelKeys.keyGroups].join(",") ?? "";
   }
 
   /// Whether this is valid user
@@ -91,7 +93,7 @@ class User extends Model {
     if (other is User) {
       return userId == other.userId;
     }
-    return this==other;
+    return this == other;
   }
 
   @override
@@ -99,5 +101,4 @@ class User extends Model {
 
   @override
   String toString() => "$name ($email)";
-
 }

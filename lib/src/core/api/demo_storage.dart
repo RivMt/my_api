@@ -1,7 +1,13 @@
 import 'dart:convert';
 
 import 'package:decimal/decimal.dart';
+import 'package:my_api/src/core/model/preference.dart';
 import 'package:my_api/src/core/model/user.dart';
+import 'package:my_api/src/finance/model/account.dart';
+import 'package:my_api/src/finance/model/category.dart';
+import 'package:my_api/src/finance/model/currency.dart';
+import 'package:my_api/src/finance/model/payment.dart';
+import 'package:my_api/src/finance/model/transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A small local backend persisted with [SharedPreferences].
@@ -11,12 +17,12 @@ class DemoStorage {
 
   static const String _keyPrefix = "my_api.${User.demoId}.";
   static const String _defaultCurrencyId = "USD";
-  static const String _accounts = "api/finance/accounts";
-  static const String _categories = "api/finance/categories";
-  static const String _currencies = "api/finance/currencies";
-  static const String _payments = "api/finance/payments";
-  static const String _transactions = "api/finance/transactions";
-  static const String _preferencesEndpoint = "api/core/preferences";
+  static const String _accounts = Account.endpoint;
+  static const String _categories = Category.endpoint;
+  static const String _currencies = Currency.endpoint;
+  static const String _payments = Payment.endpoint;
+  static const String _transactions = Transaction.endpoint;
+  static const String _preferencesEndpoint = Preference.endpoint;
   static int _idSequence = 0;
 
   static const List<String> _tables = [
@@ -41,6 +47,19 @@ class DemoStorage {
   /// Initializes the local storage.
   Future<void> init() async {
     _preferences ??= await SharedPreferences.getInstance();
+  }
+
+  /// Stores initial [items] when [endpoint] has not been initialized yet.
+  Future<void> seed(
+    String endpoint,
+    List<Map<String, dynamic>> items,
+  ) async {
+    final table = _table(endpoint);
+    final key = _storageKey(table);
+    if (_store.containsKey(key)) {
+      return;
+    }
+    await _writeTable(table, items);
   }
 
   /// Creates and persists an item for [endpoint].
@@ -69,9 +88,7 @@ class DemoStorage {
     Map<String, String>? query,
   ]) async {
     final table = _table(endpoint);
-    final items = table == _currencies
-        ? _currencyItems.map(Map<String, dynamic>.from).toList()
-        : _readTable(table);
+    final items = _readTable(table);
     final result = _filter(items, query ?? const {});
     _sort(result, query ?? const {});
     return result.map((item) => _withComputedFields(table, item)).toList();
@@ -187,12 +204,19 @@ class DemoStorage {
     return result;
   }
 
-  /// Removes all demo backend data.
-  Future<void> clear() async {
-    for (final table in _tables) {
-      await _store.remove(_storageKey(table));
+  /// Removes all persisted demo backend data.
+  Future<void> reset() async {
+    final keys =
+        _store.getKeys().where((key) => key.startsWith(_keyPrefix)).toList();
+    for (final key in keys) {
+      await _store.remove(key);
     }
+    _idSequence = 0;
   }
+
+  /// Removes all demo backend data.
+  @Deprecated("Use reset() instead.")
+  Future<void> clear() => reset();
 
   String _table(String endpoint) {
     final normalized = endpoint.replaceAll(RegExp(r"^/+|/+$"), "");
@@ -448,15 +472,4 @@ class DemoStorage {
 
   String _newUuid() =>
       "${User.demoId}-${DateTime.now().microsecondsSinceEpoch}-${_idSequence++}";
-
-  static const List<Map<String, dynamic>> _currencyItems = [
-    {
-      "uuid": _defaultCurrencyId,
-      "region_code": "US",
-      "currency_code": "D",
-      "symbol": "\$",
-      "icon_url": "",
-      "decimal_point": 2
-    },
-  ];
 }

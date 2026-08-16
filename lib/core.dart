@@ -37,6 +37,9 @@ export 'package:my_api/src/core/model/preference_root.dart';
 export 'package:my_api/src/core/model/user.dart';
 export 'package:my_api/src/core/model/stateful_data.dart';
 
+// Demo
+export 'package:my_api/src/core/demo/preference_demo.dart';
+
 // Provider
 export 'package:my_api/src/core/notifier/model_state_notifier.dart';
 export 'package:my_api/src/core/notifier/models_state_notifier.dart';
