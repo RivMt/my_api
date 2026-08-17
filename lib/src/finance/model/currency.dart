@@ -15,7 +15,6 @@ import 'package:my_api/src/core/model/model_keys.dart';
 /// `XXX` is for no currency transaction, however, it is named [unknown] for
 /// unification with other API classes.
 class Currency extends Model {
-
   /// Path of API server endpoint
   static const String endpoint = "api/finance/currencies";
 
@@ -66,7 +65,7 @@ class Currency extends Model {
   String get uuid {
     final value = getString(ModelKeys.keyUuid, unknownUuid);
     final combination = "$regionCode$currencyCode";
-    return value == combination ? value : unknownUuid;  // TODO: throw exception
+    return value == combination ? value : unknownUuid; // TODO: throw exception
   }
 
   /// Region code of this currency
@@ -76,7 +75,8 @@ class Currency extends Model {
   /// such as `XA` (gold and silver), `XD` (IMF special drawing rights).
   ///
   /// Default value is [unknownRegionCode].
-  String get regionCode => getString(ModelKeys.keyRegionCode, unknownRegionCode);
+  String get regionCode =>
+      getString(ModelKeys.keyRegionCode, unknownRegionCode);
 
   /// Currency code of this currency
   ///
@@ -84,7 +84,8 @@ class Currency extends Model {
   /// However, it can be an another letter due to [regionCode].
   ///
   /// Default value is [unknownCurrencyCode].
-  String get currencyCode => getString(ModelKeys.keyCurrencyCode, unknownCurrencyCode);
+  String get currencyCode =>
+      getString(ModelKeys.keyCurrencyCode, unknownCurrencyCode);
 
   /// Symbol of this currency
   ///
@@ -98,10 +99,14 @@ class Currency extends Model {
   /// Default value is empty string.
   String get iconUrl => getString(ModelKeys.keyIconUrl, "");
 
+  /// Bundled asset path used when [iconUrl] cannot be loaded.
+  String get assetUri => "assets/currency/currency-${uuid.toLowerCase()}.svg";
+
   /// Digits of decimal part
   ///
   /// Default value is [defaultDecimalPoint].
-  int get decimalPoint => getInt(ModelKeys.keyDecimalPoint, defaultDecimalPoint);
+  int get decimalPoint =>
+      getInt(ModelKeys.keyDecimalPoint, defaultDecimalPoint);
 
   /// Key for translation
   String get key => "currencyType$uuid";
@@ -135,7 +140,7 @@ class Currency extends Model {
     if (other is Currency) {
       return uuid == other.uuid;
     }
-    return this==other;
+    return this == other;
   }
 
   @override
