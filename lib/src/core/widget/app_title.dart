@@ -11,6 +11,7 @@ class AppTitle extends StatelessWidget {
     required this.iconName,
     required this.title,
     required this.isWide,
+    this.disclaimer,
     this.onTap,
   });
 
@@ -22,6 +23,9 @@ class AppTitle extends StatelessWidget {
 
   /// Whether to display the icon beside the title.
   final bool isWide;
+
+  /// Application-specific disclaimer displayed in the version modal.
+  final Widget? disclaimer;
 
   /// Called when the title is tapped.
   ///
@@ -36,6 +40,7 @@ class AppTitle extends StatelessWidget {
         iconName: iconName,
         title: title,
         channel: ApiClient().mode,
+        disclaimer: disclaimer,
       ),
     );
   }
