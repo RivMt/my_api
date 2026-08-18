@@ -11,7 +11,6 @@ import 'package:my_api/src/core/model/model_keys.dart';
 /// There are some read-only variables, so it is **STRONGLY** not recommended
 /// to change its value.
 abstract class BaseModel extends Model {
-
   /// Unknown UUID
   static const String unknownUuid = "-1";
 
@@ -40,49 +39,26 @@ abstract class BaseModel extends Model {
   /// whole system. So changing this value makes unpredictable and dangerous results.
   String get uuid => getString(ModelKeys.keyUuid, "");
 
-  /// [DateTime] of lastly used (Read-only)
-  ///
-  /// There is no problem when edit it manually, however, server will be update
-  /// this when request update. Therefore, it is useless editing [lastUsed]
-  /// property.
-  DateTime get lastUsed => getDateTime(ModelKeys.keyLastUsed, DateTime.fromMillisecondsSinceEpoch(0));
+  /// Date and time when this object was created by the server (read-only).
+  DateTime get createdAt => getDateTime(
+        ModelKeys.keyCreatedAt,
+        DateTime.fromMillisecondsSinceEpoch(0),
+      );
 
-  /// UUID of owner
-  String get owner => getString(ModelKeys.keyOwner, "");
-
-  /// List of editors UUID
-  List<String> get editors => getList(ModelKeys.keyEditors, []);
-
-  /// List of viewers UUID
-  List<String> get viewers => getList(ModelKeys.keyViewers, []);
-
-  /// Name
-  ///
-  /// If [text] is longer than [maxTextLength], cut first [maxTextLength] characters only,
-  /// and discard others.
-  String get name => getString(ModelKeys.keyName, "");
-
-  set name(String text) => setString(ModelKeys.keyName, text, maxTextLength);
-
-  /// Descriptions
-  String get descriptions => getString(ModelKeys.keyDescription, "");
-
-  set descriptions(String text) => setString(ModelKeys.keyDescription, text, maxTextLength);
-
-  /// Whether this object deleted or not
-  bool get deleted => getBool(ModelKeys.keyDeleted, false);
-
-  set deleted(bool value) => setBool(ModelKeys.keyDeleted, value);
+  /// Date and time of the latest server-side modification (read-only).
+  DateTime get modifiedAt => getDateTime(
+        ModelKeys.keyModifiedAt,
+        DateTime.fromMillisecondsSinceEpoch(0),
+      );
 
   @override
   bool isEquivalent(Model other) {
     if (other is BaseModel) {
       return uuid == other.uuid;
     }
-    return this==other;
+    return this == other;
   }
 
   @override
   int get representativeCode => uuid.hashCode;
 }
-

@@ -28,6 +28,11 @@ void main() {
       'type': 1,
       'included': true,
     });
+    expect(first['created_at'], isNotNull);
+    expect(first['modified_at'], isNotNull);
+    expect(second['created_at'], isNotNull);
+    expect(second['modified_at'], isNotNull);
+    expect(first.containsKey('last_used'), isFalse);
 
     final filtered = await storage.read(_categories, {
       'type': '1',
@@ -107,15 +112,18 @@ void main() {
 
   test('calculates account balances and transaction statistics', () async {
     final account = await storage.create(_accounts, {'name': 'Cash'});
-    await storage.create(_transactions, {
-      'name': 'Coffee',
+    final transaction = await storage.create(_transactions, {
+      'name': 'Ignored transaction name',
+      'description': 'Coffee',
       'account_id': account['uuid'],
       'amount': '12.50',
       'type': 0,
       'calculated_date': '2020-01-01',
     });
+    expect(transaction.containsKey('name'), isFalse);
+    expect(transaction['description'], 'Coffee');
     await storage.create(_transactions, {
-      'name': 'Refund',
+      'description': 'Refund',
       'account_id': account['uuid'],
       'amount': '2.50',
       'type': 1,
@@ -134,13 +142,13 @@ void main() {
   test('searches transaction and related model text', () async {
     final account = await storage.create(_accounts, {'name': 'Daily wallet'});
     await storage.create(_transactions, {
-      'name': 'Coffee',
+      'description': 'Coffee',
       'account_id': account['uuid'],
       'amount': '4.00',
       'calculated_date': '2020-01-01',
     });
     await storage.create(_transactions, {
-      'name': 'Book',
+      'description': 'Book',
       'amount': '20.00',
       'calculated_date': '2020-01-01',
     });

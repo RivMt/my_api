@@ -33,13 +33,17 @@ final accounts =
 
 /// Append accounts with [query]
 ///
-/// If the sort field and order is not defined, `icon ASC, last_used DESC` will
+/// If the sort field and order is not defined,
+/// `icon ASC, modified_at DESC` will
 /// be applied.
 Future<void> appendAccounts(WidgetRef ref,
     [Map<String, dynamic>? query]) async {
   final Map<String, dynamic> q = query ?? {};
   if (!q.containsKey(ApiQuery.keySortField)) {
-    q[ApiQuery.keySortField] = [ModelKeys.keyIcon, ModelKeys.keyLastUsed];
+    q[ApiQuery.keySortField] = [
+      ModelKeys.keyIcon,
+      ModelKeys.keyModifiedAt,
+    ];
   }
   if (!q.containsKey(ApiQuery.keySortOrder)) {
     q[ApiQuery.keySortOrder] = [SortOrder.asc, SortOrder.desc];
@@ -73,10 +77,13 @@ final payments =
 
 /// Fetch payments
 ///
-/// The sort order is `icon ASC, last_used DESC`.
+/// The sort order is `icon ASC, modified_at DESC`.
 Future<void> fetchPayments(WidgetRef ref) async {
   await ref.read(payments.notifier).fetch({
-    ApiQuery.keySortField: [ModelKeys.keyIcon, ModelKeys.keyLastUsed],
+    ApiQuery.keySortField: [
+      ModelKeys.keyIcon,
+      ModelKeys.keyModifiedAt,
+    ],
     ApiQuery.keySortOrder: [SortOrder.asc, SortOrder.desc]
   });
 }
@@ -150,14 +157,15 @@ final categories =
 
 /// Fetch categories
 ///
-/// Default sort is `deleted ASC, type ASC, included DESC, lastUsed ASC`.
+/// Default sort is
+/// `deleted ASC, type ASC, included DESC, modified_at ASC`.
 Future<void> fetchCategories(WidgetRef ref) async {
   await ref.read(categories.notifier).fetch({
     ApiQuery.keySortField: [
       ModelKeys.keyDeleted,
       ModelKeys.keyType,
       ModelKeys.keyIncluded,
-      ModelKeys.keyLastUsed,
+      ModelKeys.keyModifiedAt,
     ],
     ApiQuery.keySortOrder: [
       SortOrder.asc,

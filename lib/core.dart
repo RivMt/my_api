@@ -30,6 +30,7 @@ export 'package:my_api/src/core/widget/home_card.dart';
 export 'package:my_api/src/core/model/base_model.dart';
 export 'package:my_api/src/core/model/model.dart';
 export 'package:my_api/src/core/model/model_keys.dart';
+export 'package:my_api/src/core/model/model_mixins.dart';
 export 'package:my_api/src/core/model/preference.dart';
 export 'package:my_api/src/core/model/preference_element.dart';
 export 'package:my_api/src/core/model/preference_keys.dart';

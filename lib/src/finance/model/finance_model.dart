@@ -1,8 +1,9 @@
 import 'package:my_api/src/core/model/base_model.dart';
+import 'package:my_api/src/core/model/model_mixins.dart';
 
 /// A superclass of all Finance API related models.
-abstract class FinanceModel extends BaseModel {
-
+abstract class FinanceModel extends BaseModel
+    with DescriptableModel, DeletableModel, PermittableModel {
   /// Regular expression for check [Decimal] number
   ///
   /// [maxIntegerPartDigits] is length of integer part, and [maxDecimalPartDigits]
@@ -14,9 +15,8 @@ abstract class FinanceModel extends BaseModel {
   /// other letters such as comma(,) or minus sign(-), or any other characters except
   /// number(0-9) and dot(.), **MUST** remove before using this regex.
   static RegExp getRegex(int maxIntegerPartDigits, int maxDecimalPartDigits) {
-    final decimal = maxDecimalPartDigits > 0
-        ? "(\\.\\d{0,$maxDecimalPartDigits})?"
-        : "";
+    final decimal =
+        maxDecimalPartDigits > 0 ? "(\\.\\d{0,$maxDecimalPartDigits})?" : "";
     final integer = "\\d{0,$maxIntegerPartDigits}";
     return RegExp("^$integer$decimal\$");
   }

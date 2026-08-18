@@ -1,9 +1,9 @@
 /// Defines serialized field names shared by API models.
 abstract class ModelKeys {
-
   // Common model fields.
   static const String keyUuid = "uuid";
-  static const String keyLastUsed = "last_used";
+  static const String keyCreatedAt = "created_at";
+  static const String keyModifiedAt = "modified_at";
   static const String keyOwner = "owner_id";
   static const String keyEditors = "editors_id";
   static const String keyViewers = "viewers_id";

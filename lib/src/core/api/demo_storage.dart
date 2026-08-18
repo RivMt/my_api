@@ -287,15 +287,18 @@ class DemoStorage {
     final item = Map<String, dynamic>.from(source);
     if (isNew) {
       item["uuid"] = _newUuid();
+      item["created_at"] = now;
     }
-    item["last_used"] = now;
+    item["modified_at"] = now;
     item["owner_id"] ??= User.demoId;
     item["editors_id"] ??= <String>[];
     item["viewers_id"] ??= <String>[];
     item["deleted"] ??= false;
-    item["name"] ??= "";
-    item["description"] ??= "";
 
+    if (table == _accounts || table == _payments || table == _categories) {
+      item["name"] ??= "";
+      item["description"] ??= "";
+    }
     if (table == _accounts || table == _payments) {
       item["icon"] ??= 0;
       item["priority"] ??= 0;
@@ -320,6 +323,8 @@ class DemoStorage {
       item["included"] ??= true;
       item["icon"] ??= 0;
     } else if (table == _transactions) {
+      item.remove("name");
+      item["description"] ??= "";
       final today = now.substring(0, 10);
       item["paid_date"] ??= today;
       item["calculated_date"] ??= today;

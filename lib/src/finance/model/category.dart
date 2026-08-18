@@ -3,12 +3,12 @@ library my_api;
 import 'package:flutter/material.dart';
 import 'package:my_api/src/core/model/base_model.dart';
 import 'package:my_api/src/core/model/model_keys.dart';
+import 'package:my_api/src/core/model/model_mixins.dart';
 import 'package:my_api/src/finance/model/finance_model.dart';
 import 'package:my_api/src/finance/model/transaction.dart';
 
 /// A finance category class
-class Category extends FinanceModel {
-
+class Category extends FinanceModel with NamableModel {
   /// Path of API server endpoint
   static const String endpoint = "api/finance/categories";
 
@@ -35,7 +35,8 @@ class Category extends FinanceModel {
   /// Type of this category
   ///
   /// Default value is [TransactionType.expense]
-  TransactionType get type => TransactionType.fromCode(getInt(ModelKeys.keyType, 0));
+  TransactionType get type =>
+      TransactionType.fromCode(getInt(ModelKeys.keyType, 0));
 
   set type(TransactionType value) => setInt(ModelKeys.keyType, value.code);
 
@@ -49,13 +50,13 @@ class Category extends FinanceModel {
   /// Icon of this category
   ///
   /// Default value is [CategorySymbol.unknown]
-  CategorySymbol get icon => CategorySymbol.fromId(getInt(ModelKeys.keyIcon, CategorySymbol.unknown.id));
+  CategorySymbol get icon => CategorySymbol.fromId(
+      getInt(ModelKeys.keyIcon, CategorySymbol.unknown.id));
 
   set icon(CategorySymbol icon) => setInt(ModelKeys.keyIcon, icon.id);
 
   @override
   String toString() => "$name (${type.name}, $isIncluded)";
-
 }
 
 /// A symbol of category
@@ -152,7 +153,7 @@ enum CategorySymbol {
   /// Default value is [CategorySymbol.unknown].
   factory CategorySymbol.fromId(int id) {
     // Check id value range
-    if (id < -1 || id >= CategorySymbol.values.length-1) {
+    if (id < -1 || id >= CategorySymbol.values.length - 1) {
       return CategorySymbol.unknown;
     }
     return CategorySymbol.values[id + 1];

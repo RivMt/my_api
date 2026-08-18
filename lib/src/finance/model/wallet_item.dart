@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/src/core/model/model_keys.dart';
+import 'package:my_api/src/core/model/model_mixins.dart';
 import 'package:my_api/src/finance/model/currency.dart';
 import 'package:my_api/src/finance/model/finance_model.dart';
 
 /// A superclass of [Account] and [Payment]
-abstract class WalletItem extends FinanceModel {
-
+abstract class WalletItem extends FinanceModel with NamableModel {
   /// Maximum digits of integer part
   static const int maxIntegerPartDigits = 30;
 
@@ -17,7 +17,8 @@ abstract class WalletItem extends FinanceModel {
 
   /// Get amount verification [RegExp] from given [currency]
   static RegExp getAmountRegex(Currency currency) {
-    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalPoint));
+    return FinanceModel.getRegex(
+        maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalPoint));
   }
 
   /// Initialize instance from given [map]
@@ -47,7 +48,8 @@ abstract class WalletItem extends FinanceModel {
   /// UUID of currency
   ///
   /// Default value is [Currency.unknown].
-  String get currencyId => getString(ModelKeys.keyCurrencyId, Currency.unknownUuid);
+  String get currencyId =>
+      getString(ModelKeys.keyCurrencyId, Currency.unknownUuid);
 
   set currencyId(String uuid) => setString(ModelKeys.keyCurrencyId, uuid);
 
@@ -71,5 +73,4 @@ abstract class WalletItem extends FinanceModel {
   Color get background => getColor(ModelKeys.keyBackground, Colors.black);
 
   set background(Color color) => setColor(ModelKeys.keyBackground, color);
-
 }
