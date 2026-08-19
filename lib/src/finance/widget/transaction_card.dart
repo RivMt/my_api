@@ -37,8 +37,8 @@ class TransactionCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currency = finance_provider.getCurrency(ref, data.altCurrencyId ?? data.currencyId);
-    final amount = data.altAmount ?? data.amount;
+    final currency = finance_provider.getCurrency(ref, data.nominalCurrencyId);
+    final amount = data.nominalAmount;
     return DataCard(
       leading: IndexedStack(
         index: isPaid ? 0 : 1,
