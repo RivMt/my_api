@@ -6,13 +6,13 @@ import 'package:decimal/decimal.dart';
 import 'package:my_api/src/core/model/base_model.dart';
 import 'package:my_api/src/core/model/model_keys.dart';
 import 'package:my_api/src/finance/model/account.dart';
+import 'package:my_api/src/finance/model/category.dart';
 import 'package:my_api/src/finance/model/currency.dart';
 import 'package:my_api/src/finance/model/finance_model.dart';
 import 'package:my_api/src/finance/model/payment.dart';
 
 /// A transaction class
 class Transaction extends FinanceModel {
-
   /// Path of API server endpoint
   static const String endpoint = "api/finance/transactions";
 
@@ -23,11 +23,13 @@ class Transaction extends FinanceModel {
   static const int maxDecimalPartDigits = 2;
 
   /// Default [DateTime] of [calculatedDate]
-  static final DateTime defaultCalculatedDate = DateTime(1970, 1, 1, 0, 0, 0, 0, 0);
+  static final DateTime defaultCalculatedDate =
+      DateTime(1970, 1, 1, 0, 0, 0, 0, 0);
 
   /// Get amount verification [RegExp] from given [currency]
   static RegExp getAmountRegex(Currency currency) {
-    return FinanceModel.getRegex(maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalPoint));
+    return FinanceModel.getRegex(
+        maxIntegerPartDigits, min(maxDecimalPartDigits, currency.decimalPoint));
   }
 
   /// Initialize instance from given [map]
@@ -56,14 +58,16 @@ class Transaction extends FinanceModel {
   /// Type of this transaction
   ///
   /// Default value is [TransactionType.expense]
-  TransactionType get type => TransactionType.fromCode(getInt(ModelKeys.keyType, TransactionType.expense.code));
+  TransactionType get type => TransactionType.fromCode(
+      getInt(ModelKeys.keyType, TransactionType.expense.code));
 
   set type(TransactionType value) => setInt(ModelKeys.keyType, value.code);
 
   /// [Category] of this transaction
   ///
   /// Default value is `0`
-  String get categoryId => getString(ModelKeys.keyCategoryId, BaseModel.unknownUuid);
+  String get categoryId =>
+      getString(ModelKeys.keyCategoryId, BaseModel.unknownUuid);
 
   set categoryId(String value) => setString(ModelKeys.keyCategoryId, value);
 
@@ -81,7 +85,8 @@ class Transaction extends FinanceModel {
   /// UUID of [Account] this transaction occurred
   ///
   /// Default value is [Account.unknown].
-  String get accountId => getString(ModelKeys.keyAccountId, BaseModel.unknownUuid);
+  String get accountId =>
+      getString(ModelKeys.keyAccountId, BaseModel.unknownUuid);
 
   set accountId(String uuid) => setString(ModelKeys.keyAccountId, uuid);
 
@@ -94,7 +99,8 @@ class Transaction extends FinanceModel {
   /// UUID of [Payment] this transaction is paid
   ///
   /// Default value is [Payment.unknown].
-  String get paymentId => getString(ModelKeys.keyPaymentId, BaseModel.unknownUuid);
+  String get paymentId =>
+      getString(ModelKeys.keyPaymentId, BaseModel.unknownUuid);
 
   set paymentId(String uuid) => setString(ModelKeys.keyPaymentId, uuid);
 
@@ -104,7 +110,8 @@ class Transaction extends FinanceModel {
   /// id of [payment] is different.
   void setPayment(Payment payment) {
     paymentId = payment.uuid;
-    if (payment.currencyId != Currency.unknownUuid && payment.currencyId != currencyId) {
+    if (payment.currencyId != Currency.unknownUuid &&
+        payment.currencyId != currencyId) {
       altCurrencyId = payment.currencyId;
       altAmount = Decimal.zero;
     } else {
@@ -116,7 +123,8 @@ class Transaction extends FinanceModel {
   /// UUID of currency
   ///
   /// Default value is [Currency.unknown].
-  String get currencyId => getString(ModelKeys.keyCurrencyId, Currency.unknownUuid);
+  String get currencyId =>
+      getString(ModelKeys.keyCurrencyId, Currency.unknownUuid);
 
   set currencyId(String uuid) => setString(ModelKeys.keyCurrencyId, uuid);
 
@@ -134,7 +142,8 @@ class Transaction extends FinanceModel {
   /// account, [altCurrencyId] is `EUR`, and [currencyId] is `USD`.
   ///
   /// Default value is [Currency.unknownUuid].
-  String get altCurrencyId => getString(ModelKeys.keyAltCurrencyId, Currency.unknownUuid);
+  String get altCurrencyId =>
+      getString(ModelKeys.keyAltCurrencyId, Currency.unknownUuid);
 
   set altCurrencyId(String uuid) => setString(ModelKeys.keyAltCurrencyId, uuid);
 
@@ -150,28 +159,37 @@ class Transaction extends FinanceModel {
   set altAmount(Decimal value) => setDecimal(ModelKeys.keyAltAmount, value);
 
   /// Whether this transaction has alternative currency and amount or not
-  bool get hasAlt => (altCurrencyId != Currency.unknownUuid);
+  bool get hasAlt => isTransfer
+      ? currencyId != altCurrencyId
+      : altCurrencyId != Currency.unknownUuid;
 
-  String get nominalCurrencyId {
-    if (altCurrencyId == Currency.unknownUuid) {
-      return currencyId;
-    }
-    return altCurrencyId;
-  }
+  /// Whether this transaction is one side of an account transfer.
+  bool get isTransfer =>
+      categoryId == Category.transferTo.uuid ||
+      categoryId == Category.transferFrom.uuid;
 
-  Decimal get nominalAmount {
-    if (altCurrencyId == Currency.unknownUuid) {
-      return amount;
-    }
-    return altAmount;
-  }
+  /// Currency shown as the primary value of this transaction.
+  String get primaryCurrencyId =>
+      hasAlt && !isTransfer ? altCurrencyId : currencyId;
+
+  /// Amount shown as the primary value of this transaction.
+  Decimal get primaryAmount => hasAlt && !isTransfer ? altAmount : amount;
+
+  /// Currency shown as the secondary value of this transaction.
+  String get secondaryCurrencyId =>
+      hasAlt && !isTransfer ? currencyId : altCurrencyId;
+
+  /// Amount shown as the secondary value of this transaction.
+  Decimal get secondaryAmount => hasAlt && !isTransfer ? amount : altAmount;
 
   /// [DateTime] of this transaction is withdrew
   ///
   /// Default value is [defaultCalculatedDate].
-  DateTime get calculatedDate => getDate(ModelKeys.keyCalculatedDate, defaultCalculatedDate);
+  DateTime get calculatedDate =>
+      getDate(ModelKeys.keyCalculatedDate, defaultCalculatedDate);
 
-  set calculatedDate(DateTime date) => setDate(ModelKeys.keyCalculatedDate, date);
+  set calculatedDate(DateTime date) =>
+      setDate(ModelKeys.keyCalculatedDate, date);
 
   /// Whether of this transaction is included in statics or not
   bool get isIncluded => getBool(ModelKeys.keyIncluded, true);
@@ -179,8 +197,10 @@ class Transaction extends FinanceModel {
   set isIncluded(bool value) => setBool(ModelKeys.keyIncluded, value);
 
   /// Last date of this transaction is effective
-  @Deprecated("This property is not useful and will be removed in further release")
-  DateTime get utilityEnd => getDate(ModelKeys.keyUtilityEnd, paidDate.add(const Duration(seconds: 1)));
+  @Deprecated(
+      "This property is not useful and will be removed in further release")
+  DateTime get utilityEnd => getDate(
+      ModelKeys.keyUtilityEnd, paidDate.add(const Duration(seconds: 1)));
 
   set utilityEnd(DateTime date) => setDate(ModelKeys.keyUtilityEnd, date);
 
@@ -191,13 +211,16 @@ class Transaction extends FinanceModel {
   @Deprecated("This property will be removed due to utilityEnd is deprecated")
   int get utilityDays => utilityEnd.difference(paidDate).inDays + 1;
 
-  set utilityDays(int value) => setDate(ModelKeys.keyUtilityEnd, paidDate.add(Duration(
-    days: value-1,
-    seconds: 1,
-  )));
+  set utilityDays(int value) => setDate(
+      ModelKeys.keyUtilityEnd,
+      paidDate.add(Duration(
+        days: value - 1,
+        seconds: 1,
+      )));
 
   /// ID of folder
-  @Deprecated("This property does not working and will be removed in further release")
+  @Deprecated(
+      "This property does not working and will be removed in further release")
   int get folderId => getInt(ModelKeys.keyFolder, 0);
 
   set folderId(int value) => setInt(ModelKeys.keyFolder, value);
@@ -238,7 +261,7 @@ enum TransactionType {
   ///
   /// Default value is [TransactionType.unknown].
   factory TransactionType.fromCode(int code) {
-    switch(code) {
+    switch (code) {
       case 0:
         return TransactionType.expense;
       case 1:
@@ -252,10 +275,11 @@ enum TransactionType {
   ///
   /// It is distinct to [values] which returns all types.
   static List<TransactionType> get types => const [
-    TransactionType.expense,
-    TransactionType.income,
-  ];
+        TransactionType.expense,
+        TransactionType.income,
+      ];
 
   /// Get localization key
-  String get key => "transactionType${name.substring(0,1).toUpperCase()}${name.substring(1,name.length)}";
+  String get key =>
+      "transactionType${name.substring(0, 1).toUpperCase()}${name.substring(1, name.length)}";
 }

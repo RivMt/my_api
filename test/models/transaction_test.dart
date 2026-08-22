@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_api/src/core/model/model_keys.dart';
+import 'package:my_api/src/finance/model/category.dart';
 import 'package:my_api/src/finance/model/currency.dart';
 import 'package:my_api/src/finance/model/transaction.dart';
 
@@ -39,6 +40,65 @@ void main() {
       b.map[ModelKeys.keyUuid] = "abc";
       assert(a.representativeCode == b.representativeCode);
       assert(a.isEquivalent(b));
+    });
+  });
+  group("Primary and secondary amount Test", () {
+    Transaction transaction({required String categoryId}) {
+      final data = Transaction({});
+      data.categoryId = categoryId;
+      data.currencyId = "USD";
+      data.amount = Decimal.fromInt(10);
+      data.altCurrencyId = "JPY";
+      data.altAmount = Decimal.fromInt(1500);
+      return data;
+    }
+
+    test("Alternative amount is primary for a regular transaction", () {
+      final data = transaction(categoryId: "regular-category");
+
+      expect(data.hasAlt, isTrue);
+      expect(data.primaryCurrencyId, "JPY");
+      expect(data.primaryAmount, Decimal.fromInt(1500));
+      expect(data.secondaryCurrencyId, "USD");
+      expect(data.secondaryAmount, Decimal.fromInt(10));
+    });
+
+    for (final category in [Category.transferTo, Category.transferFrom]) {
+      test("Alternative amount is secondary for transfer ${category.uuid}", () {
+        final data = transaction(categoryId: category.uuid);
+
+        expect(data.isTransfer, isTrue);
+        expect(data.hasAlt, isTrue);
+        expect(data.primaryCurrencyId, "USD");
+        expect(data.primaryAmount, Decimal.fromInt(10));
+        expect(data.secondaryCurrencyId, "JPY");
+        expect(data.secondaryAmount, Decimal.fromInt(1500));
+      });
+    }
+
+    test("Original amount is primary without an alternative", () {
+      final data = transaction(categoryId: "regular-category");
+      data.altCurrencyId = Currency.unknownUuid;
+      data.altAmount = Decimal.zero;
+
+      expect(data.primaryCurrencyId, "USD");
+      expect(data.primaryAmount, Decimal.fromInt(10));
+      expect(data.secondaryCurrencyId, Currency.unknownUuid);
+      expect(data.secondaryAmount, Decimal.zero);
+    });
+
+    test("Transfer has no alternative when both currencies are equal", () {
+      final data = transaction(categoryId: Category.transferTo.uuid);
+      data.altCurrencyId = data.currencyId;
+
+      expect(data.hasAlt, isFalse);
+    });
+
+    test("Regular transaction keeps alternative with equal currencies", () {
+      final data = transaction(categoryId: "regular-category");
+      data.altCurrencyId = data.currencyId;
+
+      expect(data.hasAlt, isTrue);
     });
   });
   group("Amount Verification Test (Integer part only currency)", () {

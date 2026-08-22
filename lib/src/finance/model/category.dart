@@ -1,5 +1,6 @@
 library my_api;
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_api/src/core/model/base_model.dart';
 import 'package:my_api/src/core/model/model_keys.dart';
@@ -19,6 +20,24 @@ class Category extends FinanceModel with NamableModel {
     ModelKeys.keyIncluded: true,
     ModelKeys.keyIcon: -1,
     ModelKeys.keyName: "unknown",
+  });
+
+  /// Category used by the withdrawal side of a transfer.
+  static final Category transferTo = Category({
+    ModelKeys.keyUuid: "-2",
+    ModelKeys.keyType: TransactionType.expense.code,
+    ModelKeys.keyIncluded: false,
+    ModelKeys.keyIcon: CategorySymbol.arrowDown.id,
+    ModelKeys.keyName: "categoryNameTransferTo".tr(),
+  });
+
+  /// Category used by the deposit side of a transfer.
+  static final Category transferFrom = Category({
+    ModelKeys.keyUuid: "-3",
+    ModelKeys.keyType: TransactionType.income.code,
+    ModelKeys.keyIncluded: false,
+    ModelKeys.keyIcon: CategorySymbol.arrowUp.id,
+    ModelKeys.keyName: "categoryNameTransferFrom".tr(),
   });
 
   /// Initialize from given [map]
