@@ -46,11 +46,7 @@ class Transaction extends FinanceModel {
     if (paymentId == BaseModel.unknownUuid) return false;
     if (currencyId == Currency.unknownUuid) return false;
     if (amount <= Decimal.zero) return false;
-    if ((altCurrencyId != null && altAmount == null) ||
-        (altCurrencyId == null && altAmount != null) ||
-        (altCurrencyId == Currency.unknownUuid) ||
-        (altAmount != null && altAmount! <= Decimal.zero)
-    ) {
+    if (altCurrencyId != Currency.unknownUuid && altAmount == Decimal.zero) {
       return false;
     }
     if (utilityDays < 1) return false;
@@ -112,8 +108,8 @@ class Transaction extends FinanceModel {
       altCurrencyId = payment.currencyId;
       altAmount = Decimal.zero;
     } else {
-      altCurrencyId = null;
-      altAmount = null;
+      altCurrencyId = Currency.unknownUuid;
+      altAmount = Decimal.zero;
     }
   }
 
@@ -137,10 +133,10 @@ class Transaction extends FinanceModel {
   /// is paid by Euro, and money withdrew from Dollar
   /// account, [altCurrencyId] is `EUR`, and [currencyId] is `USD`.
   ///
-  /// Default value is `null`.
-  String? get altCurrencyId => getValue<String>(ModelKeys.keyAltCurrencyId, null);
+  /// Default value is [Currency.unknownUuid].
+  String get altCurrencyId => getString(ModelKeys.keyAltCurrencyId, Currency.unknownUuid);
 
-  set altCurrencyId(String? uuid) => setValue<String>(ModelKeys.keyAltCurrencyId, uuid);
+  set altCurrencyId(String uuid) => setString(ModelKeys.keyAltCurrencyId, uuid);
 
   /// Alternative amount of this transaction
   ///
@@ -148,25 +144,27 @@ class Transaction extends FinanceModel {
   /// is paid by 5 euros, and money withdrew 2 dollars from
   /// account, [altAmount] is `5`, and [amount] is `2`.
   ///
-  /// Default value is `null`.
-  Decimal? get altAmount {
-    final value = getValue<String>(ModelKeys.keyAltAmount, null);
-    if (value == null) {
-      return null;
-    }
-    return Decimal.parse(value);
-  }
+  /// Default value is [Decimal.zero].
+  Decimal get altAmount => getDecimal(ModelKeys.keyAltAmount, Decimal.zero);
 
-  set altAmount(Decimal? value) {
-    if (value != null) {
-      map[ModelKeys.keyAltAmount] = value.toString();
-    } else {
-      map[ModelKeys.keyAltAmount] = null;
-    }
-  }
+  set altAmount(Decimal value) => setDecimal(ModelKeys.keyAltAmount, value);
 
   /// Whether this transaction has alternative currency and amount or not
-  bool get hasAlt => (altCurrencyId != null) || (altAmount != null);
+  bool get hasAlt => (altCurrencyId != Currency.unknownUuid);
+
+  String get nominalCurrencyId {
+    if (altCurrencyId == Currency.unknownUuid) {
+      return currencyId;
+    }
+    return altCurrencyId;
+  }
+
+  Decimal get nominalAmount {
+    if (altCurrencyId == Currency.unknownUuid) {
+      return amount;
+    }
+    return altAmount;
+  }
 
   /// [DateTime] of this transaction is withdrew
   ///
